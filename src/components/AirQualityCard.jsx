@@ -1,13 +1,13 @@
 import React from "react";
 import { getAqiLevel } from "../services/climateData";
-import { Wind, ShieldAlert, Activity, Info } from "lucide-react";
+import { Wind } from "lucide-react";
 
 export default function AirQualityCard({ airQualityData }) {
   if (!airQualityData) {
     return (
-      <div className="glass-card" style={{ padding: "1.5rem", textAlign: "center" }}>
+      <div className="glass-card" style={{ padding: "1.25rem", textAlign: "center" }}>
         <Wind size={36} style={{ color: "var(--text-dim)", marginBottom: "0.5rem" }} />
-        <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Loading Air Quality Index (AQI)...</p>
+        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>Loading Air Quality Index (AQI)...</p>
       </div>
     );
   }
@@ -23,11 +23,11 @@ export default function AirQualityCard({ airQualityData }) {
   ];
 
   return (
-    <div className="glass-card" style={{ padding: "1.5rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+    <div className="glass-card" style={{ padding: "1.25rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Wind size={20} style={{ color: "var(--accent-cyan)" }} />
-          <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#fff" }}>Air Quality & Atmospheric Health</h3>
+          <Wind size={18} style={{ color: "var(--accent-cyan)" }} />
+          <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)" }}>Air Quality & Atmospheric Health</h3>
         </div>
         <span
           className="badge"
@@ -41,58 +41,59 @@ export default function AirQualityCard({ airQualityData }) {
         </span>
       </div>
 
-      {/* AQI Score Display */}
+      {/* AQI Score Display Container */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "1.25rem",
-          padding: "1rem",
-          background: "rgba(15, 23, 42, 0.6)",
+          gap: "1rem",
+          padding: "0.85rem 1rem",
+          background: "var(--bg-inner)",
           borderRadius: "16px",
           border: `1px solid ${aqiInfo.color}33`,
-          marginBottom: "1.25rem"
+          marginBottom: "1rem"
         }}
       >
         <div
           style={{
-            width: "68px",
-            height: "68px",
+            width: "60px",
+            height: "60px",
             borderRadius: "50%",
-            background: `radial-gradient(circle, ${aqiInfo.color}33 0%, rgba(15, 23, 42, 0.9) 70%)`,
+            background: `radial-gradient(circle, ${aqiInfo.color}33 0%, var(--bg-card-hover) 70%)`,
             border: `3px solid ${aqiInfo.color}`,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: `0 0 15px ${aqiInfo.color}44`
+            boxShadow: `0 0 15px ${aqiInfo.color}44`,
+            flexShrink: 0
           }}
         >
-          <div style={{ fontSize: "1.4rem", fontWeight: 800, color: "#fff", lineHeight: 1 }}>{usAqi}</div>
-          <div style={{ fontSize: "0.65rem", color: "var(--text-muted)", textTransform: "uppercase" }}>AQI</div>
+          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>{usAqi}</div>
+          <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase" }}>AQI</div>
         </div>
 
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#fff", marginBottom: "0.2rem" }}>
+          <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--text-main)", marginBottom: "0.2rem" }}>
             Health Advisory
           </div>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", lineHeight: 1.4 }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.4 }}>
             {aqiInfo.desc}
           </div>
         </div>
       </div>
 
       {/* Pollutant Progress Bars */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
         {pollutants.map((p, idx) => {
           const pct = Math.min(100, Math.round((p.current / p.max) * 100));
           return (
             <div key={idx}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", color: "var(--text-muted)", marginBottom: "0.25rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.2rem" }}>
                 <span>{p.label}</span>
-                <span style={{ color: "#fff", fontWeight: 600 }}>{p.val}</span>
+                <span style={{ color: "var(--text-main)", fontWeight: 600 }}>{p.val}</span>
               </div>
-              <div style={{ height: "6px", width: "100%", background: "rgba(30, 41, 59, 0.8)", borderRadius: "3px", overflow: "hidden" }}>
+              <div style={{ height: "6px", width: "100%", background: "var(--bg-inner)", borderRadius: "3px", overflow: "hidden", border: "1px solid var(--border-light)" }}>
                 <div
                   style={{
                     height: "100%",

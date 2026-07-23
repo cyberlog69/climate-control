@@ -73,27 +73,27 @@ export default function ClimateVitals() {
   return (
     <section>
       <div className="section-title">
-        <TrendingUp size={22} />
+        <TrendingUp size={20} />
         <span>Earth's Vital Signs & Climate Indicators</span>
       </div>
 
-      <div className="grid-vitals">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.85rem" }}>
         {vitals.map((v) => {
           const Icon = v.icon;
           return (
             <div
               key={v.id}
               className="glass-card glass-card-interactive"
-              style={{ padding: "1.25rem", cursor: "pointer" }}
+              style={{ padding: "1rem", cursor: "pointer" }}
               onClick={() => setActiveModalChart(v)}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.6rem" }}>
                 <div
                   style={{
-                    width: "40px",
-                    height: "40px",
+                    width: "36px",
+                    height: "36px",
                     borderRadius: "10px",
-                    background: `rgba(255, 255, 255, 0.05)`,
+                    background: `rgba(255, 255, 255, 0.08)`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -101,20 +101,20 @@ export default function ClimateVitals() {
                     border: `1px solid ${v.color}33`
                   }}
                 >
-                  <Icon size={22} />
+                  <Icon size={20} />
                 </div>
                 <span className={`badge badge-${v.badgeType}`}>{v.badge}</span>
               </div>
 
-              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 500 }}>{v.title}</div>
-              <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "#fff", margin: "0.2rem 0" }}>{v.value}</div>
-              <div style={{ fontSize: "0.78rem", color: "var(--accent-cyan)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", fontWeight: 500 }}>{v.title}</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-main)", margin: "0.15rem 0" }}>{v.value}</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span>{v.subtext}</span>
-                <ChevronRight size={16} />
+                <ChevronRight size={15} />
               </div>
 
               {/* Sparkline chart */}
-              <div style={{ height: "40px", marginTop: "0.75rem" }}>
+              <div style={{ height: "35px", marginTop: "0.5rem" }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={v.data}>
                     <defs>
@@ -141,13 +141,13 @@ export default function ClimateVitals() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0, 0, 0, 0.8)",
+            background: "rgba(0, 0, 0, 0.75)",
             backdropFilter: "blur(12px)",
-            zIndex: 1000,
+            zIndex: 1100,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "1.5rem"
+            padding: "1.25rem"
           }}
           onClick={() => setActiveModalChart(null)}
         >
@@ -155,8 +155,8 @@ export default function ClimateVitals() {
             className="glass-card"
             style={{
               width: "100%",
-              maxWidth: "750px",
-              padding: "2rem",
+              maxWidth: "700px",
+              padding: "1.75rem",
               position: "relative",
               border: `1px solid ${activeModalChart.color}66`
             }}
@@ -165,11 +165,11 @@ export default function ClimateVitals() {
             <button
               style={{
                 position: "absolute",
-                top: "1.25rem",
-                right: "1.25rem",
-                background: "rgba(255, 255, 255, 0.1)",
-                border: "none",
-                color: "#fff",
+                top: "1rem",
+                right: "1rem",
+                background: "var(--bg-inner)",
+                border: "1px solid var(--border-light)",
+                color: "var(--text-main)",
                 borderRadius: "50%",
                 width: "32px",
                 height: "32px",
@@ -183,15 +183,15 @@ export default function ClimateVitals() {
               <X size={18} />
             </button>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", marginBottom: "0.4rem" }}>
               <span className={`badge badge-${activeModalChart.badgeType}`}>{activeModalChart.badge}</span>
-              <h3 style={{ fontSize: "1.4rem", fontWeight: 700, color: "#fff" }}>{activeModalChart.title} Trend</h3>
+              <h3 style={{ fontSize: "1.3rem", fontWeight: 700, color: "var(--text-main)" }}>{activeModalChart.title} Trend</h3>
             </div>
-            <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
               {activeModalChart.description}
             </p>
 
-            <div style={{ height: "300px", width: "100%" }}>
+            <div style={{ height: "280px", width: "100%" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={activeModalChart.data}>
                   <defs>
@@ -204,10 +204,10 @@ export default function ClimateVitals() {
                   <YAxis stroke="var(--text-dim)" domain={["auto", "auto"]} unit={` ${activeModalChart.unit}`} />
                   <Tooltip
                     contentStyle={{
-                      background: "rgba(15, 23, 42, 0.95)",
+                      background: "var(--bg-card-hover)",
                       border: "1px solid var(--border-light)",
                       borderRadius: "10px",
-                      color: "#fff"
+                      color: "var(--text-main)"
                     }}
                   />
                   <Area

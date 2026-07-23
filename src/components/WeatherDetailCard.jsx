@@ -9,11 +9,8 @@ import {
   Wind,
   Droplets,
   Gauge,
-  Eye,
-  Compass,
   Sunrise,
-  Sunset,
-  Thermometer
+  Sunset
 } from "lucide-react";
 
 export default function WeatherDetailCard({ locationName, weatherData, unit }) {
@@ -29,7 +26,6 @@ export default function WeatherDetailCard({ locationName, weatherData, unit }) {
   const current = weatherData.current;
   const wmo = getWmoInfo(current.weatherCode);
 
-  // Unit Converters
   const displayTemp = (tempC) => {
     if (unit === "F") return Math.round((tempC * 9) / 5 + 32);
     return tempC;
@@ -42,7 +38,7 @@ export default function WeatherDetailCard({ locationName, weatherData, unit }) {
         return <Sun size={48} style={{ color: "#f59e0b" }} />;
       case "cloud-sun":
       case "cloud":
-        return <Cloud size={48} style={{ color: "#94a3b8" }} />;
+        return <Cloud size={48} style={{ color: "var(--text-muted)" }} />;
       case "cloud-drizzle":
       case "cloud-rain":
       case "cloud-rain-heavy":
@@ -53,71 +49,57 @@ export default function WeatherDetailCard({ locationName, weatherData, unit }) {
       case "snowflake":
         return <Snowflake size={48} style={{ color: "#67e8f9" }} />;
       default:
-        return <Cloud size={48} style={{ color: "#94a3b8" }} />;
+        return <Cloud size={48} style={{ color: "var(--text-muted)" }} />;
     }
   };
 
   const todayForecast = weatherData.daily?.[0] || {};
 
   return (
-    <div className="glass-card" style={{ padding: "1.5rem", position: "relative", overflow: "hidden" }}>
-      {/* Background Weather Glow Aura */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-50px",
-          right: "-50px",
-          width: "200px",
-          height: "200px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%)",
-          pointerEvents: "none"
-        }}
-      />
-
+    <div className="glass-card" style={{ padding: "1.25rem", position: "relative", overflow: "hidden" }}>
       {/* Location Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
         <div>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Current Weather Sentinel
           </div>
-          <h2 style={{ fontSize: "1.4rem", fontWeight: 700, color: "#fff" }}>{locationName}</h2>
+          <h2 style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--text-main)" }}>{locationName}</h2>
         </div>
         <span className="badge badge-cyan">{current.isDay ? "Daytime" : "Nighttime"}</span>
       </div>
 
-      {/* Main Temperature & Icon Grid */}
+      {/* Main Temperature & Icon Container */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          margin: "1rem 0",
-          padding: "1rem",
-          background: "rgba(15, 23, 42, 0.6)",
+          margin: "0.75rem 0",
+          padding: "0.85rem 1rem",
+          background: "var(--bg-inner)",
           borderRadius: "16px",
           border: "1px solid var(--border-light)"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
           {getIconComponent(wmo.icon)}
           <div>
-            <div style={{ fontSize: "3rem", fontWeight: 800, color: "#fff", lineHeight: 1 }}>
+            <div style={{ fontSize: "2.75rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
               {displayTemp(current.temp)}°{unit}
             </div>
-            <div style={{ fontSize: "0.9rem", color: "var(--accent-cyan)", fontWeight: 500, marginTop: "0.2rem" }}>
+            <div style={{ fontSize: "0.88rem", color: "var(--accent-cyan)", fontWeight: 600, marginTop: "0.2rem" }}>
               {wmo.label}
             </div>
           </div>
         </div>
 
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Feels Like</div>
-          <div style={{ fontSize: "1.25rem", fontWeight: 700, color: "#fff" }}>
+          <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>Feels Like</div>
+          <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "var(--text-main)" }}>
             {displayTemp(current.feelsLike)}°{unit}
           </div>
           {todayForecast.maxTemp !== undefined && (
-            <div style={{ fontSize: "0.8rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
+            <div style={{ fontSize: "0.78rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
               H: {displayTemp(todayForecast.maxTemp)}° | L: {displayTemp(todayForecast.minTemp)}°
             </div>
           )}
@@ -125,40 +107,40 @@ export default function WeatherDetailCard({ locationName, weatherData, unit }) {
       </div>
 
       {/* Grid Specs */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginTop: "1rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.65rem", marginTop: "0.75rem" }}>
         {/* Humidity */}
-        <div style={{ background: "rgba(30, 41, 59, 0.5)", padding: "0.75rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Droplets size={20} style={{ color: "var(--accent-cyan)" }} />
+        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
+          <Droplets size={18} style={{ color: "var(--accent-cyan)" }} />
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Humidity</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#fff" }}>{current.humidity}%</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Humidity</div>
+            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.humidity}%</div>
           </div>
         </div>
 
         {/* Wind */}
-        <div style={{ background: "rgba(30, 41, 59, 0.5)", padding: "0.75rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Wind size={20} style={{ color: "#38bdf8" }} />
+        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
+          <Wind size={18} style={{ color: "#38bdf8" }} />
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Wind Speed</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#fff" }}>{current.windSpeed} km/h</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Wind Speed</div>
+            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.windSpeed} km/h</div>
           </div>
         </div>
 
         {/* Pressure */}
-        <div style={{ background: "rgba(30, 41, 59, 0.5)", padding: "0.75rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Gauge size={20} style={{ color: "var(--accent-amber)" }} />
+        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
+          <Gauge size={18} style={{ color: "var(--accent-amber)" }} />
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Pressure</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#fff" }}>{current.pressure} hPa</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Pressure</div>
+            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.pressure} hPa</div>
           </div>
         </div>
 
         {/* Cloud Cover */}
-        <div style={{ background: "rgba(30, 41, 59, 0.5)", padding: "0.75rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Cloud size={20} style={{ color: "var(--text-muted)" }} />
+        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
+          <Cloud size={18} style={{ color: "var(--text-muted)" }} />
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Cloud Cover</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#fff" }}>{current.cloudCover}%</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Cloud Cover</div>
+            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.cloudCover}%</div>
           </div>
         </div>
       </div>
@@ -169,20 +151,20 @@ export default function WeatherDetailCard({ locationName, weatherData, unit }) {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "1rem",
-            paddingTop: "0.75rem",
+            marginTop: "0.75rem",
+            paddingTop: "0.65rem",
             borderTop: "1px solid var(--border-light)",
-            fontSize: "0.85rem",
+            fontSize: "0.82rem",
             color: "var(--text-muted)"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
             <Sunrise size={16} style={{ color: "var(--accent-amber)" }} />
-            <span>Sunrise: <strong style={{ color: "#fff" }}>{todayForecast.sunrise}</strong></span>
+            <span>Sunrise: <strong style={{ color: "var(--text-main)" }}>{todayForecast.sunrise}</strong></span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
             <Sunset size={16} style={{ color: "var(--accent-red)" }} />
-            <span>Sunset: <strong style={{ color: "#fff" }}>{todayForecast.sunset}</strong></span>
+            <span>Sunset: <strong style={{ color: "var(--text-main)" }}>{todayForecast.sunset}</strong></span>
           </div>
         </div>
       )}

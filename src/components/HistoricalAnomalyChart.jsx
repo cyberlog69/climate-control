@@ -1,9 +1,8 @@
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Flame, ShieldAlert, AlertTriangle } from "lucide-react";
+import { Flame } from "lucide-react";
 
-export default function HistoricalAnomalyChart({ locationName, weatherData, unit }) {
-  // Generate location specific historical temperature anomaly visualization
+export default function HistoricalAnomalyChart({ locationName, weatherData }) {
   const currentTemp = weatherData?.current?.temp || 24;
 
   const historicalBars = [
@@ -15,31 +14,31 @@ export default function HistoricalAnomalyChart({ locationName, weatherData, unit
   ];
 
   return (
-    <div className="glass-card" style={{ padding: "1.5rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+    <div className="glass-card" style={{ padding: "1.25rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem" }}>
         <div>
           <div className="section-title" style={{ margin: 0 }}>
-            <Flame size={20} style={{ color: "var(--accent-amber)" }} />
+            <Flame size={18} style={{ color: "var(--accent-amber)" }} />
             <span>Regional Climate Warming Trajectory</span>
           </div>
-          <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
+          <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
             Estimated historical thermal shift for <strong>{locationName}</strong> relative to 1950–1980 pre-industrial baselines.
           </p>
         </div>
         <span className="badge badge-amber">+1.3°C Local Warming</span>
       </div>
 
-      <div style={{ height: "180px", width: "100%", marginTop: "0.5rem" }}>
+      <div style={{ height: "170px", width: "100%", marginTop: "0.5rem" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={historicalBars}>
             <XAxis dataKey="era" stroke="var(--text-dim)" tick={{ fontSize: 10 }} />
             <YAxis stroke="var(--text-dim)" unit="°C" tick={{ fontSize: 10 }} />
             <Tooltip
               contentStyle={{
-                background: "rgba(15, 23, 42, 0.95)",
+                background: "var(--bg-card-hover)",
                 border: "1px solid var(--border-light)",
                 borderRadius: "10px",
-                color: "#fff"
+                color: "var(--text-main)"
               }}
               formatter={(val) => [`+${val.toFixed(1)}°C Anomaly`, "Thermal Shift"]}
             />
