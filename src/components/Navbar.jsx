@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Globe, Search, Navigation, RefreshCw } from "lucide-react";
+import { Globe, Search, Navigation, RefreshCw, Sun, Moon } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
 import ClimateAlertSystem from "./ClimateAlertSystem";
 
@@ -12,7 +12,9 @@ export default function Navbar({
   isRefreshing,
   onRefresh,
   weatherData,
-  airQualityData
+  airQualityData,
+  theme,
+  onToggleTheme
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -104,7 +106,7 @@ export default function Navbar({
             {searchResults.map((item) => (
               <div key={item.id} className="search-result-item" onClick={() => handleSelect(item)}>
                 <div>
-                  <div style={{ fontWeight: 600, color: "#fff" }}>{item.cityName}</div>
+                  <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{item.cityName}</div>
                   <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
                     {item.admin ? `${item.admin}, ` : ""}
                     {item.country}
@@ -128,13 +130,23 @@ export default function Navbar({
           locationName={currentLocation.name}
         />
 
+        {/* Theme Toggle Button */}
+        <button
+          className="theme-toggle-btn"
+          onClick={onToggleTheme}
+          title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {theme === "dark" ? <Sun size={16} style={{ color: "#f59e0b" }} /> : <Moon size={16} style={{ color: "#38bdf8" }} />}
+          <span className="hide-on-mobile">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+        </button>
+
         <div
           className="nav-clock-pill"
           style={{
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
-            background: "rgba(15, 23, 42, 0.7)",
+            background: "var(--bg-card)",
             padding: "0.45rem 0.85rem",
             borderRadius: "20px",
             border: "1px solid var(--border-light)",
@@ -143,7 +155,7 @@ export default function Navbar({
           }}
         >
           <span className="pulse-dot"></span>
-          <span style={{ fontFamily: "monospace", color: "#e2e8f0" }}>{utcTime || "UTC Sync"}</span>
+          <span style={{ fontFamily: "monospace", color: "var(--text-main)" }}>{utcTime || "UTC Sync"}</span>
         </div>
 
         <button className="locate-btn" onClick={onAutoLocate} title="Detect My Geolocation">

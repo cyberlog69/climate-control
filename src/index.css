@@ -33,6 +33,23 @@
   --shadow-card: 0 15px 40px -10px rgba(0, 0, 0, 0.7);
 }
 
+/* Light Theme Tokens */
+[data-theme="light"] {
+  --bg-dark: #f0f4f8;
+  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-card-hover: rgba(255, 255, 255, 0.95);
+  --bg-glass: rgba(255, 255, 255, 0.7);
+
+  --border-light: rgba(15, 23, 42, 0.12);
+  --border-glow: rgba(6, 182, 212, 0.3);
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+
+  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -46,12 +63,20 @@ body {
   font-family: var(--font-body);
   overflow-x: hidden;
   height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
   background-image: 
     radial-gradient(at 10% 10%, rgba(6, 182, 212, 0.12) 0px, transparent 40%),
     radial-gradient(at 90% 15%, rgba(139, 92, 246, 0.12) 0px, transparent 45%),
     radial-gradient(at 50% 90%, rgba(245, 158, 11, 0.08) 0px, transparent 50%);
   background-attachment: fixed;
   -webkit-tap-highlight-color: transparent;
+}
+
+[data-theme="light"] body {
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(6, 182, 212, 0.15) 0px, transparent 40%),
+    radial-gradient(at 90% 15%, rgba(59, 130, 246, 0.12) 0px, transparent 45%),
+    radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
 }
 
 #root {
@@ -94,7 +119,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(6, 182, 212, 0.3);
 }
 
 .glass-card-interactive:hover {
@@ -176,7 +201,7 @@ h1, h2, h3, h4, h5, h6 {
 .brand-title {
   font-size: 1.35rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 100%);
+  background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-cyan) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -198,7 +223,7 @@ h1, h2, h3, h4, h5, h6 {
 .search-input-wrapper {
   display: flex;
   align-items: center;
-  background: rgba(10, 15, 30, 0.85);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: 30px;
   padding: 0.45rem 1.1rem;
@@ -210,7 +235,7 @@ h1, h2, h3, h4, h5, h6 {
 .search-input-wrapper:focus-within {
   border-color: var(--accent-cyan);
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
-  background: rgba(10, 15, 30, 0.95);
+  background: var(--bg-card-hover);
 }
 
 .search-input {
@@ -231,13 +256,13 @@ h1, h2, h3, h4, h5, h6 {
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: rgba(10, 15, 30, 0.95);
+  background: var(--bg-card-hover);
   backdrop-filter: blur(24px);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   overflow: hidden;
   z-index: 120;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
 
 .search-result-item {
@@ -247,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0.75rem 1.1rem;
   min-height: 44px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-light);
   transition: background 0.2s;
 }
 
@@ -262,8 +287,31 @@ h1, h2, h3, h4, h5, h6 {
   gap: 0.5rem;
 }
 
+/* Theme Switcher Button */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  padding: 0.45rem 0.85rem;
+  min-height: 42px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+}
+
 .unit-btn {
-  background: rgba(30, 41, 59, 0.8);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   color: var(--text-muted);
   padding: 0.45rem 0.85rem;
@@ -286,7 +334,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  background: rgba(30, 41, 59, 0.8);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   color: var(--text-main);
   padding: 0.45rem 0.9rem;
@@ -324,7 +372,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Control Room Navigation Tabs */
 .control-tabs {
   display: flex;
-  background: rgba(10, 15, 30, 0.8);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: 20px;
   padding: 0.25rem;
@@ -356,47 +404,32 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
 }
 
-/* Touch Gesture Hint Banner for Mobile */
-.touch-swipe-hint {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.75rem;
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  border-radius: 20px;
-  font-size: 0.75rem;
-  color: "#67e8f9";
-  margin-bottom: 0.5rem;
-}
-
-/* Leaflet Overrides for Dark Mode & Touch */
+/* Leaflet Overrides */
 .leaflet-container {
   width: 100%;
   height: 100%;
   border-radius: var(--radius-lg);
-  background: #05070d !important;
+  background: var(--bg-dark) !important;
   touch-action: pan-x pan-y pinch-zoom;
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(10, 15, 30, 0.95) !important;
-  color: #fff !important;
+  background: var(--bg-card-hover) !important;
+  color: var(--text-main) !important;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md) !important;
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
 }
 
 .leaflet-popup-tip {
-  background: rgba(10, 15, 30, 0.95) !important;
+  background: var(--bg-card-hover) !important;
 }
 
 .leaflet-control-zoom a {
-  background: rgba(10, 15, 30, 0.9) !important;
-  color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-light) !important;
   width: 36px !important;
   height: 36px !important;
   line-height: 36px !important;
@@ -423,26 +456,42 @@ h1, h2, h3, h4, h5, h6 {
 
 .badge-cyan {
   background: rgba(6, 182, 212, 0.15);
-  color: #67e8f9;
+  color: #0284c7;
   border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="dark"] .badge-cyan {
+  color: #67e8f9;
 }
 
 .badge-amber {
   background: rgba(245, 158, 11, 0.15);
-  color: #fcd34d;
+  color: #d97706;
   border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .badge-amber {
+  color: #fcd34d;
 }
 
 .badge-red {
   background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
+  color: #dc2626;
   border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .badge-red {
+  color: #fca5a5;
 }
 
 .badge-green {
   background: rgba(16, 185, 129, 0.15);
-  color: #6ee7b7;
+  color: #059669;
   border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .badge-green {
+  color: #6ee7b7;
 }
 
 /* Section Header */
@@ -459,7 +508,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-cyan);
 }
 
-/* Mobile Responsive Breakpoints & Bottom Sheet Drawer */
+/* Mobile Responsive Breakpoints */
 @media (max-width: 900px) {
   .control-room-container {
     padding: 0.5rem;
@@ -499,18 +548,13 @@ h1, h2, h3, h4, h5, h6 {
     overflow-y: hidden;
   }
 
-  .touch-swipe-hint {
-    display: flex;
-  }
-
-  /* Command Panel Mobile Bottom Sheet / Drawer Mode */
   .command-panel {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     height: 70vh;
-    background: rgba(10, 15, 30, 0.96);
+    background: var(--bg-card-hover);
     backdrop-filter: blur(25px);
     border-top: 1px solid var(--border-light);
     border-radius: 24px 24px 0 0;
@@ -518,7 +562,7 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 1000;
     transform: translateY(calc(100% - 64px));
     transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    box-shadow: 0 -15px 35px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 -15px 35px rgba(0, 0, 0, 0.5);
   }
 
   .command-panel.drawer-open {
@@ -528,7 +572,7 @@ h1, h2, h3, h4, h5, h6 {
   .mobile-drawer-handle {
     width: 44px;
     height: 5px;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(148, 163, 184, 0.4);
     border-radius: 3px;
     margin: 0 auto 0.75rem auto;
     cursor: pointer;

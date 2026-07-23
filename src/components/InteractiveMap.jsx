@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
-import { MapPin, Layers, Flame, Wind, Cloud, Eye } from "lucide-react";
+import { MapPin, Layers, Flame, Wind, Cloud } from "lucide-react";
 
 // Custom Leaflet Icons using SVG strings
 const createCustomMarkerIcon = (color, text = "") => {
@@ -31,7 +31,6 @@ const createCustomMarkerIcon = (color, text = "") => {
   });
 };
 
-// Component to handle map panning programmatically
 function MapController({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
@@ -42,7 +41,6 @@ function MapController({ center, zoom }) {
   return null;
 }
 
-// Component to handle user clicking anywhere on the map
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click: (e) => {
@@ -56,9 +54,10 @@ function MapClickHandler({ onMapClick }) {
 export default function InteractiveMap({
   currentLocation,
   onSelectLocation,
-  weatherData
+  weatherData,
+  theme = "dark"
 }) {
-  const [activeLayer, setActiveLayer] = useState("temp"); // 'temp' | 'aqi' | 'wind' | 'clouds'
+  const [activeLayer, setActiveLayer] = useState("temp");
   const [mapCenter, setMapCenter] = useState([
     currentLocation?.lat || 35.6762,
     currentLocation?.lon || 139.6503
@@ -91,30 +90,35 @@ export default function InteractiveMap({
 
   const layers = [
     { id: "temp", label: "Thermal Map", icon: Flame, color: "var(--accent-amber)" },
-    { id: "aqi", label: "Air Quality (AQI)", icon: Wind, color: "var(--accent-cyan)" },
+    { id: "aqi", label: "Air Quality", icon: Wind, color: "var(--accent-cyan)" },
     { id: "clouds", label: "Cloud Cover", icon: Cloud, color: "#38bdf8" }
   ];
 
+  const tileUrl =
+    theme === "light"
+      ? "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", height: "100%", display: "flex", flexDirection: "column" }}>
-      {/* Header & Controls Bar */}
+    <div className="glass-card" style={{ padding: "1.1rem", height: "100%", display: "flex", flexDirection: "column" }}>
+      {/* Header & Layer Controls Bar */}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "1rem",
+          marginBottom: "0.75rem",
           flexWrap: "wrap",
-          gap: "0.75rem"
+          gap: "0.6rem"
         }}
       >
         <div className="section-title" style={{ margin: 0 }}>
-          <MapPin size={22} />
+          <MapPin size={20} />
           <span>Interactive Global Climate Map</span>
         </div>
 
         {/* Layer Switches */}
-        <div style={{ display: "flex", gap: "0.4rem" }}>
+        <div style={{ display: "flex", gap: "0.35rem" }}>
           {layers.map((l) => {
             const Icon = l.icon;
             const isActive = activeLayer === l.id;
@@ -125,13 +129,13 @@ export default function InteractiveMap({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.4rem",
-                  padding: "0.45rem 0.75rem",
+                  gap: "0.35rem",
+                  padding: "0.4rem 0.7rem",
                   borderRadius: "20px",
                   border: isActive ? `1px solid ${l.color}` : "1px solid var(--border-light)",
-                  background: isActive ? `${l.color}22` : "rgba(15, 23, 42, 0.6)",
-                  color: isActive ? "#fff" : "var(--text-muted)",
-                  fontSize: "0.8rem",
+                  background: isActive ? `${l.color}22` : "var(--bg-card)",
+                  color: isActive ? "var(--text-main)" : "var(--text-muted)",
+                  fontSize: "0.78rem",
                   fontWeight: 600,
                   cursor: "pointer",
                   transition: "all 0.2s"
@@ -145,14 +149,14 @@ export default function InteractiveMap({
         </div>
       </div>
 
-      {/* Preset Climate Hotspots Quick Selection */}
+      {/* Preset Climate Hotspots Bar */}
       <div
         style={{
           display: "flex",
-          gap: "0.5rem",
+          gap: "0.45rem",
           overflowX: "auto",
-          paddingBottom: "0.75rem",
-          marginBottom: "0.75rem"
+          paddingBottom: "0.6rem",
+          marginBottom: "0.6rem"
         }}
       >
         {CLIMATE_HOTSPOTS.map((h) => (
@@ -161,17 +165,17 @@ export default function InteractiveMap({
             onClick={() => handleHotspotClick(h)}
             style={{
               whiteSpace: "nowrap",
-              padding: "0.35rem 0.75rem",
+              padding: "0.35rem 0.7rem",
               borderRadius: "14px",
               background:
                 currentLocation?.cityName?.toLowerCase() === h.name.split(",")[0].toLowerCase()
                   ? "rgba(6, 182, 212, 0.25)"
-                  : "rgba(30, 41, 59, 0.6)",
+                  : "var(--bg-card)",
               border:
                 currentLocation?.cityName?.toLowerCase() === h.name.split(",")[0].toLowerCase()
                   ? "1px solid var(--accent-cyan)"
                   : "1px solid var(--border-light)",
-              color: "#fff",
+              color: "var(--text-main)",
               fontSize: "0.78rem",
               fontWeight: 500,
               cursor: "pointer"
@@ -183,33 +187,26 @@ export default function InteractiveMap({
       </div>
 
       {/* Map Container */}
-      <div style={{ flex: 1, minHeight: "420px", borderRadius: "16px", overflow: "hidden", position: "relative" }}>
+      <div style={{ flex: 1, minHeight: "360px", borderRadius: "16px", overflow: "hidden", position: "relative" }}>
         <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
           <MapController center={mapCenter} zoom={5} />
           <MapClickHandler onMapClick={handleMapClick} />
 
-          {/* CartoDB Dark Matter tiles for modern dark map styling */}
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap'
-          />
+          <TileLayer key={tileUrl} url={tileUrl} attribution='&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap' />
 
           {/* Selected Location Marker */}
           {currentLocation && (
-            <Marker
-              position={[currentLocation.lat, currentLocation.lon]}
-              icon={createCustomMarkerIcon("#06b6d4")}
-            >
+            <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
               <Popup>
                 <div style={{ padding: "0.25rem" }}>
-                  <div style={{ fontWeight: 700, fontSize: "1rem", color: "#fff", marginBottom: "0.2rem" }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)", marginBottom: "0.2rem" }}>
                     📍 {currentLocation.name}
                   </div>
-                  <div style={{ fontSize: "0.8rem", color: "var(--accent-cyan)" }}>
+                  <div style={{ fontSize: "0.78rem", color: "var(--accent-cyan)" }}>
                     Lat: {currentLocation.lat.toFixed(2)}°, Lon: {currentLocation.lon.toFixed(2)}°
                   </div>
                   {weatherData && (
-                    <div style={{ marginTop: "0.5rem", fontSize: "0.85rem", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "0.4rem" }}>
+                    <div style={{ marginTop: "0.4rem", fontSize: "0.82rem", borderTop: "1px solid var(--border-light)", paddingTop: "0.4rem" }}>
                       <div>Current Temp: <strong>{weatherData.current?.temp}°C</strong></div>
                       <div>Humidity: {weatherData.current?.humidity}%</div>
                       <div>Wind: {weatherData.current?.windSpeed} km/h</div>
@@ -220,19 +217,15 @@ export default function InteractiveMap({
             </Marker>
           )}
 
-          {/* Climate Hotspots Markers */}
+          {/* Hotspots Markers */}
           {CLIMATE_HOTSPOTS.map((h) => (
-            <Marker
-              key={h.id}
-              position={[h.lat, h.lon]}
-              icon={createCustomMarkerIcon("#f59e0b", "🔥")}
-            >
+            <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b", "🔥")}>
               <Popup>
                 <div style={{ padding: "0.25rem", maxWidth: "220px" }}>
                   <div className="badge badge-amber" style={{ marginBottom: "0.4rem" }}>
                     {h.badge}
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#fff" }}>{h.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>{h.name}</div>
                   <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
                     {h.description}
                   </div>
@@ -262,12 +255,12 @@ export default function InteractiveMap({
         <div
           style={{
             position: "absolute",
-            bottom: "1rem",
-            left: "1rem",
+            bottom: "0.85rem",
+            left: "0.85rem",
             zIndex: 400,
-            background: "rgba(15, 23, 42, 0.85)",
+            background: "var(--bg-card-hover)",
             backdropFilter: "blur(10px)",
-            padding: "0.45rem 0.85rem",
+            padding: "0.4rem 0.8rem",
             borderRadius: "12px",
             border: "1px solid var(--border-light)",
             fontSize: "0.75rem",

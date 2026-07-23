@@ -10,7 +10,7 @@ import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Thermometer, TrendingUp, Compass, AlertCircle, ChevronUp, ChevronDown, MoveHorizontal } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
   // Default Location: Tokyo, Japan
@@ -31,9 +31,23 @@ export default function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
+  // Theme State ('dark' | 'light') with LocalStorage Persistence
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("climatesphere_theme") || "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("climatesphere_theme", theme);
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   const tabs = ["live", "forecast", "vitals"];
 
-  // Touch Swipe Gesture Navigation (Swipe left/right to change tabs)
+  // Touch Swipe Gesture Navigation
   useTouchSwipe({
     onSwipeLeft: () => {
       const currentIdx = tabs.indexOf(activeTab);
@@ -138,6 +152,8 @@ export default function App() {
         onRefresh={() => loadDataForLocation(currentLocation, true)}
         weatherData={weatherData}
         airQualityData={airQualityData}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Error Notification */}
@@ -167,6 +183,7 @@ export default function App() {
           currentLocation={currentLocation}
           onSelectLocation={handleSelectLocation}
           weatherData={weatherData}
+          theme={theme}
         />
 
         {/* Right Pane: Command Terminal with Mobile Bottom Drawer Support */}
