@@ -8,8 +8,9 @@ import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
 import WeatherParticles from "./components/WeatherParticles";
+import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Globe, AlertCircle, Thermometer, TrendingUp, Radio, Compass } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, AlertCircle, ChevronUp, ChevronDown, MoveHorizontal } from "lucide-react";
 
 export default function App() {
   // Default Location: Tokyo, Japan
@@ -25,9 +26,28 @@ export default function App() {
   const [airQualityData, setAirQualityData] = useState(null);
   const [unit, setUnit] = useState("C"); // 'C' | 'F'
   const [activeTab, setActiveTab] = useState("live"); // 'live' | 'forecast' | 'vitals'
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
+
+  const tabs = ["live", "forecast", "vitals"];
+
+  // Touch Swipe Gesture Navigation (Swipe left/right to change tabs)
+  useTouchSwipe({
+    onSwipeLeft: () => {
+      const currentIdx = tabs.indexOf(activeTab);
+      if (currentIdx < tabs.length - 1) {
+        setActiveTab(tabs[currentIdx + 1]);
+      }
+    },
+    onSwipeRight: () => {
+      const currentIdx = tabs.indexOf(activeTab);
+      if (currentIdx > 0) {
+        setActiveTab(tabs[currentIdx - 1]);
+      }
+    }
+  });
 
   // Load Data for Selected Location
   const loadDataForLocation = useCallback(async (location, showRefreshing = false) => {
@@ -116,6 +136,8 @@ export default function App() {
         onAutoLocate={handleAutoLocate}
         isRefreshing={isRefreshing}
         onRefresh={() => loadDataForLocation(currentLocation, true)}
+        weatherData={weatherData}
+        airQualityData={airQualityData}
       />
 
       {/* Error Notification */}
@@ -123,22 +145,22 @@ export default function App() {
         <div
           className="glass-card"
           style={{
-            padding: "0.75rem 1.25rem",
+            padding: "0.65rem 1rem",
             background: "rgba(239, 68, 68, 0.15)",
             borderColor: "rgba(239, 68, 68, 0.4)",
             display: "flex",
             alignItems: "center",
-            gap: "0.75rem",
+            gap: "0.6rem",
             color: "#fca5a5",
-            fontSize: "0.85rem"
+            fontSize: "0.82rem"
           }}
         >
-          <AlertCircle size={18} />
+          <AlertCircle size={16} />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Planetary Control Room Split Workspace */}
+      {/* Planetary Control Room Workspace */}
       <div className="control-room-workspace">
         {/* Left Pane: Interactive Global Climate Map */}
         <InteractiveMap
@@ -147,36 +169,57 @@ export default function App() {
           weatherData={weatherData}
         />
 
-        {/* Right Pane: Command Terminal with Tab Navigation */}
-        <div className="command-panel">
+        {/* Right Pane: Command Terminal with Mobile Bottom Drawer Support */}
+        <div className={`command-panel ${isMobileDrawerOpen ? "drawer-open" : ""}`}>
+          {/* Mobile Bottom Sheet Handle */}
+          <div
+            className="mobile-drawer-handle"
+            onClick={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
+          />
+
+          {/* Touch Gesture Hint Banner */}
+          <div className="touch-swipe-hint">
+            <MoveHorizontal size={14} />
+            <span>Swipe left/right to change panels</span>
+          </div>
+
           {/* View Tab Switcher */}
           <div className="control-tabs">
             <button
               className={`tab-btn ${activeTab === "live" ? "active" : ""}`}
-              onClick={() => setActiveTab("live")}
+              onClick={() => {
+                setActiveTab("live");
+                setIsMobileDrawerOpen(true);
+              }}
             >
               <Thermometer size={15} />
               <span>Live Terminal</span>
             </button>
             <button
               className={`tab-btn ${activeTab === "forecast" ? "active" : ""}`}
-              onClick={() => setActiveTab("forecast")}
+              onClick={() => {
+                setActiveTab("forecast");
+                setIsMobileDrawerOpen(true);
+              }}
             >
               <Compass size={15} />
               <span>Forecast & Warming</span>
             </button>
             <button
               className={`tab-btn ${activeTab === "vitals" ? "active" : ""}`}
-              onClick={() => setActiveTab("vitals")}
+              onClick={() => {
+                setActiveTab("vitals");
+                setIsMobileDrawerOpen(true);
+              }}
             >
               <TrendingUp size={15} />
-              <span>Earth Vitals & Radar</span>
+              <span>Earth Vitals</span>
             </button>
           </div>
 
           {/* Tab 1: Live Terminal */}
           {activeTab === "live" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <WeatherDetailCard
                 locationName={currentLocation.name}
                 weatherData={weatherData}
@@ -188,7 +231,7 @@ export default function App() {
 
           {/* Tab 2: Forecast & Climate Trends */}
           {activeTab === "forecast" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <ForecastSection weatherData={weatherData} unit={unit} />
               <HistoricalAnomalyChart
                 locationName={currentLocation.name}
@@ -200,7 +243,7 @@ export default function App() {
 
           {/* Tab 3: Earth's Vital Signs & Climate Radar */}
           {activeTab === "vitals" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <ClimateVitals />
               <ExtremeEventsRadar />
             </div>

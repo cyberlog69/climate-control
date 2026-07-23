@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Globe, Search, Navigation, Sun, CloudRain, RefreshCw } from "lucide-react";
+import { Globe, Search, Navigation, RefreshCw } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
+import ClimateAlertSystem from "./ClimateAlertSystem";
 
 export default function Navbar({
   currentLocation,
@@ -9,7 +10,9 @@ export default function Navbar({
   onToggleUnit,
   onAutoLocate,
   isRefreshing,
-  onRefresh
+  onRefresh,
+  weatherData,
+  airQualityData
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -31,7 +34,6 @@ export default function Navbar({
     return () => clearInterval(interval);
   }, []);
 
-  // Handle Search Input Change
   const handleInputChange = (e) => {
     const val = e.target.value;
     setQuery(val);
@@ -53,7 +55,6 @@ export default function Navbar({
     }
   };
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -120,13 +121,21 @@ export default function Navbar({
 
       {/* UTC Clock & Quick Actions */}
       <div className="nav-actions">
+        {/* Live Climate Alert System Pill */}
+        <ClimateAlertSystem
+          weatherData={weatherData}
+          airQualityData={airQualityData}
+          locationName={currentLocation.name}
+        />
+
         <div
+          className="nav-clock-pill"
           style={{
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
             background: "rgba(15, 23, 42, 0.7)",
-            padding: "0.5rem 0.85rem",
+            padding: "0.45rem 0.85rem",
             borderRadius: "20px",
             border: "1px solid var(--border-light)",
             fontSize: "0.8rem",
@@ -139,7 +148,7 @@ export default function Navbar({
 
         <button className="locate-btn" onClick={onAutoLocate} title="Detect My Geolocation">
           <Navigation size={15} />
-          <span>My Location</span>
+          <span className="hide-on-mobile">My Location</span>
         </button>
 
         <button
@@ -154,7 +163,7 @@ export default function Navbar({
           className="locate-btn"
           onClick={onRefresh}
           disabled={isRefreshing}
-          style={{ padding: "0.5rem 0.75rem" }}
+          style={{ padding: "0.45rem 0.75rem" }}
           title="Refresh Live Feeds"
         >
           <RefreshCw size={15} className={isRefreshing ? "animate-spin" : ""} />
