@@ -7,8 +7,9 @@ import AirQualityCard from "./components/AirQualityCard";
 import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
+import WeatherParticles from "./components/WeatherParticles";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Globe, AlertCircle, Heart } from "lucide-react";
+import { Globe, AlertCircle, Thermometer, TrendingUp, Radio, Compass } from "lucide-react";
 
 export default function App() {
   // Default Location: Tokyo, Japan
@@ -23,6 +24,7 @@ export default function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [unit, setUnit] = useState("C"); // 'C' | 'F'
+  const [activeTab, setActiveTab] = useState("live"); // 'live' | 'forecast' | 'vitals'
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
@@ -34,7 +36,6 @@ export default function App() {
     setError(null);
 
     try {
-      // Fetch parallel weather and air quality feeds
       const [weather, aqi] = await Promise.all([
         fetchWeatherData(location.lat, location.lon),
         fetchAirQualityData(location.lat, location.lon)
@@ -51,15 +52,12 @@ export default function App() {
     }
   }, []);
 
-  // Trigger load on location change
   useEffect(() => {
     loadDataForLocation(currentLocation);
   }, [currentLocation, loadDataForLocation]);
 
-  // Handle Location Selection from Navbar Search, Map Click or Hotspots
   const handleSelectLocation = async (loc) => {
     if (!loc.cityName || loc.cityName === "Custom Coordinates") {
-      // Reverse geocode if missing proper name
       const geo = await reverseGeocode(loc.lat, loc.lon);
       setCurrentLocation({
         name: geo.name,
@@ -73,7 +71,6 @@ export default function App() {
     }
   };
 
-  // Browser Geolocation Auto-detect
   const handleAutoLocate = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -103,7 +100,13 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="control-room-container">
+      {/* Background Weather Particle Canvas */}
+      <WeatherParticles
+        weatherCode={weatherData?.current?.weatherCode || 0}
+        isDay={weatherData?.current?.isDay ?? true}
+      />
+
       {/* Header & Navbar */}
       <Navbar
         currentLocation={currentLocation}
@@ -115,85 +118,95 @@ export default function App() {
         onRefresh={() => loadDataForLocation(currentLocation, true)}
       />
 
-      {/* Error Alert */}
+      {/* Error Notification */}
       {error && (
         <div
           className="glass-card"
           style={{
-            padding: "1rem 1.5rem",
-            marginBottom: "1.5rem",
+            padding: "0.75rem 1.25rem",
             background: "rgba(239, 68, 68, 0.15)",
             borderColor: "rgba(239, 68, 68, 0.4)",
             display: "flex",
             alignItems: "center",
             gap: "0.75rem",
-            color: "#fca5a5"
+            color: "#fca5a5",
+            fontSize: "0.85rem"
           }}
         >
-          <AlertCircle size={20} />
+          <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Earth's Vital Signs Section */}
-      <ClimateVitals />
-
-      {/* Main Grid: Interactive Map (Left) & Weather + AQI Details (Right) */}
-      <div className="grid-main">
-        {/* Interactive Map */}
+      {/* Planetary Control Room Split Workspace */}
+      <div className="control-room-workspace">
+        {/* Left Pane: Interactive Global Climate Map */}
         <InteractiveMap
           currentLocation={currentLocation}
           onSelectLocation={handleSelectLocation}
           weatherData={weatherData}
         />
 
-        {/* Live Weather & Air Quality Terminal */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <WeatherDetailCard
-            locationName={currentLocation.name}
-            weatherData={weatherData}
-            unit={unit}
-          />
-          <AirQualityCard airQualityData={airQualityData} />
+        {/* Right Pane: Command Terminal with Tab Navigation */}
+        <div className="command-panel">
+          {/* View Tab Switcher */}
+          <div className="control-tabs">
+            <button
+              className={`tab-btn ${activeTab === "live" ? "active" : ""}`}
+              onClick={() => setActiveTab("live")}
+            >
+              <Thermometer size={15} />
+              <span>Live Terminal</span>
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "forecast" ? "active" : ""}`}
+              onClick={() => setActiveTab("forecast")}
+            >
+              <Compass size={15} />
+              <span>Forecast & Warming</span>
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "vitals" ? "active" : ""}`}
+              onClick={() => setActiveTab("vitals")}
+            >
+              <TrendingUp size={15} />
+              <span>Earth Vitals & Radar</span>
+            </button>
+          </div>
+
+          {/* Tab 1: Live Terminal */}
+          {activeTab === "live" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <WeatherDetailCard
+                locationName={currentLocation.name}
+                weatherData={weatherData}
+                unit={unit}
+              />
+              <AirQualityCard airQualityData={airQualityData} />
+            </div>
+          )}
+
+          {/* Tab 2: Forecast & Climate Trends */}
+          {activeTab === "forecast" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <ForecastSection weatherData={weatherData} unit={unit} />
+              <HistoricalAnomalyChart
+                locationName={currentLocation.name}
+                weatherData={weatherData}
+                unit={unit}
+              />
+            </div>
+          )}
+
+          {/* Tab 3: Earth's Vital Signs & Climate Radar */}
+          {activeTab === "vitals" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <ClimateVitals />
+              <ExtremeEventsRadar />
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Secondary Grid: Forecast, Historical Anomaly, Extreme Alerts */}
-      <div className="grid-secondary">
-        <ForecastSection weatherData={weatherData} unit={unit} />
-        <HistoricalAnomalyChart
-          locationName={currentLocation.name}
-          weatherData={weatherData}
-          unit={unit}
-        />
-        <ExtremeEventsRadar />
-      </div>
-
-      {/* Footer */}
-      <footer
-        className="glass-card"
-        style={{
-          padding: "1.25rem 1.5rem",
-          marginTop: "2rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "1rem",
-          fontSize: "0.8rem",
-          color: "var(--text-muted)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Globe size={16} style={{ color: "var(--accent-cyan)" }} />
-          <span>ClimateSphere Sentinel &copy; 2026 — Global Realtime Environmental Dashboard</span>
-        </div>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <span>Data Feeds: <strong>Open-Meteo API</strong></span>
-          <span>•</span>
-          <span>Baselines: <strong>NASA GISS / NOAA / Keeling Curve</strong></span>
-        </div>
-      </footer>
     </div>
   );
 }
