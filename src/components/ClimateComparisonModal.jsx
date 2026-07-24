@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { searchLocations, fetchWeatherData, fetchAirQualityData } from "../services/weatherApi";
 import { getAqiLevel } from "../services/climateData";
 import { X, Search, GitCompare, Thermometer, Wind, Droplets, ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
@@ -16,6 +16,8 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
   const [weatherDataB, setWeatherDataB] = useState(null);
   const [airQualityDataB, setAirQualityDataB] = useState(null);
   const [isLoadingB, setIsLoadingB] = useState(false);
+  // Security: debounce ref to prevent geocoding API request flooding
+  const searchDebounceRef = useRef(null);
 
   // Load data for Location B
   useEffect(() => {
@@ -43,11 +45,15 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
     };
   }, [locationB]);
 
-  const handleSearchB = async (q) => {
+  const handleSearchB = (q) => {
     setQueryB(q);
+    // Security: debounce search to rate-limit external geocoding API calls
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     if (q.trim().length >= 2) {
-      const results = await searchLocations(q);
-      setSearchResultsB(results);
+      searchDebounceRef.current = setTimeout(async () => {
+        const results = await searchLocations(q);
+        setSearchResultsB(results);
+      }, 300);
     } else {
       setSearchResultsB([]);
     }

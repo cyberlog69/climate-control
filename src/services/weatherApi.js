@@ -69,9 +69,11 @@ export async function fetchAirQualityData(lat, lon) {
  */
 export async function searchLocations(query) {
   if (!query || query.trim().length < 2) return [];
+  // Security: cap query length to prevent oversized API requests
+  const sanitizedQuery = query.trim().slice(0, 100);
   try {
     const url = new URL(GEOCODING_BASE_URL);
-    url.searchParams.append("name", query.trim());
+    url.searchParams.append("name", sanitizedQuery);
     url.searchParams.append("count", 8);
     url.searchParams.append("language", "en");
     url.searchParams.append("format", "json");
@@ -101,15 +103,27 @@ export async function searchLocations(query) {
  * Reverse geocode coordinates to get Location Name
  */
 export async function reverseGeocode(lat, lon) {
+  // Security: validate coordinate bounds before constructing request URL
+  const safeLat = parseFloat(lat);
+  const safeLon = parseFloat(lon);
+  if (isNaN(safeLat) || isNaN(safeLon) || safeLat < -90 || safeLat > 90 || safeLon < -180 || safeLon > 180) {
+    console.warn("reverseGeocode: invalid coordinates", lat, lon);
+    return { name: "Unknown Location", cityName: "Unknown", country: "" };
+  }
   try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`,
-      {
-        headers: {
-          "User-Agent": "ClimateSphere-Dashboard/1.0"
-        }
+    // Security: use URLSearchParams to build URL instead of string interpolation
+    const url = new URL("https://nominatim.openstreetmap.org/reverse");
+    url.searchParams.set("format", "json");
+    url.searchParams.set("lat", safeLat.toString());
+    url.searchParams.set("lon", safeLon.toString());
+    url.searchParams.set("zoom", "10");
+    url.searchParams.set("addressdetails", "1");
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        "User-Agent": "ClimateSphere-Dashboard/1.0"
       }
-    );
+    });
     if (res.ok) {
       const data = await res.json();
       const addr = data.address || {};
@@ -125,7 +139,7 @@ export async function reverseGeocode(lat, lon) {
     console.warn("Reverse geocoding failed, falling back", err);
   }
   return {
-    name: `Lat: ${lat.toFixed(2)}°, Lon: ${lon.toFixed(2)}°`,
+    name: `Lat: ${safeLat.toFixed(2)}°, Lon: ${safeLon.toFixed(2)}°`,
     cityName: "Custom Coordinates",
     country: ""
   };

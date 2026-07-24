@@ -1,6 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { AlertTriangle, ShieldAlert, Volume2, VolumeX, X, Bell, Flame, Wind, Droplets, CloudLightning, Info } from "lucide-react";
 
+// Security: reuse a single AudioContext singleton to prevent audio handle exhaustion
+let _alertAudioCtx = null;
+function getAlertAudioCtx() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return null;
+  if (!_alertAudioCtx || _alertAudioCtx.state === "closed") {
+    _alertAudioCtx = new AudioContext();
+  }
+  if (_alertAudioCtx.state === "suspended") {
+    _alertAudioCtx.resume();
+  }
+  return _alertAudioCtx;
+}
+
 export default function ClimateAlertSystem({ weatherData, airQualityData, locationName }) {
   const [isAlertDrawerOpen, setIsAlertDrawerOpen] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -9,9 +23,8 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
   // Synthesize Web Audio API Alert Beep (Zero external asset dependency)
   const playAlertChime = () => {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
+      const ctx = getAlertAudioCtx();
+      if (!ctx) return;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -208,7 +221,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
                 <ShieldAlert size={22} style={{ color: "var(--accent-red)" }} />
-                <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#fff" }}>Live Climate Emergency Hub</h3>
+                <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text-main)" }}>Live Climate Emergency Hub</h3>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <button
@@ -280,7 +293,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
                 >
                   ✓
                 </div>
-                <h4 style={{ color: "#fff", fontSize: "1.1rem", fontWeight: 700 }}>No Active Severe Warnings</h4>
+                <h4 style={{ color: "var(--text-main)", fontSize: "1.1rem", fontWeight: 700 }}>No Active Severe Warnings</h4>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.4rem" }}>
                   Current environmental parameters for {locationName} are within normal safety baselines.
                 </p>
@@ -318,7 +331,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
 
                       <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.4rem" }}>
                         <Icon size={20} style={{ color: alert.color }} />
-                        <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "#fff" }}>{alert.title}</span>
+                        <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>{alert.title}</span>
                         <span className={`badge badge-${alert.severity === "Critical" ? "red" : "amber"}`}>
                           {alert.severity}
                         </span>

@@ -4,21 +4,36 @@ import L from "leaflet";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
 import { MapPin, Layers, Flame, Wind, Cloud } from "lucide-react";
 
+// Security: sanitize SVG parameters to prevent XSS via crafted map data
+const SAFE_COLOR_RE = /^[#a-zA-Z0-9(),%. ]+$/;
+function sanitizeSvgParam(value, fallback) {
+  if (typeof value !== "string") return fallback;
+  // Strip any HTML tags or script-injectable characters
+  const stripped = value.replace(/<[^>]*>/g, "").replace(/["'`\\]/g, "");
+  if (!SAFE_COLOR_RE.test(stripped)) return fallback;
+  return stripped;
+}
+
 // Custom Leaflet Icons using SVG strings
 const createCustomMarkerIcon = (color, text = "") => {
+  const safeColor = sanitizeSvgParam(color, "#06b6d4");
+  // Only allow plain emoji or short alphanumeric text (no HTML)
+  const safeText = typeof text === "string"
+    ? text.replace(/<[^>]*>/g, "").replace(/["'<>&`]/g, "").slice(0, 4)
+    : "";
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
       <defs>
         <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="${color}" flood-opacity="0.8"/>
+          <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="${safeColor}" flood-opacity="0.8"/>
         </filter>
       </defs>
-      <path d="M16 0C7.163 0 0 7.163 0 16c0 12 16 26 16 26s16-14 16-26C32 7.163 24.837 0 16 0z" fill="${color}" filter="url(#glow)"/>
+      <path d="M16 0C7.163 0 0 7.163 0 16c0 12 16 26 16 26s16-14 16-26C32 7.163 24.837 0 16 0z" fill="${safeColor}" filter="url(#glow)"/>
       <circle cx="16" cy="15" r="7" fill="#0f172a"/>
       ${
-        text
-          ? `<text x="16" y="19" font-size="10" font-weight="bold" fill="${color}" text-anchor="middle" font-family="sans-serif">${text}</text>`
-          : `<circle cx="16" cy="15" r="3.5" fill="${color}"/>`
+        safeText
+          ? `<text x="16" y="19" font-size="10" font-weight="bold" fill="${safeColor}" text-anchor="middle" font-family="sans-serif">${safeText}</text>`
+          : `<circle cx="16" cy="15" r="3.5" fill="${safeColor}"/>`
       }
     </svg>
   `;
