@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Globe, Search, Navigation, RefreshCw, Sun, Moon } from "lucide-react";
+import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
+import { audioSynth } from "../services/audioSynth";
 import ClimateAlertSystem from "./ClimateAlertSystem";
 
 export default function Navbar({
@@ -14,12 +15,15 @@ export default function Navbar({
   weatherData,
   airQualityData,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  onOpenComparison,
+  onOpenReport
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [utcTime, setUtcTime] = useState("");
 
   const searchTimeoutRef = useRef(null);
@@ -71,6 +75,17 @@ export default function Navbar({
     onSelectLocation(loc);
     setQuery("");
     setShowDropdown(false);
+  };
+
+  const handleToggleAudio = () => {
+    if (isAudioPlaying) {
+      audioSynth.stop();
+      setIsAudioPlaying(false);
+    } else {
+      const code = weatherData?.current?.weatherCode || 0;
+      audioSynth.playForWeatherCode(code);
+      setIsAudioPlaying(true);
+    }
   };
 
   return (
@@ -129,6 +144,38 @@ export default function Navbar({
           airQualityData={airQualityData}
           locationName={currentLocation.name}
         />
+
+        {/* Ambient Sound Player */}
+        <button
+          className="locate-btn"
+          onClick={handleToggleAudio}
+          title={isAudioPlaying ? "Mute Ambient Weather Audio" : "Play Ambient Weather Audio"}
+          style={{ padding: "0.45rem 0.75rem" }}
+        >
+          {isAudioPlaying ? <Volume2 size={16} style={{ color: "var(--accent-cyan)" }} /> : <VolumeX size={16} />}
+        </button>
+
+        {/* Dual City Comparison */}
+        <button
+          className="locate-btn"
+          onClick={onOpenComparison}
+          title="Compare Two Cities Side-by-Side"
+          style={{ padding: "0.45rem 0.75rem" }}
+        >
+          <GitCompare size={16} style={{ color: "var(--accent-cyan)" }} />
+          <span className="hide-on-mobile">Compare</span>
+        </button>
+
+        {/* Diagnostic Report Export */}
+        <button
+          className="locate-btn"
+          onClick={onOpenReport}
+          title="Generate Diagnostic Health Report"
+          style={{ padding: "0.45rem 0.75rem" }}
+        >
+          <FileText size={16} style={{ color: "var(--accent-cyan)" }} />
+          <span className="hide-on-mobile">Report</span>
+        </button>
 
         {/* Theme Toggle Button */}
         <button

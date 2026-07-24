@@ -7,13 +7,15 @@ import AirQualityCard from "./components/AirQualityCard";
 import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
+import ClimateImpactSimulator from "./components/ClimateImpactSimulator";
+import ClimateComparisonModal from "./components/ClimateComparisonModal";
+import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Thermometer, TrendingUp, Compass, AlertCircle, MoveHorizontal } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, Sliders, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
-  // Default Location: Tokyo, Japan
   const [currentLocation, setCurrentLocation] = useState({
     name: "Tokyo, Japan",
     cityName: "Tokyo",
@@ -25,13 +27,14 @@ export default function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [unit, setUnit] = useState("C"); // 'C' | 'F'
-  const [activeTab, setActiveTab] = useState("live"); // 'live' | 'forecast' | 'vitals'
+  const [activeTab, setActiveTab] = useState("live"); // 'live' | 'forecast' | 'vitals' | 'sim'
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  // Theme State ('dark' | 'light') with LocalStorage Persistence
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("climatesphere_theme") || "dark";
   });
@@ -45,9 +48,8 @@ export default function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const tabs = ["live", "forecast", "vitals"];
+  const tabs = ["live", "forecast", "vitals", "sim"];
 
-  // Touch Swipe Gesture Navigation
   useTouchSwipe({
     onSwipeLeft: () => {
       const currentIdx = tabs.indexOf(activeTab);
@@ -63,7 +65,6 @@ export default function App() {
     }
   });
 
-  // Load Data for Selected Location
   const loadDataForLocation = useCallback(async (location, showRefreshing = false) => {
     if (showRefreshing) setIsRefreshing(true);
     else setIsLoading(true);
@@ -154,6 +155,8 @@ export default function App() {
         airQualityData={airQualityData}
         theme={theme}
         onToggleTheme={handleToggleTheme}
+        onOpenComparison={() => setIsComparisonOpen(true)}
+        onOpenReport={() => setIsReportOpen(true)}
       />
 
       {/* Error Notification */}
@@ -232,6 +235,16 @@ export default function App() {
               <TrendingUp size={15} />
               <span>Earth Vitals</span>
             </button>
+            <button
+              className={`tab-btn ${activeTab === "sim" ? "active" : ""}`}
+              onClick={() => {
+                setActiveTab("sim");
+                setIsMobileDrawerOpen(true);
+              }}
+            >
+              <Sliders size={15} />
+              <span>AI Simulator</span>
+            </button>
           </div>
 
           {/* Tab 1: Live Terminal */}
@@ -265,8 +278,41 @@ export default function App() {
               <ExtremeEventsRadar />
             </div>
           )}
+
+          {/* Tab 4: AI Climate Impact Simulator */}
+          {activeTab === "sim" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              <ClimateImpactSimulator
+                locationName={currentLocation.name}
+                lat={currentLocation.lat}
+                lon={currentLocation.lon}
+              />
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Dual City Comparison Modal */}
+      {isComparisonOpen && (
+        <ClimateComparisonModal
+          locationA={currentLocation}
+          weatherDataA={weatherData}
+          airQualityDataA={airQualityData}
+          unit={unit}
+          onClose={() => setIsComparisonOpen(false)}
+        />
+      )}
+
+      {/* Environmental Health Report Generator Modal */}
+      {isReportOpen && (
+        <ReportGeneratorModal
+          locationName={currentLocation.name}
+          weatherData={weatherData}
+          airQualityData={airQualityData}
+          unit={unit}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </div>
   );
 }

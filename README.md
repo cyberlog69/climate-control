@@ -6,44 +6,42 @@
 [![Open-Meteo](https://img.shields.io/badge/API-Open--Meteo-06B6D4?style=flat)](https://open-meteo.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**ClimateSphere** is a high-performance, dark glassmorphism interactive web application and planetary control room dashboard designed to monitor real-time global weather, atmospheric greenhouse gas metrics, sea level rise, temperature anomalies, air quality indexes, and severe climate alerts worldwide.
+**ClimateSphere** is a high-performance, dark/light glassmorphism interactive web application and planetary control room dashboard designed to monitor real-time global weather, atmospheric greenhouse gas metrics, sea level rise, temperature anomalies, air quality indexes, and severe climate alerts worldwide.
 
 ---
 
-## 🌟 Key Features
+## 🌟 Features & Enhancements
 
-### 1. 🌐 Full-Screen Planetary Control Room
-- **Split-Pane Layout**: Full-height interactive Leaflet map on the left (60%) combined with a floating command panel on the right (40%).
-- **Dynamic Weather Particles**: Custom HTML5 Canvas engine rendering real-time rain, snowfall, or floating climate dust particles matching active weather conditions.
-- **Glassmorphism Aesthetic**: Dark space backdrop (`#05070d`), frosted glass cards (`backdrop-filter: blur(20px)`), glowing neon indicators, and high-contrast typography.
+### 1. 🔮 AI Climate Impact Scenario Simulator
+- **Warming Scenario Slider**: Model future environmental impacts at **+1.5°C**, **+2.0°C**, **+3.0°C**, and **+4.0°C** global warming scenarios.
+- **Local Stress Projections**: Calculates coordinate-specific projections for:
+  - 🌊 **Sea Level Rise Inundation**: Projected coastal surge in meters.
+  - 💥 **Annual Heatwave Days**: Extra days per year exceeding $35^\circ\text{C}$.
+  - 💧 **Drought Deficit**: Percentage surge in regional water stress.
+  - 🌾 **Agricultural Impact**: Predicted staple crop yield reduction.
 
-### 2. 🗺️ Interactive Global Map & Hotspot Radar
-- **CartoDB Dark Matter Tiles**: High-contrast dark basemap optimized for environmental data visualization.
-- **Toggleable Map Layers**: Thermal heatmaps, Air Quality (AQI) markers, Wind vectors, and Cloud cover overlays.
-- **Preset Climate Hotspots**: 1-click jump to critical climate zones:
-  - 🧊 **Svalbard, Norway**: Rapid Arctic warming (4x global rate).
-  - 🌳 **Amazon Rainforest, Brazil**: Carbon sink deforestation & drought risk.
-  - 🏝️ **Malé, Maldives**: Coastal inundation & submersion danger.
-  - 🏙️ **Megacities**: Tokyo, New York, London, Cairo, New Delhi, and Sydney.
-- **Click-Anywhere Geolocation**: Click any point on the world map to inspect real-time weather and environmental parameters.
+### 2. ⚔️ Dual-City Climate Comparison Mode
+- **Side-by-Side Analysis**: Compare any two global cities (e.g. *Tokyo vs. London* or *New York vs. Svalbard*) in real time.
+- **Thermal & Environmental Delta**: Displays live temperature differences, AQI index comparisons, wind speeds, and atmospheric pressure gaps.
 
-### 3. 📈 Earth's Vital Signs & Climate Indicators
-- **Atmospheric CO₂ Level**: Live Keeling Curve ticker (~427.8 ppm) with historical trend chart modals (1958–Present).
-- **Global Surface Temperature Anomaly**: +1.29°C warming index relative to the 1880–1910 pre-industrial baseline.
-- **Global Sea Level Rise**: +114 mm satellite altimetry tracking (+3.4 mm/year).
-- **Arctic Sea Ice Extent**: September minimum coverage metrics (4.09 M km²).
+### 3. 🔊 Procedural Ambient Weather Audio Synthesizer
+- **Web Audio API Engine**: Synthesizes soothing procedural raindrops, atmospheric wind howls, or space aura frequencies matching active weather conditions with zero external audio assets.
 
-### 4. 🌤️ Live Weather & Air Quality Terminal
-- **Real-Time Weather Feeds**: Live temperature, "Feels Like", humidity, wind speed & direction, atmospheric pressure, cloud cover, UV index, and sunrise/sunset.
-- **US Air Quality Index (AQI)**: Color-coded health advisory gauge with pollutant breakdown for **PM2.5, PM10, Nitrogen Dioxide (NO₂), Ground Ozone (O₃), SO₂**, and **CO**.
-- **Global Location Search**: Debounced city search with instant geocoding.
-- **Temperature Unit Switcher**: Toggle seamlessly between **°C** and **°F**.
+### 4. 📄 1-Click Diagnostic Health Report Export
+- **PDF & Print Snapshot**: Generate formatted Environmental Health Diagnostic Reports with coordinates, AQI scores, 7-day weather tables, and safety advisories for instant printing or PDF saving.
 
-### 5. 📊 Forecasts & Historical Warming Trajectories
-- **24-Hour Hourly Forecast**: Interactive Recharts area chart for temperature curves and precipitation probability.
-- **7-Day Extended Outlook**: Daily weather condition cards, min/max thermal ranges, and rain accumulation totals.
-- **Regional Climate Trajectory**: Visualizes location-specific thermal shifts from 1950 baselines to 2026.
-- **Global Climate Anomaly Radar**: Real-time alert feed tracking marine heatwaves, permafrost thaws, urban smog advisories, and wildfire ignition risks.
+### 5. 🚨 Live Climate Emergency Alert System
+- **Real-Time Hazard Evaluator**: Detects extreme heatwaves ($\ge 38^\circ\text{C}$), gale winds ($\ge 50\text{ km/h}$), hazardous AQI ($>150$), and severe thunderstorms.
+- **Synthesized Audio Ping**: Web Audio chime alerts when critical warnings fire.
+- **Alert Hub Drawer**: Modal drawer to review, filter, and dismiss active environmental advisories.
+
+### 6. 👆 Touch Swipe Gestures & Mobile Bottom Sheet
+- **Touch Swipe Navigation**: Swipe left or right on mobile devices to switch between command terminal tabs.
+- **Mobile Bottom Sheet Drawer**: On small viewports, the command panel becomes a slideable bottom sheet with touch handles and min 44px hit targets.
+
+### 7. 🌗 Dark / Light Mode Theme Toggle
+- **Persistent Preferences**: Theme state (`dark` or `light`) saved to `localStorage`.
+- **Dynamic Leaflet Tiles**: Automatically switches between **CartoDB Dark Matter** and **CartoDB Positron** map tiles.
 
 ---
 
@@ -53,22 +51,17 @@
 | :--- | :--- |
 | **Frontend Framework** | [React 18](https://react.dev) + [Vite 8](https://vite.dev) |
 | **Styling** | Vanilla CSS (Design Tokens, Glassmorphism, Responsive Grid) |
-| **Interactive Mapping** | [Leaflet](https://leafletjs.com) + [React-Leaflet](https://react-leaflet.js.org) + [CartoDB Dark Tiles](https://carto.com) |
+| **Interactive Mapping** | [Leaflet](https://leafletjs.com) + [React-Leaflet](https://react-leaflet.js.org) + [CartoDB Dark/Light Tiles](https://carto.com) |
 | **Data Visualizations** | [Recharts](https://recharts.org) (Area & Bar Charts) |
+| **Audio Engine** | Web Audio API Procedural Synthesizer |
 | **Iconography** | [Lucide React](https://lucide.dev) |
 | **Weather & Air Quality API** | [Open-Meteo API](https://open-meteo.com) (Free, no API key required) |
-| **Geocoding** | Open-Meteo Geocoding & Nominatim Reverse Geocoding |
-| **Climate Baselines** | NASA GISS, NOAA, Mauna Loa Keeling Curve Datasets |
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- [Node.js](https://nodejs.org) (v18.0 or higher)
-- `npm` or `yarn`
-
-### Installation & Local Setup
+### Installation & Setup
 
 1. **Clone the Repository**
    ```bash
@@ -91,18 +84,6 @@
    ```bash
    npm run build
    ```
-   Generates optimized code-split vendor bundles in `dist/`.
-
----
-
-## ⚡ Performance & Code-Splitting
-
-The application is optimized with Vite vendor code-splitting to ensure fast page loads:
-- **`vendor-react`**: React & React-DOM core
-- **`vendor-leaflet`**: Leaflet & React-Leaflet mapping engine
-- **`vendor-recharts`**: Recharts charting library
-- **`vendor-icons`**: Lucide iconography
-- **`index`**: Application components & logic (~47 kB)
 
 ---
 
