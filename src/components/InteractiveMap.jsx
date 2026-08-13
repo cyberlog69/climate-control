@@ -119,7 +119,7 @@ export default function InteractiveMap({
       : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
   return (
-    <div className="glass-card" style={{ padding: "1.1rem", height: "100%", display: "flex", flexDirection: "column" }}>
+    <div className="glass-card map-globe-mobile-wrapper" style={{ padding: "1.1rem", height: "100%", display: "flex", flexDirection: "column" }}>
       {/* Header & Controls Bar */}
       <div
         style={{
