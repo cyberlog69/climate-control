@@ -8,6 +8,7 @@ import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
 import WildfireSatelliteCard from "./components/WildfireSatelliteCard";
+import RenewableEnergyEstimator from "./components/RenewableEnergyEstimator";
 import ClimateImpactSimulator from "./components/ClimateImpactSimulator";
 import HistoricalTimeMachine from "./components/HistoricalTimeMachine";
 import ClimateComparisonModal from "./components/ClimateComparisonModal";
@@ -15,7 +16,7 @@ import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Thermometer, TrendingUp, Compass, Sliders, History, AlertCircle, MoveHorizontal } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
   const [currentLocation, setCurrentLocation] = useState({
@@ -50,7 +51,7 @@ export default function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const tabs = ["live", "forecast", "history", "vitals", "sim"];
+  const tabs = ["live", "forecast", "history", "vitals", "energy", "sim"];
 
   useTouchSwipe({
     onSwipeLeft: () => {
@@ -248,6 +249,16 @@ export default function App() {
               <span>Vitals</span>
             </button>
             <button
+              className={`tab-btn ${activeTab === "energy" ? "active" : ""}`}
+              onClick={() => {
+                setActiveTab("energy");
+                setIsMobileDrawerOpen(true);
+              }}
+            >
+              <Zap size={15} />
+              <span>Clean Energy</span>
+            </button>
+            <button
               className={`tab-btn ${activeTab === "sim" ? "active" : ""}`}
               onClick={() => {
                 setActiveTab("sim");
@@ -309,7 +320,19 @@ export default function App() {
             </div>
           )}
 
-          {/* Tab 4: AI Climate Impact Simulator */}
+          {/* Tab 5: Renewable Energy Yield Estimator (Solar & Wind) */}
+          {activeTab === "energy" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              <RenewableEnergyEstimator
+                locationName={currentLocation.name}
+                lat={currentLocation.lat}
+                lon={currentLocation.lon}
+                weatherData={weatherData}
+              />
+            </div>
+          )}
+
+          {/* Tab 6: AI Climate Impact Simulator */}
           {activeTab === "sim" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <ClimateImpactSimulator
