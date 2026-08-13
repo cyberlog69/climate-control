@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "cap:sync": "vite build && npx cap sync android",
-    "cap:open": "npx cap open android"
+    "cap:open": "npx cap open android",
+    "build:android": "cmd /c build-android.bat"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
