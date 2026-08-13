@@ -12,7 +12,14 @@
 
 ## 🌟 Features & Enhancements
 
-### 1. 🔮 AI Climate Impact Scenario Simulator
+### 1. 🌐 3D Interactive WebGL Earth Globe Mode
+- **Three.js WebGL Engine**: Photorealistic 3D spinning planetary globe featuring procedural topographical continents, oceans, latitude/longitude coordinate grid rings, and glowing atmospheric cyan aura.
+- **Dual Map Toggle**: Seamlessly switch between **3D Earth Globe** and **2D Leaflet Flat Map** views with full state synchronization.
+- **Interactive Raycaster**: Click anywhere on the 3D globe surface to reverse-geocode coordinates and inspect live local climate metrics.
+- **Dynamic Hotspot Markers & Pulse Rings**: Animated 3D marker pins and expanding pulse waves for active locations and global climate hotspots (Svalbard, Amazon, Great Barrier Reef, etc.).
+- **Camera Flight & Orbit Controls**: Smooth spherical flight animation (`flyTo`), mouse/touch orbit drag rotation, zoom in/out controls, and auto-rotation toggle.
+
+### 2. 🔮 AI Climate Impact Scenario Simulator
 - **Warming Scenario Slider**: Model future environmental impacts at **+1.5°C**, **+2.0°C**, **+3.0°C**, and **+4.0°C** global warming scenarios.
 - **Local Stress Projections**: Calculates coordinate-specific projections for:
   - 🌊 **Sea Level Rise Inundation**: Projected coastal surge in meters.
@@ -20,7 +27,7 @@
   - 💧 **Drought Deficit**: Percentage surge in regional water stress.
   - 🌾 **Agricultural Impact**: Predicted staple crop yield reduction.
 
-### 2. ⚔️ Dual-City Climate Comparison Mode
+### 3. ⚔️ Dual-City Climate Comparison Mode
 - **Side-by-Side Analysis**: Compare any two global cities (e.g. *Tokyo vs. London* or *New York vs. Svalbard*) in real time.
 - **Thermal & Environmental Delta**: Displays live temperature differences, AQI index comparisons, wind speeds, and atmospheric pressure gaps.
 
@@ -130,6 +137,7 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 | Component | Technology / Library |
 | :--- | :--- |
 | **Frontend Framework** | [React 18](https://react.dev) + [Vite 8](https://vite.dev) |
+| **3D Planetary WebGL** | [Three.js](https://threejs.org) (Procedural Earth Globe, Atmosphere Shaders, Orbit Controls) |
 | **Styling** | Vanilla CSS (Design Tokens, Glassmorphism, Responsive Grid) |
 | **Interactive Mapping** | [Leaflet](https://leafletjs.com) + [React-Leaflet](https://react-leaflet.js.org) + [CartoDB Dark/Light Tiles](https://carto.com) |
 | **Data Visualizations** | [Recharts](https://recharts.org) (Area & Bar Charts) |

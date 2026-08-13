@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
-import { MapPin, Layers, Flame, Wind, Cloud } from "lucide-react";
+import { MapPin, Layers, Flame, Wind, Cloud, Globe2, Map as MapIcon } from "lucide-react";
+import EarthGlobe3D from "./EarthGlobe3D";
 
 // Security: sanitize SVG parameters to prevent XSS via crafted map data
 const SAFE_COLOR_RE = /^[#a-zA-Z0-9(),%. ]+$/;
@@ -72,6 +73,7 @@ export default function InteractiveMap({
   weatherData,
   theme = "dark"
 }) {
+  const [viewMode, setViewMode] = useState("3d"); // '2d' | '3d' - Defaulting to 3D Globe for incredible presentation!
   const [activeLayer, setActiveLayer] = useState("temp");
   const [mapCenter, setMapCenter] = useState([
     currentLocation?.lat || 35.6762,
@@ -116,7 +118,7 @@ export default function InteractiveMap({
 
   return (
     <div className="glass-card" style={{ padding: "1.1rem", height: "100%", display: "flex", flexDirection: "column" }}>
-      {/* Header & Layer Controls Bar */}
+      {/* Header & Controls Bar */}
       <div
         style={{
           display: "flex",
@@ -129,38 +131,98 @@ export default function InteractiveMap({
       >
         <div className="section-title" style={{ margin: 0 }}>
           <MapPin size={20} />
-          <span>Interactive Global Climate Map</span>
+          <span>{viewMode === "3d" ? "3D Planetary WebGL Globe" : "Interactive Global Climate Map"}</span>
         </div>
 
-        {/* Layer Switches */}
-        <div style={{ display: "flex", gap: "0.35rem" }}>
-          {layers.map((l) => {
-            const Icon = l.icon;
-            const isActive = activeLayer === l.id;
-            return (
-              <button
-                key={l.id}
-                onClick={() => setActiveLayer(l.id)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.35rem",
-                  padding: "0.4rem 0.7rem",
-                  borderRadius: "20px",
-                  border: isActive ? `1px solid ${l.color}` : "1px solid var(--border-light)",
-                  background: isActive ? `${l.color}22` : "var(--bg-card)",
-                  color: isActive ? "var(--text-main)" : "var(--text-muted)",
-                  fontSize: "0.78rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s"
-                }}
-              >
-                <Icon size={14} style={{ color: isActive ? l.color : "inherit" }} />
-                <span>{l.label}</span>
-              </button>
-            );
-          })}
+        {/* View Mode Toggle (2D Flat Map vs 3D Globe) & Layer Switches */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+          {/* 2D / 3D Toggle Pill */}
+          <div
+            style={{
+              display: "flex",
+              background: "var(--bg-inner)",
+              padding: "0.2rem",
+              borderRadius: "20px",
+              border: "1px solid var(--border-light)"
+            }}
+          >
+            <button
+              onClick={() => setViewMode("3d")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.35rem 0.75rem",
+                borderRadius: "16px",
+                border: "none",
+                background: viewMode === "3d" ? "var(--accent-cyan)" : "transparent",
+                color: viewMode === "3d" ? "#000" : "var(--text-muted)",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              title="3D WebGL Earth Globe View"
+            >
+              <Globe2 size={14} />
+              <span>3D Globe</span>
+            </button>
+
+            <button
+              onClick={() => setViewMode("2d")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.35rem 0.75rem",
+                borderRadius: "16px",
+                border: "none",
+                background: viewMode === "2d" ? "var(--accent-cyan)" : "transparent",
+                color: viewMode === "2d" ? "#000" : "var(--text-muted)",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              title="2D Leaflet Flat Map View"
+            >
+              <MapIcon size={14} />
+              <span>2D Map</span>
+            </button>
+          </div>
+
+          {/* 2D Layer Switches (Only in 2D Map mode) */}
+          {viewMode === "2d" && (
+            <div style={{ display: "flex", gap: "0.35rem" }}>
+              {layers.map((l) => {
+                const Icon = l.icon;
+                const isActive = activeLayer === l.id;
+                return (
+                  <button
+                    key={l.id}
+                    onClick={() => setActiveLayer(l.id)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "20px",
+                      border: isActive ? `1px solid ${l.color}` : "1px solid var(--border-light)",
+                      background: isActive ? `${l.color}22` : "var(--bg-card)",
+                      color: isActive ? "var(--text-main)" : "var(--text-muted)",
+                      fontSize: "0.78rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    <Icon size={14} style={{ color: isActive ? l.color : "inherit" }} />
+                    <span>{l.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -201,89 +263,100 @@ export default function InteractiveMap({
         ))}
       </div>
 
-      {/* Map Container */}
+      {/* Map or 3D Globe Container */}
       <div style={{ flex: 1, minHeight: "360px", borderRadius: "16px", overflow: "hidden", position: "relative" }}>
-        <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
-          <MapController center={mapCenter} zoom={5} />
-          <MapClickHandler onMapClick={handleMapClick} />
+        {viewMode === "3d" ? (
+          <EarthGlobe3D
+            currentLocation={currentLocation}
+            onSelectLocation={onSelectLocation}
+            weatherData={weatherData}
+            theme={theme}
+          />
+        ) : (
+          <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
+            <MapController center={mapCenter} zoom={5} />
+            <MapClickHandler onMapClick={handleMapClick} />
 
-          <TileLayer key={tileUrl} url={tileUrl} attribution='&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap' />
+            <TileLayer key={tileUrl} url={tileUrl} attribution='&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap' />
 
-          {/* Selected Location Marker */}
-          {currentLocation && (
-            <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
-              <Popup>
-                <div style={{ padding: "0.25rem" }}>
-                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)", marginBottom: "0.2rem" }}>
-                    📍 {currentLocation.name}
-                  </div>
-                  <div style={{ fontSize: "0.78rem", color: "var(--accent-cyan)" }}>
-                    Lat: {currentLocation.lat.toFixed(2)}°, Lon: {currentLocation.lon.toFixed(2)}°
-                  </div>
-                  {weatherData && (
-                    <div style={{ marginTop: "0.4rem", fontSize: "0.82rem", borderTop: "1px solid var(--border-light)", paddingTop: "0.4rem" }}>
-                      <div>Current Temp: <strong>{weatherData.current?.temp}°C</strong></div>
-                      <div>Humidity: {weatherData.current?.humidity}%</div>
-                      <div>Wind: {weatherData.current?.windSpeed} km/h</div>
+            {/* Selected Location Marker */}
+            {currentLocation && (
+              <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
+                <Popup>
+                  <div style={{ padding: "0.25rem" }}>
+                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)", marginBottom: "0.2rem" }}>
+                      📍 {currentLocation.name}
                     </div>
-                  )}
-                </div>
-              </Popup>
-            </Marker>
-          )}
-
-          {/* Hotspots Markers */}
-          {CLIMATE_HOTSPOTS.map((h) => (
-            <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b", "🔥")}>
-              <Popup>
-                <div style={{ padding: "0.25rem", maxWidth: "220px" }}>
-                  <div className="badge badge-amber" style={{ marginBottom: "0.4rem" }}>
-                    {h.badge}
+                    <div style={{ fontSize: "0.78rem", color: "var(--accent-cyan)" }}>
+                      Lat: {currentLocation.lat.toFixed(2)}°, Lon: {currentLocation.lon.toFixed(2)}°
+                    </div>
+                    {weatherData && (
+                      <div style={{ marginTop: "0.4rem", fontSize: "0.82rem", borderTop: "1px solid var(--border-light)", paddingTop: "0.4rem" }}>
+                        <div>Current Temp: <strong>{weatherData.current?.temp}°C</strong></div>
+                        <div>Humidity: {weatherData.current?.humidity}%</div>
+                        <div>Wind: {weatherData.current?.windSpeed} km/h</div>
+                      </div>
+                    )}
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>{h.name}</div>
-                  <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
-                    {h.description}
-                  </div>
-                  <button
-                    onClick={() => handleHotspotClick(h)}
-                    style={{
-                      width: "100%",
-                      marginTop: "0.5rem",
-                      background: "var(--accent-cyan)",
-                      border: "none",
-                      color: "#000",
-                      padding: "0.35rem",
-                      borderRadius: "6px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      fontSize: "0.8rem"
-                    }}
-                  >
-                    Inspect Weather & Climate
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+                </Popup>
+              </Marker>
+            )}
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0.85rem",
-            left: "0.85rem",
-            zIndex: 400,
-            background: "var(--bg-card-hover)",
-            backdropFilter: "blur(10px)",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "12px",
-            border: "1px solid var(--border-light)",
-            fontSize: "0.75rem",
-            color: "var(--text-muted)"
-          }}
-        >
-          💡 Click anywhere on the map to inspect live weather & climate stats
-        </div>
+            {/* Hotspots Markers */}
+            {CLIMATE_HOTSPOTS.map((h) => (
+              <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b", "🔥")}>
+                <Popup>
+                  <div style={{ padding: "0.25rem", maxWidth: "220px" }}>
+                    <div className="badge badge-amber" style={{ marginBottom: "0.4rem" }}>
+                      {h.badge}
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>{h.name}</div>
+                    <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
+                      {h.description}
+                    </div>
+                    <button
+                      onClick={() => handleHotspotClick(h)}
+                      style={{
+                        width: "100%",
+                        marginTop: "0.5rem",
+                        background: "var(--accent-cyan)",
+                        border: "none",
+                        color: "#000",
+                        padding: "0.35rem",
+                        borderRadius: "6px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        fontSize: "0.8rem"
+                      }}
+                    >
+                      Inspect Weather & Climate
+                    </button>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        )}
+
+        {viewMode === "2d" && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "0.85rem",
+              left: "0.85rem",
+              zIndex: 400,
+              background: "var(--bg-card-hover)",
+              backdropFilter: "blur(10px)",
+              padding: "0.4rem 0.8rem",
+              borderRadius: "12px",
+              border: "1px solid var(--border-light)",
+              fontSize: "0.75rem",
+              color: "var(--text-muted)"
+            }}
+          >
+            💡 Click anywhere on the map to inspect live weather & climate stats
+          </div>
+        )}
       </div>
     </div>
   );

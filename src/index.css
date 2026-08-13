@@ -492,6 +492,34 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-cyan);
 }
 
+/* 3D Globe Interactive Controls */
+.globe-ctrl-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.globe-ctrl-btn:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+}
+
+.globe-ctrl-btn:active {
+  transform: scale(0.95);
+}
+
 /* Mobile Responsive Breakpoints */
 @media (max-width: 900px) {
   .control-room-container {
