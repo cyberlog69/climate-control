@@ -21,6 +21,8 @@ import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Geolocation } from "@capacitor/geolocation";
 import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
@@ -54,6 +56,14 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("climatesphere_theme", theme);
+
+    // Sync native Android status bar with theme
+    try {
+      StatusBar.setStyle({ style: theme === "dark" ? Style.Dark : Style.Light }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: theme === "dark" ? "#030712" : "#f8fafc" }).catch(() => {});
+    } catch (e) {
+      // Running in browser, ignore
+    }
   }, [theme]);
 
   const handleToggleTheme = () => {
@@ -118,27 +128,42 @@ export default function App() {
     }
   };
 
-  const handleAutoLocate = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const geo = await reverseGeocode(latitude, longitude);
-          setCurrentLocation({
-            name: geo.name,
-            cityName: geo.cityName,
-            country: geo.country,
-            lat: latitude,
-            lon: longitude
-          });
-        },
-        (err) => {
-          console.warn("Geolocation denied/failed:", err);
-          alert("Could not access your location. Using default location.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
+  const handleAutoLocate = async () => {
+    try {
+      // Try Native Capacitor Geolocation first
+      const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 });
+      const { latitude, longitude } = pos.coords;
+      const geo = await reverseGeocode(latitude, longitude);
+      setCurrentLocation({
+        name: geo.name,
+        cityName: geo.cityName,
+        country: geo.country,
+        lat: latitude,
+        lon: longitude
+      });
+    } catch (nativeErr) {
+      // Fallback to browser navigator.geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            const geo = await reverseGeocode(latitude, longitude);
+            setCurrentLocation({
+              name: geo.name,
+              cityName: geo.cityName,
+              country: geo.country,
+              lat: latitude,
+              lon: longitude
+            });
+          },
+          (err) => {
+            console.warn("Geolocation denied/failed:", err);
+            alert("Could not access your location. Using default location.");
+          }
+        );
+      } else {
+        alert("Geolocation is not supported by your browser.");
+      }
     }
   };
 

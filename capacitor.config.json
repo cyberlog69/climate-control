@@ -1,0 +1,14 @@
+{
+  "appId": "com.climatesphere.app",
+  "appName": "ClimateSphere",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#030712"
+    }
+  }
+}

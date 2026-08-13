@@ -1,0 +1,20 @@
+{
+  "name": "ClimateSphere: Planetary Intelligence",
+  "short_name": "ClimateSphere",
+  "description": "Next-Generation Global Climate Intelligence & Planetary Weather Sentinel System",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#030712",
+  "theme_color": "#06b6d4",
+  "categories": ["weather", "utilities", "education", "science"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23030712' stroke='%2306b6d4' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='32' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-dasharray='4 3'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%2306b6d4'/%3E%3C/svg%3E",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
