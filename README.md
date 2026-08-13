@@ -45,7 +45,12 @@
 - **1-Click Sentinel Quick-Switch**: Instantly fly the 3D WebGL Earth Globe or 2D Map camera to any pinned city with one click.
 - **In-Modal City Search & Pinning**: Integrated global geocoding search to discover and pin unlimited cities worldwide.
 
-### 7. 🔮 AI Climate Impact Scenario Simulator
+### 7. 🎙️ AI Voice Climate Briefing (Browser Speech Synthesis)
+- **Natural-Language Daily Intelligence Briefing**: Synthesizes executive planetary weather briefings, AQI advisories, atmospheric pressure changes, and global carbon vitals for any active city using the native **Web Speech Synthesis API** (100% free, zero external API keys).
+- **Animated Audio Waveform Visualizer**: 24-channel pulsating frequency equalizer bars synchronized with active voice playback.
+- **Dynamic Teleprompter & Playback Controls**: Live script auto-scroller, system voice accent selector (US, UK, etc.), variable playback speeds (`0.8x`, `1.0x`, `1.2x`, `1.5x`), and 1-click script clipboard export.
+
+### 8. 🔮 AI Climate Impact Scenario Simulator
 - **Warming Scenario Slider**: Model future environmental impacts at **+1.5°C**, **+2.0°C**, **+3.0°C**, and **+4.0°C** global warming scenarios.
 - **Local Stress Projections**: Calculates coordinate-specific projections for:
   - 🌊 **Sea Level Rise Inundation**: Projected coastal surge in meters.
@@ -53,26 +58,26 @@
   - 💧 **Drought Deficit**: Percentage surge in regional water stress.
   - 🌾 **Agricultural Impact**: Predicted staple crop yield reduction.
 
-### 8. ⚔️ Dual-City Climate Comparison Mode
+### 9. ⚔️ Dual-City Climate Comparison Mode
 - **Side-by-Side Analysis**: Compare any two global cities (e.g. *Tokyo vs. London* or *New York vs. Svalbard*) in real time.
 - **Thermal & Environmental Delta**: Displays live temperature differences, AQI index comparisons, wind speeds, and atmospheric pressure gaps.
 
-### 9. 🔊 Procedural Ambient Weather Audio Synthesizer
+### 10. 🔊 Procedural Ambient Weather Audio Synthesizer
 - **Web Audio API Engine**: Synthesizes soothing procedural raindrops, atmospheric wind howls, or space aura frequencies matching active weather conditions with zero external audio assets.
 
-### 10. 📄 1-Click Diagnostic Health Report Export
+### 11. 📄 1-Click Diagnostic Health Report Export
 - **PDF & Print Snapshot**: Generate formatted Environmental Health Diagnostic Reports with coordinates, AQI scores, 7-day weather tables, and safety advisories for instant printing or PDF saving.
 
-### 11. 🚨 Live Climate Emergency Alert System
+### 12. 🚨 Live Climate Emergency Alert System
 - **Real-Time Hazard Evaluator**: Detects extreme heatwaves ($\ge 38^\circ\text{C}$), gale winds ($\ge 50\text{ km/h}$), hazardous AQI ($>150$), and severe thunderstorms.
 - **Synthesized Audio Ping**: Web Audio chime alerts when critical warnings fire.
 - **Alert Hub Drawer**: Modal drawer to review, filter, and dismiss active environmental advisories.
 
-### 12. 👆 Touch Swipe Gestures & Mobile Bottom Sheet
+### 13. 👆 Touch Swipe Gestures & Mobile Bottom Sheet
 - **Touch Swipe Navigation**: Swipe left or right on mobile devices to switch between command terminal tabs.
 - **Mobile Bottom Sheet Drawer**: On small viewports, the command panel becomes a slideable bottom sheet with touch handles and min 44px hit targets.
 
-### 13. 🌗 Dark / Light Mode Theme Toggle
+### 14. 🌗 Dark / Light Mode Theme Toggle
 - **Persistent Preferences**: Theme state (`dark` or `light`) saved to `localStorage`.
 - **Dynamic Leaflet Tiles**: Automatically switches between **CartoDB Dark Matter** and **CartoDB Positron** map tiles.
 

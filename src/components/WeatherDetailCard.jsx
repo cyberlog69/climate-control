@@ -10,10 +10,11 @@ import {
   Droplets,
   Gauge,
   Sunrise,
-  Sunset
+  Sunset,
+  Mic
 } from "lucide-react";
 
-export default function WeatherDetailCard({ locationName, weatherData, unit }) {
+export default function WeatherDetailCard({ locationName, weatherData, unit, onOpenVoiceBriefing }) {
   if (!weatherData || !weatherData.current) {
     return (
       <div className="glass-card" style={{ padding: "2rem", textAlign: "center" }}>
@@ -65,7 +66,31 @@ export default function WeatherDetailCard({ locationName, weatherData, unit }) {
           </div>
           <h2 style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--text-main)" }}>{locationName}</h2>
         </div>
-        <span className="badge badge-cyan">{current.isDay ? "Daytime" : "Nighttime"}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          {onOpenVoiceBriefing && (
+            <button
+              onClick={onOpenVoiceBriefing}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem",
+                background: "rgba(6, 182, 212, 0.15)",
+                border: "1px solid var(--accent-cyan)",
+                color: "var(--accent-cyan)",
+                borderRadius: "12px",
+                padding: "0.25rem 0.55rem",
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                cursor: "pointer"
+              }}
+              title="Listen to AI Climate Briefing"
+            >
+              <Mic size={13} />
+              <span>AI Briefing</span>
+            </button>
+          )}
+          <span className="badge badge-cyan">{current.isDay ? "Daytime" : "Nighttime"}</span>
+        </div>
       </div>
 
       {/* Main Temperature & Icon Container */}

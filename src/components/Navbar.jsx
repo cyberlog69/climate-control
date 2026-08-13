@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText, Bookmark, BookmarkCheck } from "lucide-react";
+import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText, Bookmark, BookmarkCheck, Mic } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
 import { audioSynth } from "../services/audioSynth";
 import ClimateAlertSystem from "./ClimateAlertSystem";
@@ -21,7 +21,8 @@ export default function Navbar({
   watchlist = [],
   onOpenWatchlist,
   isCurrentPinned = false,
-  onTogglePin
+  onTogglePin,
+  onOpenVoiceBriefing
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -148,6 +149,17 @@ export default function Navbar({
           airQualityData={airQualityData}
           locationName={currentLocation.name}
         />
+
+        {/* AI Voice Climate Briefing Button */}
+        <button
+          className="locate-btn"
+          onClick={onOpenVoiceBriefing}
+          title="Play AI Voice Climate Briefing"
+          style={{ padding: "0.45rem 0.75rem", display: "flex", alignItems: "center", gap: "0.4rem" }}
+        >
+          <Mic size={16} style={{ color: "var(--accent-cyan)" }} />
+          <span className="hide-on-mobile">Voice Briefing</span>
+        </button>
 
         {/* Ambient Sound Player */}
         <button

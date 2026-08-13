@@ -15,6 +15,7 @@ import HistoricalTimeMachine from "./components/HistoricalTimeMachine";
 import ClimateComparisonModal from "./components/ClimateComparisonModal";
 import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WatchlistModal from "./components/WatchlistModal";
+import VoiceBriefingModal from "./components/VoiceBriefingModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
@@ -38,6 +39,7 @@ export default function App() {
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
+  const [isVoiceBriefingOpen, setIsVoiceBriefingOpen] = useState(false);
   const [watchlist, setWatchlist] = useState(() => getStoredWatchlist());
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -195,6 +197,7 @@ export default function App() {
         onOpenWatchlist={() => setIsWatchlistOpen(true)}
         isCurrentPinned={isCurrentPinned}
         onTogglePin={handleTogglePinCurrentLocation}
+        onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
       />
 
       {/* Error Notification */}
@@ -322,6 +325,7 @@ export default function App() {
                 locationName={currentLocation.name}
                 weatherData={weatherData}
                 unit={unit}
+                onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
               />
               <AirQualityCard airQualityData={airQualityData} />
             </div>
@@ -428,6 +432,17 @@ export default function App() {
           onSelectLocation={handleSelectLocation}
           unit={unit}
           onClose={() => setIsWatchlistOpen(false)}
+        />
+      )}
+
+      {/* AI Voice Climate Briefing Modal */}
+      {isVoiceBriefingOpen && (
+        <VoiceBriefingModal
+          locationName={currentLocation.name}
+          weatherData={weatherData}
+          airQualityData={airQualityData}
+          unit={unit}
+          onClose={() => setIsVoiceBriefingOpen(false)}
         />
       )}
     </div>
