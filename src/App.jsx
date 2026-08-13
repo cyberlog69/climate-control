@@ -430,6 +430,100 @@ export default function App() {
         </div>
       </div>
 
+      {/* 📱 Android Native Bottom Navigation Bar (Thumb-Accessible on Mobile) */}
+      <nav className="mobile-bottom-nav">
+        <button
+          className={`mobile-nav-item ${activeTab === "live" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("live");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <Thermometer size={18} />
+          </div>
+          <span>Live</span>
+        </button>
+
+        <button
+          className={`mobile-nav-item ${activeTab === "forecast" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("forecast");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <Compass size={18} />
+          </div>
+          <span>Forecast</span>
+        </button>
+
+        <button
+          className={`mobile-nav-item ${activeTab === "history" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("history");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <History size={18} />
+          </div>
+          <span>History</span>
+        </button>
+
+        <button
+          className={`mobile-nav-item ${activeTab === "vitals" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("vitals");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <TrendingUp size={18} />
+          </div>
+          <span>Vitals</span>
+        </button>
+
+        <button
+          className={`mobile-nav-item ${activeTab === "energy" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("energy");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <Zap size={18} />
+          </div>
+          <span>Energy</span>
+        </button>
+
+        <button
+          className={`mobile-nav-item ${activeTab === "footprint" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("footprint");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <Leaf size={18} />
+          </div>
+          <span>Carbon</span>
+        </button>
+
+        <button
+          className={`mobile-nav-item ${activeTab === "sim" ? "active" : ""}`}
+          onClick={() => {
+            setActiveTab("sim");
+            setIsMobileDrawerOpen(true);
+          }}
+        >
+          <div className="mobile-nav-icon-wrapper">
+            <Sliders size={18} />
+          </div>
+          <span>AI Sim</span>
+        </button>
+      </nav>
+
       {/* Dual City Comparison Modal */}
       {isComparisonOpen && (
         <ClimateComparisonModal
