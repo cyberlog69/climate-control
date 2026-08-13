@@ -5,9 +5,12 @@ echo ===================================================
 echo   ClimateSphere Android APK Build System
 echo ===================================================
 
-:: Set JAVA_HOME from Android Studio if not already in environment
+:: Check for JDK 21 LTS in user .jdks or Android Studio JBR
 if "%JAVA_HOME%"=="" (
-    if exist "C:\Program Files\Android\Android Studio\jbr\bin\java.exe" (
+    if exist "%USERPROFILE%\.jdks\jbr-21.0.11\bin\java.exe" (
+        set "JAVA_HOME=%USERPROFILE%\.jdks\jbr-21.0.11"
+        echo [INFO] Located JDK 21 LTS at: %JAVA_HOME%
+    ) else if exist "C:\Program Files\Android\Android Studio\jbr\bin\java.exe" (
         set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
         echo [INFO] Located Android Studio Java at: %JAVA_HOME%
     )
