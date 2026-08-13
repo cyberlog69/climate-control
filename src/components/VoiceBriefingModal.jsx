@@ -15,7 +15,8 @@ import {
   Check,
   Sparkles,
   Radio,
-  Sliders
+  Sliders,
+  AlertCircle
 } from "lucide-react";
 
 export default function VoiceBriefingModal({
@@ -30,7 +31,9 @@ export default function VoiceBriefingModal({
   const [rate, setRate] = useState(1.0);
   const [voices, setVoices] = useState([]);
   const [selectedVoiceIndex, setSelectedVoiceIndex] = useState(0);
+  const [activeParagraphIndex, setActiveParagraphIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const cityName = locationName ? locationName.split(",")[0] : "your location";
 
@@ -44,20 +47,25 @@ export default function VoiceBriefingModal({
     });
   }, [locationName, weatherData, airQualityData, unit]);
 
-  // Load available system voices
+  // Load and refresh available system voices
   useEffect(() => {
     const updateVoices = () => {
       const avail = speechController.getAvailableVoices();
-      if (avail.length > 0) {
-        // Prefer English voices first
-        const englishVoices = avail.filter((v) => v.lang.startsWith("en"));
+      if (avail && avail.length > 0) {
+        // Prefer natural English voices first
+        const englishVoices = avail.filter((v) => v.lang.toLowerCase().startsWith("en"));
         setVoices(englishVoices.length > 0 ? englishVoices : avail);
       }
     };
 
     updateVoices();
+
+    // Chrome/Edge load voices asynchronously
     if (typeof window !== "undefined" && window.speechSynthesis) {
       window.speechSynthesis.onvoiceschanged = updateVoices;
+      // Backup timeout in case event already fired
+      setTimeout(updateVoices, 300);
+      setTimeout(updateVoices, 1000);
     }
 
     return () => {
@@ -66,6 +74,8 @@ export default function VoiceBriefingModal({
   }, []);
 
   const handlePlay = () => {
+    setErrorMessage(null);
+
     if (isPaused) {
       speechController.resume();
       setIsPlaying(true);
@@ -75,6 +85,9 @@ export default function VoiceBriefingModal({
 
     const selectedVoice = voices[selectedVoiceIndex] || null;
 
+    setIsPlaying(true);
+    setIsPaused(false);
+
     speechController.speak(briefing.fullScript, {
       voice: selectedVoice,
       rate,
@@ -82,15 +95,19 @@ export default function VoiceBriefingModal({
       onStart: () => {
         setIsPlaying(true);
         setIsPaused(false);
+        setErrorMessage(null);
       },
       onEnd: () => {
         setIsPlaying(false);
         setIsPaused(false);
       },
-      onError: (e) => {
-        console.warn("Speech synthesis error:", e);
+      onError: (err) => {
+        console.warn("Speech playback notice:", err);
         setIsPlaying(false);
         setIsPaused(false);
+        if (typeof err === "string") {
+          setErrorMessage(err);
+        }
       }
     });
   };
@@ -211,6 +228,25 @@ export default function VoiceBriefingModal({
           </button>
         </div>
 
+        {/* Error Alert if any */}
+        {errorMessage && (
+          <div
+            style={{
+              padding: "0.65rem 1.4rem",
+              background: "rgba(239, 68, 68, 0.15)",
+              borderBottom: "1px solid rgba(239, 68, 68, 0.3)",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              fontSize: "0.78rem",
+              color: "#fca5a5"
+            }}
+          >
+            <AlertCircle size={15} />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {/* Animated Audio Waveform Visualizer */}
         <div
           style={{
@@ -225,7 +261,6 @@ export default function VoiceBriefingModal({
         >
           <div style={{ display: "flex", alignItems: "center", gap: "5px", height: "45px" }}>
             {Array.from({ length: 24 }).map((_, i) => {
-              // Staggered animated height
               const heights = [12, 24, 38, 18, 42, 28, 14, 32, 40, 22, 16, 36, 44, 20, 30, 15, 38, 26, 12, 34, 42, 18, 28, 14];
               const h = heights[i % heights.length];
               return (
@@ -238,8 +273,7 @@ export default function VoiceBriefingModal({
                     background: isPlaying
                       ? `linear-gradient(180deg, var(--accent-cyan), var(--accent-purple))`
                       : "rgba(148, 163, 184, 0.3)",
-                    transition: isPlaying ? "height 0.15s ease" : "height 0.3s ease",
-                    animation: isPlaying ? `wavePulse 0.8s infinite ease-in-out ${i * 0.05}s alternate` : "none"
+                    transition: isPlaying ? "height 0.15s ease" : "height 0.3s ease"
                   }}
                 />
               );
@@ -248,7 +282,13 @@ export default function VoiceBriefingModal({
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", color: isPlaying ? "var(--accent-cyan)" : "var(--text-dim)" }}>
             <Radio size={14} className={isPlaying ? "animate-pulse" : ""} />
-            <span>{isPlaying ? "Broadcasting Voice Briefing..." : isPaused ? "Playback Paused" : "Ready to Broadcast"}</span>
+            <span>
+              {isPlaying
+                ? "🎙️ Broadcasting Planetary Intelligence Audio..."
+                : isPaused
+                ? "⏸️ Playback Paused"
+                : "✨ Speech Synthesizer Ready — Click Play to Listen"}
+            </span>
           </div>
         </div>
 
@@ -261,7 +301,7 @@ export default function VoiceBriefingModal({
             display: "flex",
             flexDirection: "column",
             gap: "0.85rem",
-            fontSize: "0.9rem",
+            fontSize: "0.88rem",
             lineHeight: 1.6,
             color: "var(--text-main)"
           }}
@@ -273,7 +313,7 @@ export default function VoiceBriefingModal({
                 margin: 0,
                 padding: "0.5rem 0.75rem",
                 borderRadius: "10px",
-                background: isPlaying ? "rgba(6, 182, 212, 0.06)" : "transparent",
+                background: isPlaying ? "rgba(6, 182, 212, 0.08)" : "transparent",
                 borderLeft: isPlaying ? "3px solid var(--accent-cyan)" : "3px solid transparent",
                 transition: "all 0.2s"
               }}
@@ -308,9 +348,9 @@ export default function VoiceBriefingModal({
                     background: "rgba(245, 158, 11, 0.2)",
                     border: "1px solid var(--accent-amber)",
                     color: "var(--accent-amber)",
-                    padding: "0.5rem 1rem",
+                    padding: "0.5rem 1.1rem",
                     borderRadius: "14px",
-                    fontWeight: 700,
+                    fontWeight: 800,
                     fontSize: "0.85rem",
                     cursor: "pointer"
                   }}
@@ -328,14 +368,15 @@ export default function VoiceBriefingModal({
                     background: "var(--accent-cyan)",
                     border: "none",
                     color: "#000",
-                    padding: "0.5rem 1.1rem",
+                    padding: "0.5rem 1.25rem",
                     borderRadius: "14px",
                     fontWeight: 800,
                     fontSize: "0.85rem",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    boxShadow: "0 0 15px rgba(6, 182, 212, 0.35)"
                   }}
                 >
-                  <Play size={16} />
+                  <Play size={16} fill="#000" />
                   <span>{isPaused ? "Resume" : "Play Briefing"}</span>
                 </button>
               )}
@@ -371,7 +412,7 @@ export default function VoiceBriefingModal({
                     borderRadius: "8px",
                     padding: "0.25rem 0.5rem",
                     fontSize: "0.72rem",
-                    fontWeight: rate === s ? 700 : 500,
+                    fontWeight: rate === s ? 800 : 500,
                     cursor: "pointer"
                   }}
                 >
