@@ -16,6 +16,7 @@ import ClimateComparisonModal from "./components/ClimateComparisonModal";
 import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WatchlistModal from "./components/WatchlistModal";
 import VoiceBriefingModal from "./components/VoiceBriefingModal";
+import DataExportModal from "./components/DataExportModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
@@ -40,6 +41,7 @@ export default function App() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
   const [isVoiceBriefingOpen, setIsVoiceBriefingOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [watchlist, setWatchlist] = useState(() => getStoredWatchlist());
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -198,6 +200,7 @@ export default function App() {
         isCurrentPinned={isCurrentPinned}
         onTogglePin={handleTogglePinCurrentLocation}
         onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
+        onOpenExport={() => setIsExportModalOpen(true)}
       />
 
       {/* Error Notification */}
@@ -443,6 +446,17 @@ export default function App() {
           airQualityData={airQualityData}
           unit={unit}
           onClose={() => setIsVoiceBriefingOpen(false)}
+        />
+      )}
+
+      {/* Raw Climate Data Exporter Modal (CSV / JSON) */}
+      {isExportModalOpen && (
+        <DataExportModal
+          currentLocation={currentLocation}
+          weatherData={weatherData}
+          airQualityData={airQualityData}
+          unit={unit}
+          onClose={() => setIsExportModalOpen(false)}
         />
       )}
     </div>

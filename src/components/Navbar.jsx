@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText, Bookmark, BookmarkCheck, Mic } from "lucide-react";
+import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText, Bookmark, BookmarkCheck, Mic, Download } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
 import { audioSynth } from "../services/audioSynth";
 import ClimateAlertSystem from "./ClimateAlertSystem";
@@ -22,7 +22,8 @@ export default function Navbar({
   onOpenWatchlist,
   isCurrentPinned = false,
   onTogglePin,
-  onOpenVoiceBriefing
+  onOpenVoiceBriefing,
+  onOpenExport
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -231,6 +232,17 @@ export default function Navbar({
         >
           <FileText size={16} style={{ color: "var(--accent-cyan)" }} />
           <span className="hide-on-mobile">Report</span>
+        </button>
+
+        {/* Raw Climate Data Exporter (CSV/JSON) */}
+        <button
+          className="locate-btn"
+          onClick={onOpenExport}
+          title="Export Raw Climate Data (CSV/JSON)"
+          style={{ padding: "0.45rem 0.75rem" }}
+        >
+          <Download size={16} style={{ color: "var(--accent-cyan)" }} />
+          <span className="hide-on-mobile">Export</span>
         </button>
 
         {/* Theme Toggle Button */}
