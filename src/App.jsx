@@ -14,9 +14,11 @@ import ClimateImpactSimulator from "./components/ClimateImpactSimulator";
 import HistoricalTimeMachine from "./components/HistoricalTimeMachine";
 import ClimateComparisonModal from "./components/ClimateComparisonModal";
 import ReportGeneratorModal from "./components/ReportGeneratorModal";
+import WatchlistModal from "./components/WatchlistModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
+import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
 import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
@@ -35,6 +37,8 @@ export default function App() {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
+  const [watchlist, setWatchlist] = useState(() => getStoredWatchlist());
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
@@ -138,6 +142,32 @@ export default function App() {
     setUnit((prev) => (prev === "C" ? "F" : "C"));
   };
 
+  const handleUpdateWatchlist = (updated) => {
+    setWatchlist(updated);
+    saveWatchlist(updated);
+  };
+
+  const isCurrentPinned = isCityPinned(currentLocation, watchlist);
+
+  const handleTogglePinCurrentLocation = () => {
+    if (isCurrentPinned) {
+      const updated = watchlist.filter(
+        (c) => c.cityName?.toLowerCase() !== currentLocation?.cityName?.toLowerCase()
+      );
+      handleUpdateWatchlist(updated);
+    } else {
+      const newCity = {
+        id: `loc-${Date.now()}`,
+        name: currentLocation.name,
+        cityName: currentLocation.cityName || currentLocation.name.split(",")[0],
+        country: currentLocation.country || "",
+        lat: currentLocation.lat,
+        lon: currentLocation.lon
+      };
+      handleUpdateWatchlist([...watchlist, newCity]);
+    }
+  };
+
   return (
     <div className="control-room-container">
       {/* Background Weather Particle Canvas */}
@@ -161,6 +191,10 @@ export default function App() {
         onToggleTheme={handleToggleTheme}
         onOpenComparison={() => setIsComparisonOpen(true)}
         onOpenReport={() => setIsReportOpen(true)}
+        watchlist={watchlist}
+        onOpenWatchlist={() => setIsWatchlistOpen(true)}
+        isCurrentPinned={isCurrentPinned}
+        onTogglePin={handleTogglePinCurrentLocation}
       />
 
       {/* Error Notification */}
@@ -382,6 +416,18 @@ export default function App() {
           airQualityData={airQualityData}
           unit={unit}
           onClose={() => setIsReportOpen(false)}
+        />
+      )}
+
+      {/* Multi-City Watchlist & Pinboard Modal */}
+      {isWatchlistOpen && (
+        <WatchlistModal
+          currentLocation={currentLocation}
+          watchlist={watchlist}
+          onUpdateWatchlist={handleUpdateWatchlist}
+          onSelectLocation={handleSelectLocation}
+          unit={unit}
+          onClose={() => setIsWatchlistOpen(false)}
         />
       )}
     </div>

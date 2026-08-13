@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText } from "lucide-react";
+import { Globe, Search, Navigation, RefreshCw, Sun, Moon, Volume2, VolumeX, GitCompare, FileText, Bookmark, BookmarkCheck } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
 import { audioSynth } from "../services/audioSynth";
 import ClimateAlertSystem from "./ClimateAlertSystem";
@@ -17,7 +17,11 @@ export default function Navbar({
   theme,
   onToggleTheme,
   onOpenComparison,
-  onOpenReport
+  onOpenReport,
+  watchlist = [],
+  onOpenWatchlist,
+  isCurrentPinned = false,
+  onTogglePin
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -153,6 +157,46 @@ export default function Navbar({
           style={{ padding: "0.45rem 0.75rem" }}
         >
           {isAudioPlaying ? <Volume2 size={16} style={{ color: "var(--accent-cyan)" }} /> : <VolumeX size={16} />}
+        </button>
+
+        {/* Multi-City Watchlist Button */}
+        <button
+          className="locate-btn"
+          onClick={onOpenWatchlist}
+          title="Open Multi-City Watchlist & Pinboard"
+          style={{ padding: "0.45rem 0.75rem", display: "flex", alignItems: "center", gap: "0.4rem" }}
+        >
+          <Bookmark size={16} style={{ color: "var(--accent-cyan)" }} />
+          <span className="hide-on-mobile">Watchlist</span>
+          {watchlist.length > 0 && (
+            <span
+              style={{
+                background: "var(--accent-cyan)",
+                color: "#000",
+                fontSize: "0.65rem",
+                fontWeight: 800,
+                padding: "0.1rem 0.4rem",
+                borderRadius: "10px",
+                lineHeight: 1
+              }}
+            >
+              {watchlist.length}
+            </span>
+          )}
+        </button>
+
+        {/* Pin / Bookmark Current Active City */}
+        <button
+          className="locate-btn"
+          onClick={onTogglePin}
+          title={isCurrentPinned ? "Unpin Active City" : "Pin Active City to Watchlist"}
+          style={{
+            padding: "0.45rem 0.65rem",
+            color: isCurrentPinned ? "var(--accent-green)" : "inherit",
+            borderColor: isCurrentPinned ? "var(--accent-green)" : "var(--border-light)"
+          }}
+        >
+          {isCurrentPinned ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
         </button>
 
         {/* Dual City Comparison */}
