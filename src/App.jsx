@@ -8,12 +8,13 @@ import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
 import ClimateImpactSimulator from "./components/ClimateImpactSimulator";
+import HistoricalTimeMachine from "./components/HistoricalTimeMachine";
 import ClimateComparisonModal from "./components/ClimateComparisonModal";
 import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Thermometer, TrendingUp, Compass, Sliders, AlertCircle, MoveHorizontal } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, Sliders, History, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
   const [currentLocation, setCurrentLocation] = useState({
@@ -48,7 +49,7 @@ export default function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const tabs = ["live", "forecast", "vitals", "sim"];
+  const tabs = ["live", "forecast", "history", "vitals", "sim"];
 
   useTouchSwipe({
     onSwipeLeft: () => {
@@ -223,7 +224,17 @@ export default function App() {
               }}
             >
               <Compass size={15} />
-              <span>Forecast & Warming</span>
+              <span>Forecast</span>
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "history" ? "active" : ""}`}
+              onClick={() => {
+                setActiveTab("history");
+                setIsMobileDrawerOpen(true);
+              }}
+            >
+              <History size={15} />
+              <span>Time Machine</span>
             </button>
             <button
               className={`tab-btn ${activeTab === "vitals" ? "active" : ""}`}
@@ -233,7 +244,7 @@ export default function App() {
               }}
             >
               <TrendingUp size={15} />
-              <span>Earth Vitals</span>
+              <span>Vitals</span>
             </button>
             <button
               className={`tab-btn ${activeTab === "sim" ? "active" : ""}`}
@@ -243,7 +254,7 @@ export default function App() {
               }}
             >
               <Sliders size={15} />
-              <span>AI Simulator</span>
+              <span>AI Sim</span>
             </button>
           </div>
 
@@ -271,7 +282,20 @@ export default function App() {
             </div>
           )}
 
-          {/* Tab 3: Earth's Vital Signs & Climate Radar */}
+          {/* Tab 3: Historical Climate Time Machine (1950 - 2026) */}
+          {activeTab === "history" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              <HistoricalTimeMachine
+                locationName={currentLocation.name}
+                lat={currentLocation.lat}
+                lon={currentLocation.lon}
+                currentTemp={weatherData?.current?.temp}
+                unit={unit}
+              />
+            </div>
+          )}
+
+          {/* Tab 4: Earth's Vital Signs & Climate Radar */}
           {activeTab === "vitals" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <ClimateVitals />
