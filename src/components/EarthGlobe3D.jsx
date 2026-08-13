@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
-import { Play, Pause, RotateCcw, ZoomIn, ZoomOut, Compass, Sparkles, MapPin } from "lucide-react";
+import { GLOBAL_WILDFIRE_HOTSPOTS } from "../services/wildfireSatelliteApi";
+import { Play, Pause, RotateCcw, ZoomIn, ZoomOut, Compass, Sparkles, MapPin, Flame } from "lucide-react";
 
 // Convert Latitude/Longitude to 3D Cartesian Coordinates on Sphere of radius R
 export function latLonToVector3(lat, lon, radius) {
@@ -465,6 +466,35 @@ export default function EarthGlobe3D({
       ringMesh.userData = { isPulse: true, offset: idx * 1.2 };
       markersGroup.add(ringMesh);
     });
+
+    // 3. Add NASA Active Wildfire Thermal Anomaly 3D Markers
+    GLOBAL_WILDFIRE_HOTSPOTS.forEach((fire, idx) => {
+      const pos = latLonToVector3(fire.lat, fire.lon, GLOBE_RADIUS * 1.012);
+
+      // Red/Orange fire cone
+      const coneGeo = new THREE.ConeGeometry(0.045, 0.16, 8);
+      coneGeo.rotateX(Math.PI / 2);
+      const coneMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+      const coneMesh = new THREE.Mesh(coneGeo, coneMat);
+      coneMesh.position.copy(pos);
+      coneMesh.lookAt(pos.clone().multiplyScalar(2));
+      coneMesh.userData = { isWildfire: true, fireData: fire };
+      markersGroup.add(coneMesh);
+
+      // Expanding thermal shockwave ring
+      const fireRingGeo = new THREE.RingGeometry(0.07, 0.12, 16);
+      const fireRingMat = new THREE.MeshBasicMaterial({
+        color: 0xef4444,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+      });
+      const fireRingMesh = new THREE.Mesh(fireRingGeo, fireRingMat);
+      fireRingMesh.position.copy(pos.clone().multiplyScalar(1.002));
+      fireRingMesh.lookAt(pos.clone().multiplyScalar(2));
+      fireRingMesh.userData = { isPulse: true, offset: idx * 0.9 + 2 };
+      markersGroup.add(fireRingMesh);
+    });
   }, [currentLocation]);
 
   // Mouse & Touch Orbit Controls & Click Raycasting
@@ -543,9 +573,22 @@ export default function EarthGlobe3D({
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, cameraRef.current);
 
-    // 1. Check if clicked a hotspot marker first
+    // 1. Check if clicked a hotspot marker or wildfire first
     if (markersGroupRef.current) {
       const markerHits = raycaster.intersectObjects(markersGroupRef.current.children, true);
+      const wildfireHit = markerHits.find((h) => h.object.userData?.isWildfire);
+      if (wildfireHit) {
+        const fData = wildfireHit.object.userData.fireData;
+        onSelectLocation({
+          name: fData.name,
+          cityName: fData.name.split(",")[0],
+          lat: fData.lat,
+          lon: fData.lon
+        });
+        flyTo(fData.lat, fData.lon);
+        return;
+      }
+
       const hotspotHit = markerHits.find((h) => h.object.userData?.isHotspot);
       if (hotspotHit) {
         const hData = hotspotHit.object.userData.hotspotData;

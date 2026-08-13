@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
-import { MapPin, Layers, Flame, Wind, Cloud, Globe2, Map as MapIcon } from "lucide-react";
+import { GLOBAL_WILDFIRE_HOTSPOTS } from "../services/wildfireSatelliteApi";
+import { MapPin, Layers, Flame, Wind, Cloud, Globe2, Map as MapIcon, Radio } from "lucide-react";
 import EarthGlobe3D from "./EarthGlobe3D";
 
 // Security: sanitize SVG parameters to prevent XSS via crafted map data
@@ -107,6 +108,7 @@ export default function InteractiveMap({
 
   const layers = [
     { id: "temp", label: "Thermal Map", icon: Flame, color: "var(--accent-amber)" },
+    { id: "wildfires", label: "Wildfires (NASA)", icon: Flame, color: "var(--accent-red)" },
     { id: "aqi", label: "Air Quality", icon: Wind, color: "var(--accent-cyan)" },
     { id: "clouds", label: "Cloud Cover", icon: Cloud, color: "#38bdf8" }
   ];
@@ -335,6 +337,56 @@ export default function InteractiveMap({
                 </Popup>
               </Marker>
             ))}
+
+            {/* NASA Active Wildfire Thermal Anomaly Markers */}
+            {(activeLayer === "wildfires" || activeLayer === "temp") &&
+              GLOBAL_WILDFIRE_HOTSPOTS.map((fire) => (
+                <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444", "🔥")}>
+                  <Popup>
+                    <div style={{ padding: "0.25rem", maxWidth: "230px" }}>
+                      <div className="badge badge-red" style={{ marginBottom: "0.4rem" }}>
+                        NASA Thermal Anomaly ({fire.sensor})
+                      </div>
+                      <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>
+                        {fire.name}
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
+                        Biome: {fire.biome}
+                      </div>
+                      <div style={{ fontSize: "0.78rem", display: "flex", flexDirection: "column", gap: "0.2rem", margin: "0.4rem 0" }}>
+                        <div>Fire Radiative Power: <strong style={{ color: "var(--accent-amber)" }}>{fire.frp} MW</strong></div>
+                        <div>Brightness Temp: <strong>{fire.brightnessTempC}°C</strong></div>
+                        <div>Active Clusters: <strong>{fire.activeClusters}</strong> ({fire.status})</div>
+                        <div>Confidence: <strong style={{ color: "var(--accent-green)" }}>{fire.confidence}%</strong></div>
+                      </div>
+                      <button
+                        onClick={() =>
+                          onSelectLocation({
+                            name: fire.name,
+                            cityName: fire.name.split(",")[0],
+                            lat: fire.lat,
+                            lon: fire.lon
+                          })
+                        }
+                        style={{
+                          width: "100%",
+                          marginTop: "0.4rem",
+                          background: "var(--accent-red)",
+                          border: "none",
+                          color: "#fff",
+                          padding: "0.35rem",
+                          borderRadius: "6px",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          fontSize: "0.78rem"
+                        }}
+                      >
+                        Target Wildfire Zone
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
           </MapContainer>
         )}
 

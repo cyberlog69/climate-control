@@ -7,6 +7,7 @@ import AirQualityCard from "./components/AirQualityCard";
 import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
+import WildfireSatelliteCard from "./components/WildfireSatelliteCard";
 import ClimateImpactSimulator from "./components/ClimateImpactSimulator";
 import HistoricalTimeMachine from "./components/HistoricalTimeMachine";
 import ClimateComparisonModal from "./components/ClimateComparisonModal";
@@ -295,10 +296,15 @@ export default function App() {
             </div>
           )}
 
-          {/* Tab 4: Earth's Vital Signs & Climate Radar */}
+          {/* Tab 4: Earth's Vital Signs, Climate Radar & NASA Wildfire Sentinel */}
           {activeTab === "vitals" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <ClimateVitals />
+              <WildfireSatelliteCard
+                currentLocation={currentLocation}
+                weatherData={weatherData}
+                onSelectLocation={handleSelectLocation}
+              />
               <ExtremeEventsRadar />
             </div>
           )}

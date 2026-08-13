@@ -24,7 +24,12 @@
 - **Multi-Metric Historical Shift Analysis**: Compares historical mean temperatures, atmospheric $\text{CO}_2$ concentration (311 ppm $\rightarrow$ 428 ppm), extreme heatwave days/year, and precipitation volume.
 - **75-Year Trajectory Curve**: Recharts interactive thermal trajectory curve with pinpointed active decade indicators and automated natural language diagnostic comparisons.
 
-### 3. 🔮 AI Climate Impact Scenario Simulator
+### 3. 🛰️ Real-Time NASA Wildfire & Thermal Hotspot Satellite Feeds
+- **Orbital Infrared Telemetry**: Near-realtime tracking of global active wildfire clusters and thermal anomalies powered by NASA FIRMS (VIIRS-SNPP, MODIS-Aqua/Terra, VIIRS-NOAA20).
+- **Interactive Map & Globe Overlays**: 3D pulsating flame cones on the WebGL globe and thermal density layers on 2D Leaflet maps showing Fire Radiative Power (FRP in Megawatts), brightness temperature (°C), and detection timestamps.
+- **Local Proximity Fire Risk Index**: Evaluates regional wildfire danger levels (Low $\rightarrow$ Extreme) and measures exact distance in kilometers to the nearest active fire cluster.
+
+### 4. 🔮 AI Climate Impact Scenario Simulator
 - **Warming Scenario Slider**: Model future environmental impacts at **+1.5°C**, **+2.0°C**, **+3.0°C**, and **+4.0°C** global warming scenarios.
 - **Local Stress Projections**: Calculates coordinate-specific projections for:
   - 🌊 **Sea Level Rise Inundation**: Projected coastal surge in meters.
@@ -32,26 +37,26 @@
   - 💧 **Drought Deficit**: Percentage surge in regional water stress.
   - 🌾 **Agricultural Impact**: Predicted staple crop yield reduction.
 
-### 4. ⚔️ Dual-City Climate Comparison Mode
+### 5. ⚔️ Dual-City Climate Comparison Mode
 - **Side-by-Side Analysis**: Compare any two global cities (e.g. *Tokyo vs. London* or *New York vs. Svalbard*) in real time.
 - **Thermal & Environmental Delta**: Displays live temperature differences, AQI index comparisons, wind speeds, and atmospheric pressure gaps.
 
-### 5. 🔊 Procedural Ambient Weather Audio Synthesizer
+### 6. 🔊 Procedural Ambient Weather Audio Synthesizer
 - **Web Audio API Engine**: Synthesizes soothing procedural raindrops, atmospheric wind howls, or space aura frequencies matching active weather conditions with zero external audio assets.
 
-### 6. 📄 1-Click Diagnostic Health Report Export
+### 7. 📄 1-Click Diagnostic Health Report Export
 - **PDF & Print Snapshot**: Generate formatted Environmental Health Diagnostic Reports with coordinates, AQI scores, 7-day weather tables, and safety advisories for instant printing or PDF saving.
 
-### 7. 🚨 Live Climate Emergency Alert System
+### 8. 🚨 Live Climate Emergency Alert System
 - **Real-Time Hazard Evaluator**: Detects extreme heatwaves ($\ge 38^\circ\text{C}$), gale winds ($\ge 50\text{ km/h}$), hazardous AQI ($>150$), and severe thunderstorms.
 - **Synthesized Audio Ping**: Web Audio chime alerts when critical warnings fire.
 - **Alert Hub Drawer**: Modal drawer to review, filter, and dismiss active environmental advisories.
 
-### 8. 👆 Touch Swipe Gestures & Mobile Bottom Sheet
+### 9. 👆 Touch Swipe Gestures & Mobile Bottom Sheet
 - **Touch Swipe Navigation**: Swipe left or right on mobile devices to switch between command terminal tabs.
 - **Mobile Bottom Sheet Drawer**: On small viewports, the command panel becomes a slideable bottom sheet with touch handles and min 44px hit targets.
 
-### 7. 🌗 Dark / Light Mode Theme Toggle
+### 10. 🌗 Dark / Light Mode Theme Toggle
 - **Persistent Preferences**: Theme state (`dark` or `light`) saved to `localStorage`.
 - **Dynamic Leaflet Tiles**: Automatically switches between **CartoDB Dark Matter** and **CartoDB Positron** map tiles.
 
