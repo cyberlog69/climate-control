@@ -21,6 +21,7 @@ import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
+import { Capacitor } from "@capacitor/core";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Geolocation } from "@capacitor/geolocation";
 import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal } from "lucide-react";
@@ -44,25 +45,39 @@ export default function App() {
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
   const [isVoiceBriefingOpen, setIsVoiceBriefingOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-  const [watchlist, setWatchlist] = useState(() => getStoredWatchlist());
+  const [watchlist, setWatchlist] = useState(() => {
+    try {
+      return getStoredWatchlist();
+    } catch {
+      return [];
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("climatesphere_theme") || "dark";
+    try {
+      return localStorage.getItem("climatesphere_theme") || "dark";
+    } catch {
+      return "dark";
+    }
   });
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("climatesphere_theme", theme);
-
-    // Sync native Android status bar with theme
     try {
-      StatusBar.setStyle({ style: theme === "dark" ? Style.Dark : Style.Light }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: theme === "dark" ? "#030712" : "#f8fafc" }).catch(() => {});
-    } catch (e) {
-      // Running in browser, ignore
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("climatesphere_theme", theme);
+    } catch {}
+
+    // Sync native Android status bar with theme safely
+    if (Capacitor.isNativePlatform() && Capacitor.isPluginAvailable("StatusBar")) {
+      try {
+        StatusBar.setStyle({ style: theme === "dark" ? Style.Dark : Style.Light }).catch(() => {});
+        StatusBar.setBackgroundColor({ color: theme === "dark" ? "#030712" : "#f8fafc" }).catch(() => {});
+      } catch (e) {
+        console.warn("StatusBar sync error:", e);
+      }
     }
   }, [theme]);
 
