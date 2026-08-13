@@ -398,6 +398,7 @@ export default function App() {
                 locationName={currentLocation.name}
                 lat={currentLocation.lat}
                 lon={currentLocation.lon}
+                unit={unit}
               />
             </div>
           )}

@@ -371,35 +371,52 @@ h1, h2, h3, h4, h5, h6 {
 /* Control Room Navigation Tabs */
 .control-tabs {
   display: flex;
+  align-items: center;
   background: var(--bg-inner);
   border: 1px solid var(--border-light);
   border-radius: 20px;
-  padding: 0.25rem;
+  padding: 0.3rem 0.4rem;
   gap: 0.35rem;
   flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.control-tabs::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .tab-btn {
-  flex: 1;
-  display: flex;
+  flex: 0 0 auto;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.75rem;
-  min-height: 42px;
-  border-radius: 16px;
-  border: none;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  min-height: 38px;
+  border-radius: 14px;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover {
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
 .tab-btn.active {
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
   color: #fff;
+  border-color: rgba(6, 182, 212, 0.5);
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
 }
 

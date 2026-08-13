@@ -17,11 +17,9 @@ import {
   Plane,
   Zap,
   Utensils,
-  ShoppingBag,
   TreePine,
   CheckCircle2,
   Circle,
-  TrendingDown,
   Target,
   Sparkles,
   Info
@@ -72,20 +70,26 @@ export default function CarbonFootprintCalculator({ locationName }) {
   };
 
   const vehicles = [
-    { id: "petrol", label: "Petrol / Diesel", icon: "⛽" },
+    { id: "petrol", label: "Petrol", icon: "⛽" },
     { id: "hybrid", label: "Hybrid", icon: "🔋" },
-    { id: "ev", label: "Electric EV", icon: "⚡" },
-    { id: "transit", label: "Public Transit", icon: "🚆" },
-    { id: "bicycle", label: "Bike / Walk", icon: "🚲" }
+    { id: "ev", label: "EV", icon: "⚡" },
+    { id: "transit", label: "Transit", icon: "🚆" },
+    { id: "bicycle", label: "Bike", icon: "🚲" }
   ];
 
   const diets = [
-    { id: "highMeat", label: "High Meat", icon: "🥩" },
+    { id: "highMeat", label: "Meat-Rich", icon: "🥩" },
     { id: "average", label: "Average", icon: "🍗" },
     { id: "pescatarian", label: "Pescatarian", icon: "🐟" },
     { id: "vegetarian", label: "Vegetarian", icon: "🥗" },
     { id: "vegan", label: "Vegan", icon: "🌱" }
   ];
+
+  const chartData = footprint.breakdown.map((item) => ({
+    name: item.name,
+    value: item.value,
+    color: item.color
+  }));
 
   return (
     <div className="glass-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -101,7 +105,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
       </div>
 
       <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
-        Calculate your annual greenhouse gas emissions ($t\text{CO}_2\text{e}$), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
+        Analyze personal greenhouse gas emissions ($t\text{CO}_2\text{e}$), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
       </p>
 
       {/* Main Footprint Score & Target Benchmark Card */}
@@ -113,10 +117,10 @@ export default function CarbonFootprintCalculator({ locationName }) {
           border: `1px solid ${footprint.color}44`,
           display: "flex",
           flexDirection: "column",
-          gap: "0.75rem"
+          gap: "0.85rem"
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
           <div>
             <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               Total Annual Carbon Footprint
@@ -168,16 +172,37 @@ export default function CarbonFootprintCalculator({ locationName }) {
         </div>
       </div>
 
-      {/* 4-Pillar Interactive Configurator */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
+      {/* Donut Chart & Category Breakdown Row */}
+      <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>
+          Emissions Category Breakdown
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "0.55rem" }}>
+          {footprint.breakdown.map((item, idx) => (
+            <div key={idx} style={{ background: "var(--bg-card)", padding: "0.65rem 0.75rem", borderRadius: "12px", border: "1px solid var(--border-light)" }}>
+              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{item.name}</div>
+              <div style={{ fontSize: "1.2rem", fontWeight: 800, color: item.color, margin: "0.15rem 0" }}>
+                {item.value} <span style={{ fontSize: "0.72rem", fontWeight: 500 }}>t</span>
+              </div>
+              <div style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
+                {Math.round((item.value / footprint.totalTons) * 100) || 0}% share
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 4-Pillar Interactive Configurator Grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.85rem" }}>
         {/* Pillar 1: Mobility */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.6rem" }}>
+        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Car size={16} style={{ color: "var(--accent-cyan)" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Daily Commute & Vehicle</span>
           </div>
 
-          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
+          <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
             {vehicles.map((v) => (
               <button
                 key={v.id}
@@ -187,9 +212,9 @@ export default function CarbonFootprintCalculator({ locationName }) {
                   color: vehicleType === v.id ? "#000" : "var(--text-muted)",
                   border: vehicleType === v.id ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
                   borderRadius: "8px",
-                  padding: "0.25rem 0.5rem",
+                  padding: "0.25rem 0.45rem",
                   fontSize: "0.72rem",
-                  fontWeight: vehicleType === v.id ? 700 : 500,
+                  fontWeight: vehicleType === v.id ? 800 : 500,
                   cursor: "pointer"
                 }}
               >
@@ -198,8 +223,8 @@ export default function CarbonFootprintCalculator({ locationName }) {
             ))}
           </div>
 
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", marginBottom: "0.2rem" }}>
-            <span>Weekly Commute Distance:</span>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
+            <span>Distance:</span>
             <strong style={{ color: "var(--text-main)" }}>{commuteKmWeek} km/wk</strong>
           </div>
           <input
@@ -214,62 +239,60 @@ export default function CarbonFootprintCalculator({ locationName }) {
         </div>
 
         {/* Pillar 2: Flights & Aviation */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.6rem" }}>
+        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Plane size={16} style={{ color: "#38bdf8" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Annual Flights</span>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Short Flights (&lt;3 hrs):</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <button
-                  onClick={() => setShortFlights(Math.max(0, shortFlights - 1))}
-                  style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
-                >
-                  -
-                </button>
-                <span style={{ fontWeight: 700, fontSize: "0.85rem", width: "18px", textAlign: "center" }}>{shortFlights}</span>
-                <button
-                  onClick={() => setShortFlights(shortFlights + 1)}
-                  style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
-                >
-                  +
-                </button>
-              </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Short (&lt;3h):</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <button
+                onClick={() => setShortFlights(Math.max(0, shortFlights - 1))}
+                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+              >
+                -
+              </button>
+              <span style={{ fontWeight: 700, fontSize: "0.85rem", width: "18px", textAlign: "center" }}>{shortFlights}</span>
+              <button
+                onClick={() => setShortFlights(shortFlights + 1)}
+                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+              >
+                +
+              </button>
             </div>
+          </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Long Flights (&gt;3 hrs):</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <button
-                  onClick={() => setLongFlights(Math.max(0, longFlights - 1))}
-                  style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
-                >
-                  -
-                </button>
-                <span style={{ fontWeight: 700, fontSize: "0.85rem", width: "18px", textAlign: "center" }}>{longFlights}</span>
-                <button
-                  onClick={() => setLongFlights(longFlights + 1)}
-                  style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
-                >
-                  +
-                </button>
-              </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Long (&gt;3h):</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <button
+                onClick={() => setLongFlights(Math.max(0, longFlights - 1))}
+                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+              >
+                -
+              </button>
+              <span style={{ fontWeight: 700, fontSize: "0.85rem", width: "18px", textAlign: "center" }}>{longFlights}</span>
+              <button
+                onClick={() => setLongFlights(longFlights + 1)}
+                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+              >
+                +
+              </button>
             </div>
           </div>
         </div>
 
         {/* Pillar 3: Home Energy */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.5rem" }}>
+        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Zap size={16} style={{ color: "var(--accent-amber)" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Home Electricity</span>
           </div>
 
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", marginBottom: "0.2rem" }}>
-            <span>Monthly Usage:</span>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
+            <span>Monthly:</span>
             <strong style={{ color: "var(--text-main)" }}>{electricityKwh} kWh/mo</strong>
           </div>
           <input
@@ -279,11 +302,11 @@ export default function CarbonFootprintCalculator({ locationName }) {
             step="25"
             value={electricityKwh}
             onChange={(e) => setElectricityKwh(parseInt(e.target.value, 10))}
-            style={{ width: "100%", accentColor: "var(--accent-amber)", cursor: "pointer", height: "4px", marginBottom: "0.5rem" }}
+            style={{ width: "100%", accentColor: "var(--accent-amber)", cursor: "pointer", height: "4px" }}
           />
 
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", marginBottom: "0.2rem" }}>
-            <span>Green Energy Mix:</span>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
+            <span>Green Mix:</span>
             <strong style={{ color: "var(--accent-green)" }}>{greenPercent}%</strong>
           </div>
           <input
@@ -298,13 +321,13 @@ export default function CarbonFootprintCalculator({ locationName }) {
         </div>
 
         {/* Pillar 4: Diet Profile */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.5rem" }}>
+        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Utensils size={16} style={{ color: "#34d399" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Diet & Nutrition Profile</span>
           </div>
 
-          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
             {diets.map((d) => (
               <button
                 key={d.id}
@@ -314,9 +337,9 @@ export default function CarbonFootprintCalculator({ locationName }) {
                   color: dietType === d.id ? "#000" : "var(--text-muted)",
                   border: dietType === d.id ? "1px solid var(--accent-green)" : "1px solid var(--border-light)",
                   borderRadius: "8px",
-                  padding: "0.25rem 0.5rem",
+                  padding: "0.25rem 0.45rem",
                   fontSize: "0.72rem",
-                  fontWeight: dietType === d.id ? 700 : 500,
+                  fontWeight: dietType === d.id ? 800 : 500,
                   cursor: "pointer"
                 }}
               >
@@ -324,27 +347,6 @@ export default function CarbonFootprintCalculator({ locationName }) {
               </button>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Category Breakdown Progress Grid */}
-      <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
-        <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.6rem" }}>
-          Emissions Category Breakdown
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0.6rem" }}>
-          {footprint.breakdown.map((item, idx) => (
-            <div key={idx} style={{ background: "var(--bg-card)", padding: "0.6rem", borderRadius: "10px", border: "1px solid var(--border-light)" }}>
-              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{item.name}</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: 800, color: item.color, margin: "0.15rem 0" }}>
-                {item.value} <span style={{ fontSize: "0.7rem", fontWeight: 500 }}>t</span>
-              </div>
-              <div style={{ fontSize: "0.65rem", color: "var(--text-dim)" }}>
-                {Math.round((item.value / footprint.totalTons) * 100) || 0}% of total
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
@@ -391,7 +393,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
                   </div>
                 </div>
 
-                <span className="badge badge-green" style={{ fontSize: "0.72rem", padding: "0.15rem 0.5rem" }}>
+                <span className="badge badge-green" style={{ fontSize: "0.72rem", padding: "0.15rem 0.5rem", flexShrink: 0 }}>
                   -{action.savingsTons} t/yr
                 </span>
               </div>
