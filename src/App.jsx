@@ -9,6 +9,7 @@ import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
 import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
 import WildfireSatelliteCard from "./components/WildfireSatelliteCard";
 import RenewableEnergyEstimator from "./components/RenewableEnergyEstimator";
+import CarbonFootprintCalculator from "./components/CarbonFootprintCalculator";
 import ClimateImpactSimulator from "./components/ClimateImpactSimulator";
 import HistoricalTimeMachine from "./components/HistoricalTimeMachine";
 import ClimateComparisonModal from "./components/ClimateComparisonModal";
@@ -16,7 +17,7 @@ import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
-import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, AlertCircle, MoveHorizontal } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal } from "lucide-react";
 
 export default function App() {
   const [currentLocation, setCurrentLocation] = useState({
@@ -51,7 +52,7 @@ export default function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const tabs = ["live", "forecast", "history", "vitals", "energy", "sim"];
+  const tabs = ["live", "forecast", "history", "vitals", "energy", "footprint", "sim"];
 
   useTouchSwipe({
     onSwipeLeft: () => {
@@ -256,7 +257,17 @@ export default function App() {
               }}
             >
               <Zap size={15} />
-              <span>Clean Energy</span>
+              <span>Energy</span>
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "footprint" ? "active" : ""}`}
+              onClick={() => {
+                setActiveTab("footprint");
+                setIsMobileDrawerOpen(true);
+              }}
+            >
+              <Leaf size={15} />
+              <span>Carbon</span>
             </button>
             <button
               className={`tab-btn ${activeTab === "sim" ? "active" : ""}`}
@@ -332,7 +343,14 @@ export default function App() {
             </div>
           )}
 
-          {/* Tab 6: AI Climate Impact Simulator */}
+          {/* Tab 6: Personal Carbon Footprint & Offset Calculator */}
+          {activeTab === "footprint" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              <CarbonFootprintCalculator locationName={currentLocation.name} />
+            </div>
+          )}
+
+          {/* Tab 7: AI Climate Impact Simulator */}
           {activeTab === "sim" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
               <ClimateImpactSimulator
