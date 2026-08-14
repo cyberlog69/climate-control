@@ -26,8 +26,9 @@ export function vector3ToLatLon(vector, radius) {
 
 // Procedural High-Res Earth Texture Generator (Canvas-based)
 function createEarthCanvasTexture(theme = "dark") {
-  const width = 2048;
-  const height = 1024;
+  // Reduced to 1024×512 from 2048×1024 to prevent GPU OOM on Android WebView
+  const width = 1024;
+  const height = 512;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -143,8 +144,9 @@ function createEarthCanvasTexture(theme = "dark") {
 
 // Procedural Atmospheric Cloud Texture
 function createCloudTexture() {
-  const width = 1024;
-  const height = 512;
+  // Reduced to 512×256 to save GPU memory on Android WebView
+  const width = 512;
+  const height = 256;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -234,13 +236,31 @@ export default function EarthGlobe3D({
     camera.position.z = 6.8;
     cameraRef.current = camera;
 
-    // 2. WebGL Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // 2. WebGL Renderer — wrapped in try/catch for Android WebView compatibility
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (e) {
+      console.error("WebGL renderer creation failed:", e);
+      return; // Bail out — InteractiveMap WebGL check should have prevented this
+    }
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Cap pixel ratio at 1.5 on Android to prevent GPU memory issues (DPR can be 3.5+ on flagship devices)
+    const dpr = Math.min(window.devicePixelRatio, window.devicePixelRatio > 2 ? 1.5 : 2);
+    renderer.setPixelRatio(dpr);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     rendererRef.current = renderer;
+
+    // Handle WebGL context loss/restore (critical for Android WebView — context can be lost when app is backgrounded)
+    renderer.domElement.addEventListener("webglcontextlost", (e) => {
+      e.preventDefault();
+      if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
+      console.warn("WebGL context lost — pausing render loop");
+    }, false);
+    renderer.domElement.addEventListener("webglcontextrestored", () => {
+      console.warn("WebGL context restored");
+    }, false);
 
     container.innerHTML = "";
     container.appendChild(renderer.domElement);
@@ -251,7 +271,8 @@ export default function EarthGlobe3D({
     globeGroupRef.current = globeGroup;
 
     // 4. Earth Sphere Mesh
-    const earthGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
+    // Reduced from 64 to 48 segments — still high quality, ~44% fewer triangles for Android GPU
+    const earthGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 48, 48);
     const earthTexture = createEarthCanvasTexture(theme);
     const earthMat = new THREE.MeshPhongMaterial({
       map: earthTexture,
@@ -264,7 +285,7 @@ export default function EarthGlobe3D({
     globeGroup.add(earthMesh);
 
     // 5. Cloud Layer Sphere Mesh
-    const cloudGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.018, 48, 48);
+    const cloudGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.018, 32, 32);
     const cloudTexture = createCloudTexture();
     const cloudMat = new THREE.MeshPhongMaterial({
       map: cloudTexture,

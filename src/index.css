@@ -502,12 +502,13 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-main);
 }
 
-/* Globe Control Buttons */
+/* Globe Control Buttons - solid BG fallback for older Android WebViews */
 .globe-ctrl-btn {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: var(--bg-card);
+  /* Solid fallback for Android WebViews that don't support backdrop-filter */
+  background: rgba(15, 23, 42, 0.9);
   border: 1px solid var(--border-light);
   color: var(--text-main);
   display: flex;
@@ -515,6 +516,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   cursor: pointer;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: all 0.2s ease;
 }
 
@@ -528,10 +530,21 @@ h1, h2, h3, h4, h5, h6 {
 /* 📱 NATIVE ANDROID MOBILE UX & RESPONSIVE PORTABILITY ARCHITECTURE         */
 /* ========================================================================= */
 
+/* Mobile Drawer Handle — shown in command panel on mobile */
+.mobile-drawer-handle {
+  display: none;
+}
+
+/* Touch Swipe Hint — shown on mobile */
+.touch-swipe-hint {
+  display: none;
+}
+
 /* Android Native Bottom Navigation Bar */
 .mobile-bottom-nav {
   display: none;
 }
+
 
 @media (max-width: 900px) {
   .control-room-container {
@@ -593,6 +606,29 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
+  /* Mobile Drawer Handle — drag indicator at top of command panel */
+  .mobile-drawer-handle {
+    display: block;
+    width: 48px;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(148, 163, 184, 0.35);
+    margin: 0 auto 0.5rem auto;
+    flex-shrink: 0;
+  }
+
+  /* Touch Swipe Hint — small banner showing swipe navigation hint */
+  .touch-swipe-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    padding: 0.3rem 0.75rem;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
   /* Android Native Bottom Navigation Bar */
   .mobile-bottom-nav {
     display: flex;
@@ -602,7 +638,8 @@ h1, h2, h3, h4, h5, h6 {
     right: 0;
     height: calc(60px + env(safe-area-inset-bottom));
     padding-bottom: env(safe-area-inset-bottom);
-    background: var(--bg-card-hover);
+    /* Solid fallback for Android WebViews that don't support backdrop-filter */
+    background: rgba(13, 19, 36, 0.97);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     border-top: 1px solid var(--border-light);
@@ -661,7 +698,8 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     max-height: 80vh;
-    background: var(--bg-card-hover);
+    /* Solid fallback for Android WebViews that don't support backdrop-filter */
+    background: rgba(13, 19, 36, 0.98);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-top: 1px solid var(--border-light);

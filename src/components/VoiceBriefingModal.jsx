@@ -35,6 +35,9 @@ export default function VoiceBriefingModal({
   const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Check if speech synthesis is available (not available in Android WebView native context)
+  const isSpeechSupported = typeof window !== "undefined" && "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance !== "undefined";
+
   const cityName = locationName ? locationName.split(",")[0] : "your location";
 
   // Generate briefing script
@@ -49,6 +52,9 @@ export default function VoiceBriefingModal({
 
   // Load and refresh available system voices
   useEffect(() => {
+    // Skip voice loading on Android WebView where speechSynthesis is unavailable
+    if (!isSpeechSupported) return;
+
     const updateVoices = () => {
       const avail = speechController.getAvailableVoices();
       if (avail && avail.length > 0) {
@@ -71,7 +77,7 @@ export default function VoiceBriefingModal({
     return () => {
       speechController.stop();
     };
-  }, []);
+  }, [isSpeechSupported]);
 
   const handlePlay = () => {
     setErrorMessage(null);
@@ -125,10 +131,47 @@ export default function VoiceBriefingModal({
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(briefing.fullScript);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(briefing.fullScript).catch(() => {
+        // Fallback: silently fail — user can manually select text
+        console.warn("Clipboard write failed — may not be supported in this WebView context");
+      });
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+
+  // If speech synthesis is not supported (Android WebView), show friendly notice instead of broken UI
+  if (!isSpeechSupported) {
+    return (
+      <div
+        style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(3, 7, 18, 0.85)",
+          zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem"
+        }}
+        onClick={onClose}
+      >
+        <div className="glass-card" style={{ padding: "2rem", maxWidth: "380px", textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
+          <Radio size={40} style={{ color: "var(--accent-cyan)", margin: "0 auto 1rem" }} />
+          <h3 style={{ fontWeight: 700, marginBottom: "0.75rem" }}>Voice Briefing</h3>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: "1.25rem" }}>
+            Voice synthesis is not available in this environment. Below is your complete climate briefing you can read:
+          </p>
+          <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "12px", textAlign: "left", fontSize: "0.85rem", color: "var(--text-main)", lineHeight: 1.7 }}>
+            {briefing.fullScript}
+          </div>
+          <button
+            onClick={onClose}
+            style={{ marginTop: "1.25rem", padding: "0.6rem 1.5rem", background: "var(--accent-cyan)", color: "#000", fontWeight: 700, border: "none", borderRadius: "10px", cursor: "pointer" }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const speeds = [0.8, 1.0, 1.2, 1.5];
 

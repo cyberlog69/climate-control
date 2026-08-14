@@ -68,13 +68,28 @@ function MapClickHandler({ onMapClick }) {
   return null;
 }
 
+// Detect WebGL support before attempting to render Three.js globe
+// On older/low-end Android WebViews, WebGL context creation fails silently and crashes the app
+function detectWebGLSupport() {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    return !!gl;
+  } catch (e) {
+    return false;
+  }
+}
+
+const webGLSupported = detectWebGLSupport();
+
 export default function InteractiveMap({
   currentLocation,
   onSelectLocation,
   weatherData,
   theme = "dark"
 }) {
-  const [viewMode, setViewMode] = useState("3d"); // '2d' | '3d' - Defaulting to 3D Globe for incredible presentation!
+  // Default to 2D map when WebGL is not available (common on older/low-end Android WebViews)
+  const [viewMode, setViewMode] = useState(webGLSupported ? "3d" : "2d");
   const [activeLayer, setActiveLayer] = useState("temp");
   const [mapCenter, setMapCenter] = useState([
     currentLocation?.lat || 35.6762,

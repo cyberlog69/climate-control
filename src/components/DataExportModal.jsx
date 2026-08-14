@@ -96,7 +96,11 @@ export default function DataExportModal({
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(formattedContent);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(formattedContent).catch(() => {
+        console.warn("Clipboard write failed — may not be supported in this context");
+      });
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

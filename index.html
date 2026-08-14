@@ -23,8 +23,7 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      // Only register service worker in standard browser web environments, not inside native app containers
-      if ("serviceWorker" in navigator && !window.Capacitor?.isNativePlatform?.() && window.location.protocol.startsWith("http")) {
+      if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
         window.addEventListener("load", () => {
           navigator.serviceWorker.register("./sw.js").catch(() => {});
         });

@@ -9,20 +9,30 @@ export default function WeatherParticles({ weatherCode, isDay }) {
     const ctx = canvas.getContext("2d");
     let animationFrameId;
 
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    // Use clientWidth/Height with fallbacks — window.innerWidth can be 0 during early Android WebView layout
+    const getWidth = () => document.documentElement.clientWidth || window.innerWidth || 360;
+    const getHeight = () => document.documentElement.clientHeight || window.innerHeight || 640;
+
+    let width = (canvas.width = getWidth());
+    let height = (canvas.height = getHeight());
+
+    // Guard against zero-size canvas (would cause infinite render loops on Android)
+    if (width === 0 || height === 0) return;
 
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = canvas.width = getWidth();
+      height = canvas.height = getHeight();
     };
     window.addEventListener("resize", handleResize);
 
-    // Particle count and properties based on weather condition
+    // Reduce particle count on mobile for performance (two animation loops compete on Android)
+    const isMobile = window.innerWidth < 768;
     const particles = [];
     const isRain = [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(weatherCode);
     const isSnow = [71, 73, 75, 85, 86].includes(weatherCode);
-    const particleCount = isRain ? 120 : isSnow ? 80 : 45;
+    const particleCount = isMobile
+      ? (isRain ? 55 : isSnow ? 35 : 20)   // reduced on mobile
+      : (isRain ? 120 : isSnow ? 80 : 45);
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({

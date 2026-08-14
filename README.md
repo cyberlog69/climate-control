@@ -173,7 +173,6 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 | Component | Technology / Library |
 | :--- | :--- |
 | **Frontend Framework** | [React 18](https://react.dev) + [Vite 8](https://vite.dev) |
-| **Mobile Runtime** | [Capacitor 8](https://capacitorjs.com) (Native Android APK/AAB runtime & Geolocation) |
 | **PWA & Offline** | Web App Manifest + Service Worker Cache-First Engine |
 | **3D Planetary WebGL** | [Three.js](https://threejs.org) (Procedural Earth Globe, Atmosphere Shaders, Orbit Controls) |
 | **Styling** | Vanilla CSS (Design Tokens, Glassmorphism, Responsive Grid) |
@@ -185,39 +184,13 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ---
 
-## 📱 Android Native App & PWA Guide
+## 📱 PWA Installation Guide
 
-ClimateSphere can run both as a **standalone Progressive Web App (PWA)** and as a **full native Android application (APK / AAB)** via Capacitor.
+ClimateSphere runs as a modern, responsive **Progressive Web App (PWA)**:
 
-### 🤖 Method A: Building the Native Android APK
-
-#### Prerequisites:
-- [Android Studio](https://developer.android.com/studio) installed (or Android SDK command line tools with `JAVA_HOME` configured).
-
-#### Build & Run via CLI:
-```bash
-# 1. Build web bundle and sync native Android project
-npm run cap:sync
-
-# 2. Open project in Android Studio (optional)
-npm run cap:open
-
-# 3. Compile Debug APK directly via Gradle
-# Windows PowerShell / CMD:
-cd android; .\gradlew.bat assembleDebug
-
-# macOS / Linux:
-cd android && ./gradlew assembleDebug
-```
-The compiled APK will be located at:
-📁 `android/app/build/outputs/apk/debug/app-debug.apk`
-
----
-
-### 🌐 Method B: 1-Tap Mobile PWA Installation
-1. Open the deployed URL in **Google Chrome / Firefox Mobile** on any Android device.
-2. Tap the browser menu `⋮` and select **"Add to Home Screen"** or **"Install ClimateSphere"**.
-3. ClimateSphere will install as a standalone native-feeling WebAPK with offline caching support.
+1. Open the deployed URL in **Google Chrome / Edge / Safari / Firefox Mobile** on any device.
+2. Tap the browser menu and select **"Add to Home Screen"** or **"Install ClimateSphere"**.
+3. ClimateSphere installs as a standalone web app with offline caching support.
 
 ---
 
@@ -245,11 +218,6 @@ The compiled APK will be located at:
 4. **Build for Web Production**
    ```bash
    npm run build
-   ```
-
-5. **Sync Native Android Project**
-   ```bash
-   npm run cap:sync
    ```
 
 ---
