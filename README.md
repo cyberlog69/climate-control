@@ -184,9 +184,31 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ---
 
+## 🤖 Native Android App (Kotlin & Jetpack Compose)
+
+ClimateSphere now includes a fully native Android application located in [`android/`](./android):
+
+- **Architecture**: Modern Android Architecture (MVI / Clean Architecture) with Single Activity & Jetpack Compose Material 3.
+- **Offline Cache**: Room Database SQLite cache providing instant 0ms startup.
+- **Networking**: Retrofit 2 + OkHttp with `kotlinx.serialization` integrating Open-Meteo Weather, Air Quality, and Geocoding APIs.
+- **Location**: Google Play Services `FusedLocationProviderClient` with balanced power accuracy.
+
+### Building & Running the Android App:
+```bash
+cd android
+
+# Compile & assemble debug APK
+./gradlew assembleDebug       # Linux / macOS
+.\gradlew.bat assembleDebug   # Windows
+```
+The output APK will be generated at:
+`android/app/build/outputs/apk/debug/app-debug.apk`
+
+---
+
 ## 📱 PWA Installation Guide
 
-ClimateSphere runs as a modern, responsive **Progressive Web App (PWA)**:
+ClimateSphere also runs as a modern, responsive **Progressive Web App (PWA)**:
 
 1. Open the deployed URL in **Google Chrome / Edge / Safari / Firefox Mobile** on any device.
 2. Tap the browser menu and select **"Add to Home Screen"** or **"Install ClimateSphere"**.
