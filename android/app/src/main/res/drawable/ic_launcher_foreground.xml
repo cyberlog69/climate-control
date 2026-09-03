@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Solar Energy Crown Radiation (Behind Globe) -->
+    <path
+        android:fillColor="#06B6D4"
+        android:pathData="M38,36 Q42,27 46,33 Q50,22 54,30 Q58,22 62,33 Q66,27 70,36 Z" />
+
+    <!-- Planetary Ocean Base (Semi-transparent Deep Ocean Fill) -->
+    <path
+        android:fillColor="#0D2235"
+        android:pathData="M54,54m-21,0a21,21 0 1,0 42,0a21,21 0 1,0 -42,0" />
+
+    <!-- Globe Sphere Outer Boundary -->
+    <path
+        android:strokeColor="#06B6D4"
+        android:strokeWidth="2.4"
+        android:pathData="M54,54m-21,0a21,21 0 1,0 42,0a21,21 0 1,0 -42,0" />
+
+    <!-- Equator & Central Meridian Grid Lines -->
+    <path
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="1.2"
+        android:strokeAlpha="0.75"
+        android:pathData="M33,54 H75 M54,33 V75" />
+
+    <!-- Latitude Isobar Rings -->
+    <path
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="1.2"
+        android:strokeAlpha="0.6"
+        android:pathData="M36,44 Q54,48.5 72,44 M36,64 Q54,59.5 72,64" />
+
+    <!-- Longitude Meridian Curves -->
+    <path
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="1.2"
+        android:strokeAlpha="0.6"
+        android:pathData="M54,33 Q43,54 54,75 M54,33 Q65,54 54,75" />
+
+    <!-- Dynamic Atmospheric Orbital Ring (Front Swoosh) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,67 C23,61 29,54 42,49 C63,41 79,40 85,44 C87,46 85,50 78,54 C60,62 41,67 30,68 C28,68 27,67.5 27,67 Z" />
+
+    <!-- Orbital Ring Cyan Core Accent -->
+    <path
+        android:fillColor="#06B6D4"
+        android:pathData="M34,64 C48,58 64,52 78,46 C79.5,46.5 79,48 76,49.5 C62,55 46,61 35,65 C33.5,65 33.5,64.5 34,64 Z" />
+
+</vector>
