@@ -1,5 +1,9 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
+[![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
+[![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Compose](https://img.shields.io/badge/Compose-Material_3-4285F4?style=flat&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev)
 [![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900?style=flat&logo=leaflet&logoColor=white)](https://leafletjs.com)
@@ -168,8 +172,7 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ---
 
-## 🛠️ Technology Stack
-
+### 🌐 Web & PWA Stack
 | Component | Technology / Library |
 | :--- | :--- |
 | **Frontend Framework** | [React 18](https://react.dev) + [Vite 8](https://vite.dev) |
@@ -182,27 +185,55 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 | **Iconography** | [Lucide React](https://lucide.dev) |
 | **Weather & Air Quality API** | [Open-Meteo API](https://open-meteo.com) (Free, no API key required) |
 
+### 🤖 Native Android Stack
+| Component | Technology / Library |
+| :--- | :--- |
+| **Language & Tooling** | [Kotlin 2.0](https://kotlinlang.org) + Gradle 8.11 Version Catalog (`libs.versions.toml`) |
+| **UI Toolkit** | [Jetpack Compose 2024](https://developer.android.com/jetpack/compose) + Material 3 Dark Palette |
+| **Local Database & Cache** | [Room 2.6](https://developer.android.com/training/data-storage/room) + SQLite + Google KSP |
+| **Networking & Parsing** | [Retrofit 2.11](https://square.github.io/retrofit/) + OkHttp + `kotlinx.serialization` |
+| **Location Telemetry** | Google Play Services `FusedLocationProviderClient` + Native Android `Geocoder` |
+| **Design System** | Adaptive App Icon with **Material You Themed Icons** (`<monochrome>`) |
+
 ---
 
 ## 🤖 Native Android App (Kotlin & Jetpack Compose)
 
-ClimateSphere now includes a fully native Android application located in [`android/`](./android):
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.0.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk)
 
-- **Architecture**: Modern Android Architecture (MVI / Clean Architecture) with Single Activity & Jetpack Compose Material 3.
-- **Offline Cache**: Room Database SQLite cache providing instant 0ms startup.
-- **Networking**: Retrofit 2 + OkHttp with `kotlinx.serialization` integrating Open-Meteo Weather, Air Quality, and Geocoding APIs.
-- **Location**: Google Play Services `FusedLocationProviderClient` with balanced power accuracy.
+ClimateSphere features a 100% native Android application built with modern Android standards in [`android/`](./android):
 
-### Building & Running the Android App:
+### 🌟 Key Highlights & Architecture:
+- **⚡ 0ms Cold Startup & Offline Cache**: Powered by a Room SQLite database acting as the Single Source of Truth. Cached weather is emitted instantly on launch, followed by silent background synchronization with Open-Meteo.
+- **📍 Smart Auto-Locate & Dual Reverse-Geocoding**:
+  - Automatically queries Google Play Services `FusedLocationProviderClient` on startup.
+  - Native `android.location.Geocoder` resolves coordinates into your real city, state, and country names, with an automatic fallback client to ensure location resolution always succeeds.
+- **🎨 Material You Dynamic Themed App Icon (Android 13+)**:
+  - Full adaptive icon support with `<monochrome>` layer that dynamically tints with your phone's wallpaper palette.
+- **🖤 AMOLED Pure Black Theme**: Deep `#000000` background and `#06B6D4` cyan accents designed to maximize battery efficiency on mobile OLED displays.
+- **📊 Synoptic Dashboard**:
+  - Prominent temperature hero card with feels-like, humidity, wind, and surface pressure.
+  - 24-hour horizontal forecast scroll with rain probabilities and WMO condition emojis.
+  - Color-coded EPA Air Quality Index with PM2.5, PM10, Carbon Monoxide, and Ozone breakdown.
+  - 7-day extended outlook with min/max thermal bars.
+- **🔍 Debounced Global City Search**: Instant location autocompletion dialog powered by Open-Meteo Geocoding.
+
+### 📦 Download Pre-Built APK:
+- **Direct Download**: Get the latest signed [ClimateSphere-v1.0.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
+- **Local Copy**: Also packaged in `release/ClimateSphere-v1.0.0.apk`.
+
+### 🛠️ Building the Android App from Source:
 ```bash
 cd android
 
-# Compile & assemble debug APK
-./gradlew assembleDebug       # Linux / macOS
-.\gradlew.bat assembleDebug   # Windows
+# Compile and package Release APK (Optimized, ~12 MB)
+./gradlew assembleRelease       # Linux / macOS
+.\gradlew.bat assembleRelease   # Windows
+
+# Output APK path:
+# android/app/build/outputs/apk/release/ClimateSphere-v1.0.0-release.apk
 ```
-The output APK will be generated at:
-`android/app/build/outputs/apk/debug/app-debug.apk`
+Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** and click **Run ▶**.
 
 ---
 
