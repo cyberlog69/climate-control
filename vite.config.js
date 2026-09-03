@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react()],
   build: {
     chunkSizeWarningLimit: 1200,
@@ -23,7 +23,7 @@ export default defineConfig({
             if (id.includes('lucide-react')) {
               return 'vendor-icons';
             }
-            if (id.includes('react')) {
+            if (id.includes('react') || id.includes('scheduler')) {
               return 'vendor-react';
             }
             return 'vendor';

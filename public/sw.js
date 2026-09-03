@@ -1,12 +1,12 @@
 // ClimateSphere Service Worker for Offline Caching & PWA Support
-const CACHE_NAME = "climatesphere-v1";
+const CACHE_NAME = "climatesphere-v2";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
   "/manifest.webmanifest"
 ];
 
-// Install Event: Cache Core Static Shell
+// Install Event: Skip waiting to activate immediately
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -15,7 +15,7 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Activate Event: Cleanup Stale Caches
+// Activate Event: Immediately purge any older caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -30,34 +30,51 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch Event: Network-First for API calls, Cache-First for static assets
+// Fetch Event
 self.addEventListener("fetch", (event) => {
-  const requestUrl = new URL(event.request.url);
+  const request = event.request;
+  const requestUrl = new URL(request.url);
 
-  // For API / External data calls, fetch online directly with fallback
+  // 1. Navigation requests (HTML document): Always Network-First to guarantee latest deploy
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(() => caches.match("/index.html") || caches.match("/"))
+    );
+    return;
+  }
+
+  // 2. External API calls: Network-First with cache fallback
   if (
     requestUrl.origin !== location.origin ||
     requestUrl.pathname.includes("api")
   ) {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(request).catch(() => caches.match(request))
     );
     return;
   }
 
-  // For local static assets, use Cache-First with Network fallback
+  // 3. Local static assets: Cache-First with Network fallback
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+    caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {
         return cachedResponse;
       }
-      return fetch(event.request).then((networkResponse) => {
+      return fetch(request).then((networkResponse) => {
         if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
           return networkResponse;
         }
         const responseToCache = networkResponse.clone();
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+          cache.put(request, responseToCache);
         });
         return networkResponse;
       });
