@@ -1,5 +1,7 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
+[![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--sphere.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://climate-sphere.netlify.app/)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.0.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk)
 [![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
 [![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -10,7 +12,20 @@
 [![Open-Meteo](https://img.shields.io/badge/API-Open--Meteo-06B6D4?style=flat)](https://open-meteo.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**ClimateSphere** is a high-performance, dark/light glassmorphism interactive web application and planetary control room dashboard designed to monitor real-time global weather, atmospheric greenhouse gas metrics, sea level rise, temperature anomalies, air quality indexes, and severe climate alerts worldwide.
+> 🌐 **Live Web Application (Netlify)**: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)  
+> 🤖 **Native Android APK (v1.0.0)**: [Download ClimateSphere-v1.0.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk)  
+> 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
+
+---
+
+## 📖 About ClimateSphere
+
+**ClimateSphere** is a high-performance, cross-platform environmental intelligence and planetary monitoring system. It unites real-time atmospheric telemetry, satellite remote sensing, interactive 3D WebGL computer graphics, and native Android engineering into an open, telemetry-driven platform designed to monitor global weather, atmospheric carbon trends, wildfire clusters, and climate risks worldwide.
+
+- **🌐 Live Web Application**: Hosted on Netlify with automated continuous deployment from GitHub: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)
+- **🤖 Native Android App**: Engineered from scratch with **Kotlin 2.0**, **Jetpack Compose (Material 3)**, and **Room SQLite** for instant 0ms offline sync and Material You dynamic wallpaper tinting.
+- **🛰️ Satellite & Open Science**: 100% powered by Open-Meteo and NASA FIRMS (MODIS/VIIRS) with zero commercial API keys required.
+- **📱 Responsive & Cross-Device**: Seamlessly adapts across mobile phones, tablets, landscape orientations, and ultrawide desktop control room monitors.
 
 ---
 
@@ -88,7 +103,7 @@
 
 ### 15. 🌗 Dark / Light Mode Theme Toggle
 - **Persistent Preferences**: Theme state (`dark` or `light`) saved to `localStorage`.
-- **Dynamic Leaflet Tiles**: Automatically switches between **CartoDB Dark Matter** and **CartoDB Positron** map tiles.
+- **Dynamic Leaflet Tiles**: Automatically switches between **ESRI World Dark Gray Canvas** and **ESRI World Light Gray Canvas** base layers with transparent reference boundary overlays (100% free, unmetered, zero API key watermarks).
 
 ---
 
@@ -98,7 +113,11 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ### 🟢 FREE & GENEROUS FREE-TIER PLATFORMS
 
-#### 1. [Vercel](https://vercel.com) (Recommended - Free Tier)
+#### 1. [Netlify](https://climate-sphere.netlify.app/) — *Currently Live in Production* 🟢
+- **Live URL**: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)
+- **Configuration**: Fully automated continuous deployment configured via [`netlify.toml`](./netlify.toml) and [`public/_redirects`](./public/_redirects) for instant Git push builds, client-side SPA routing (`/* -> /index.html 200`), and edge asset caching.
+
+#### 2. [Vercel](https://vercel.com) (Free Tier)
 - **Overview**: Native creator of Next.js and premier platform for frontend web apps. Provides instant global CDN deployment, continuous integration on `git push`, and automatic SSL.
 - **Deployment Steps**:
   1. Import your GitHub repository (`cyberlog69/climate-control`) on [vercel.com/new](https://vercel.com/new).
@@ -106,14 +125,6 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
   3. Build Command: `npm run build`.
   4. Output Directory: `dist`.
   5. Click **Deploy**.
-
-#### 2. [Netlify](https://netlify.com) (Free Tier)
-- **Overview**: High-performance global CDN with automated Git workflows, branch previews, and custom domain HTTPS.
-- **Deployment Steps**:
-  1. Go to Netlify Dashboard $\rightarrow$ **Add new site** $\rightarrow$ **Import from GitHub**.
-  2. Build command: `npm run build`.
-  3. Publish directory: `dist`.
-  4. Click **Deploy Site**.
 
 #### 3. [GitHub Pages](https://pages.github.com) (100% Free)
 - **Overview**: Host directly from your existing GitHub repository using GitHub Actions.
@@ -241,7 +252,7 @@ Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** a
 
 ClimateSphere also runs as a modern, responsive **Progressive Web App (PWA)**:
 
-1. Open the deployed URL in **Google Chrome / Edge / Safari / Firefox Mobile** on any device.
+1. Open [**climate-sphere.netlify.app**](https://climate-sphere.netlify.app/) in **Google Chrome / Edge / Safari / Firefox Mobile** on any device.
 2. Tap the browser menu and select **"Add to Home Screen"** or **"Install ClimateSphere"**.
 3. ClimateSphere installs as a standalone web app with offline caching support.
 

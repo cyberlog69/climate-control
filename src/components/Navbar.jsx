@@ -17,7 +17,8 @@ import {
   MoreVertical,
   X,
   Sparkles,
-  Sliders
+  Sliders,
+  Info
 } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
 import { audioSynth } from "../services/audioSynth";
@@ -42,7 +43,8 @@ export default function Navbar({
   isCurrentPinned = false,
   onTogglePin,
   onOpenVoiceBriefing,
-  onOpenExport
+  onOpenExport,
+  onOpenAbout
 }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -247,6 +249,12 @@ export default function Navbar({
           <button className="locate-btn nav-btn-secondary" onClick={onOpenExport} title="Export Raw Data">
             <Download size={15} style={{ color: "var(--accent-cyan)" }} />
             <span className="nav-btn-label">Export</span>
+          </button>
+
+          {/* About ClimateSphere Modal */}
+          <button className="locate-btn nav-btn-secondary" onClick={onOpenAbout} title="About ClimateSphere">
+            <Info size={15} style={{ color: "var(--accent-cyan)" }} />
+            <span className="nav-btn-label">About</span>
           </button>
 
           {/* Theme Toggle */}
@@ -562,6 +570,19 @@ export default function Navbar({
               <button className="mobile-action-btn" onClick={onRefresh} disabled={isRefreshing}>
                 <RefreshCw size={18} className={isRefreshing ? "animate-spin" : ""} />
                 <span>Refresh Live</span>
+              </button>
+
+              {/* About ClimateSphere */}
+              <button
+                className="mobile-action-btn"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenAbout();
+                }}
+                style={{ gridColumn: "1 / -1", borderColor: "rgba(6, 182, 212, 0.4)", background: "rgba(6, 182, 212, 0.1)" }}
+              >
+                <Info size={18} style={{ color: "var(--accent-cyan)" }} />
+                <span>About ClimateSphere (v1.0.0)</span>
               </button>
             </div>
           </div>

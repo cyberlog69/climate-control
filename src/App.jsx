@@ -17,6 +17,7 @@ import ReportGeneratorModal from "./components/ReportGeneratorModal";
 import WatchlistModal from "./components/WatchlistModal";
 import VoiceBriefingModal from "./components/VoiceBriefingModal";
 import DataExportModal from "./components/DataExportModal";
+import AboutModal from "./components/AboutModal";
 import WeatherParticles from "./components/WeatherParticles";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
@@ -42,6 +43,7 @@ export default function App() {
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
   const [isVoiceBriefingOpen, setIsVoiceBriefingOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [watchlist, setWatchlist] = useState(() => {
     try {
       return getStoredWatchlist();
@@ -219,6 +221,7 @@ export default function App() {
         onTogglePin={handleTogglePinCurrentLocation}
         onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
         onOpenExport={() => setIsExportModalOpen(true)}
+        onOpenAbout={() => setIsAboutOpen(true)}
       />
 
       {/* Error Notification */}
@@ -571,6 +574,11 @@ export default function App() {
           unit={unit}
           onClose={() => setIsExportModalOpen(false)}
         />
+      )}
+
+      {/* About ClimateSphere Modal */}
+      {isAboutOpen && (
+        <AboutModal onClose={() => setIsAboutOpen(false)} />
       )}
     </div>
   );
