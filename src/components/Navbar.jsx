@@ -182,7 +182,7 @@ export default function Navbar({
             title="Play AI Voice Climate Briefing"
           >
             <Mic size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span>Voice Briefing</span>
+            <span className="nav-btn-label">Voice Briefing</span>
           </button>
 
           {/* Ambient Sound Player */}
@@ -201,7 +201,7 @@ export default function Navbar({
             title="Open Multi-City Watchlist"
           >
             <Bookmark size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span>Watchlist</span>
+            <span className="nav-btn-label">Watchlist</span>
             {watchlist.length > 0 && (
               <span
                 style={{
@@ -220,7 +220,7 @@ export default function Navbar({
 
           {/* Pin Active City */}
           <button
-            className="locate-btn"
+            className="locate-btn nav-btn-secondary"
             onClick={onTogglePin}
             title={isCurrentPinned ? "Unpin Active City" : "Pin Active City"}
             style={{
@@ -232,21 +232,21 @@ export default function Navbar({
           </button>
 
           {/* Dual City Comparison */}
-          <button className="locate-btn" onClick={onOpenComparison} title="Compare Cities">
+          <button className="locate-btn nav-btn-secondary" onClick={onOpenComparison} title="Compare Cities">
             <GitCompare size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span>Compare</span>
+            <span className="nav-btn-label">Compare</span>
           </button>
 
           {/* Report Generator */}
-          <button className="locate-btn" onClick={onOpenReport} title="Diagnostic Report">
+          <button className="locate-btn nav-btn-secondary" onClick={onOpenReport} title="Diagnostic Report">
             <FileText size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span>Report</span>
+            <span className="nav-btn-label">Report</span>
           </button>
 
           {/* CSV/JSON Exporter */}
-          <button className="locate-btn" onClick={onOpenExport} title="Export Raw Data">
+          <button className="locate-btn nav-btn-secondary" onClick={onOpenExport} title="Export Raw Data">
             <Download size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span>Export</span>
+            <span className="nav-btn-label">Export</span>
           </button>
 
           {/* Theme Toggle */}
