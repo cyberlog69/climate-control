@@ -1,7 +1,9 @@
 package com.climatesphere.app.domain.model
 
 import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Immutable
 data class LocationModel(
     val name: String,
@@ -11,6 +13,7 @@ data class LocationModel(
     val longitude: Double
 )
 
+@Serializable
 @Immutable
 data class CurrentWeatherModel(
     val temperature: Double,
@@ -26,6 +29,7 @@ data class CurrentWeatherModel(
     val precipitation: Double
 )
 
+@Serializable
 @Immutable
 data class HourlyWeatherModel(
     val time: String, // e.g. "14:00"
@@ -35,6 +39,7 @@ data class HourlyWeatherModel(
     val humidity: Int
 )
 
+@Serializable
 @Immutable
 data class DailyWeatherModel(
     val date: String, // e.g. "2026-09-03"
@@ -47,6 +52,7 @@ data class DailyWeatherModel(
     val precipitationSum: Double
 )
 
+@Serializable
 @Immutable
 data class AirQualityModel(
     val aqi: Int,
@@ -60,6 +66,7 @@ data class AirQualityModel(
     val uvIndex: Double
 )
 
+@Serializable
 @Immutable
 data class WeatherModel(
     val location: LocationModel,
