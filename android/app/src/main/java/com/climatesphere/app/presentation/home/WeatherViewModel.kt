@@ -79,6 +79,14 @@ class WeatherViewModel(
         loadWeather(forceRefresh = true)
     }
 
+    fun updateLocationFromCoordinates(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = it.weather == null) }
+            val resolvedLocation = repository.getReverseGeocodedLocation(latitude, longitude)
+            selectLocation(resolvedLocation)
+        }
+    }
+
     fun searchLocations(query: String) {
         searchJob?.cancel()
         if (query.trim().length < 2) {

@@ -50,6 +50,7 @@ class AppContainer(private val context: Context) {
 
     val weatherRepository: WeatherRepository by lazy {
         WeatherRepositoryImpl(
+            context = context,
             api = openMeteoApi,
             dao = database.weatherDao()
         )

@@ -76,15 +76,7 @@ fun HomeScreen(
                 fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                     .addOnSuccessListener { location ->
                         if (location != null) {
-                            viewModel.selectLocation(
-                                LocationModel(
-                                    name = "My Location (${location.latitude.format(2)}°, ${location.longitude.format(2)}°)",
-                                    cityName = "Current Location",
-                                    country = "",
-                                    latitude = location.latitude,
-                                    longitude = location.longitude
-                                )
-                            )
+                            viewModel.updateLocationFromCoordinates(location.latitude, location.longitude)
                         }
                     }
             } catch (e: SecurityException) {
@@ -108,15 +100,39 @@ fun HomeScreen(
                 fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                     .addOnSuccessListener { location ->
                         if (location != null) {
-                            viewModel.selectLocation(
-                                LocationModel(
-                                    name = "Current Location",
-                                    cityName = "Local Coordinates",
-                                    country = "",
-                                    latitude = location.latitude,
-                                    longitude = location.longitude
-                                )
-                            )
+                            viewModel.updateLocationFromCoordinates(location.latitude, location.longitude)
+                        }
+                    }
+            } catch (e: SecurityException) {
+                // Ignore
+            }
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    // Auto-locate on first launch
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        val hasFine = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFine || hasCoarse) {
+            try {
+                fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                    .addOnSuccessListener { location ->
+                        if (location != null) {
+                            viewModel.updateLocationFromCoordinates(location.latitude, location.longitude)
                         }
                     }
             } catch (e: SecurityException) {

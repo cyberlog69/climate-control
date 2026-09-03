@@ -36,4 +36,12 @@ interface OpenMeteoApi {
         @Query("language") language: String = "en",
         @Query("format") format: String = "json"
     ): GeocodingResponseDto
+
+    @GET
+    suspend fun reverseGeocode(
+        @Url url: String = "https://api.bigdatacloud.net/data/reverse-geocode-client",
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("localityLanguage") localityLanguage: String = "en"
+    ): com.climatesphere.app.data.remote.dto.ReverseGeocodeDto
 }

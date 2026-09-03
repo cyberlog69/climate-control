@@ -12,4 +12,6 @@ interface WeatherRepository {
     ): Flow<Resource<WeatherModel>>
 
     suspend fun searchLocations(query: String): List<LocationModel>
+
+    suspend fun getReverseGeocodedLocation(latitude: Double, longitude: Double): LocationModel
 }
