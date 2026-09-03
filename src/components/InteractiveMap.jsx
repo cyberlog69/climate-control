@@ -128,10 +128,15 @@ export default function InteractiveMap({
     { id: "clouds", label: "Cloud Cover", icon: Cloud, color: "#38bdf8" }
   ];
 
-  const tileUrl =
+  const baseTileUrl =
     theme === "light"
-      ? "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-      : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+      ? "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+      : "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}";
+
+  const referenceTileUrl =
+    theme === "light"
+      ? "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+      : "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}";
 
   return (
     <div className="glass-card map-globe-mobile-wrapper" style={{ padding: "1.1rem", height: "100%", display: "flex", flexDirection: "column" }}>
@@ -294,7 +299,17 @@ export default function InteractiveMap({
             <MapController center={mapCenter} zoom={5} />
             <MapClickHandler onMapClick={handleMapClick} />
 
-            <TileLayer key={tileUrl} url={tileUrl} attribution='&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap' />
+            <TileLayer
+              key={`base-${theme}`}
+              url={baseTileUrl}
+              attribution='&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, DeLorme, NAVTEQ'
+            />
+            <TileLayer
+              key={`ref-${theme}`}
+              url={referenceTileUrl}
+              pane="overlayPane"
+              opacity={0.85}
+            />
 
             {/* Selected Location Marker */}
             {currentLocation && (
