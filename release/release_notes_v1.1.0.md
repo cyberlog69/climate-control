@@ -1,6 +1,6 @@
-# ClimateSphere v1.1.0 — In-App OTA Updater & Offline Pages Converter Suite
+# ClimateSphere v1.1.0 — In-App OTA Updater & Geospatial Sentinel Updates
 
-We are excited to release **v1.1.0** of **ClimateSphere**! This release introduces automated Over-The-Air (OTA) in-app updates for the native Android application, ESRI World Dark & Light Gray canvas map tiles, an overhauled responsive layout with landscape support, and a standalone offline Apple `.pages` desktop converter tool suite.
+We are excited to release **v1.1.0** of **ClimateSphere**! This release introduces automated Over-The-Air (OTA) in-app updates for the native Android application, ESRI World Dark & Light Gray canvas map tiles, and an overhauled responsive layout with landscape support.
 
 ---
 
@@ -12,15 +12,6 @@ We are excited to release **v1.1.0** of **ClimateSphere**! This release introduc
 - **Background Streaming Downloader**: Streams the latest APK directly to the app cache with a real-time progress bar, percentage readout, and downloaded MB tracker.
 - **Seamless Package Installation**: Uses Android's native `FileProvider` (`content://` URI) and launches the system `PackageInstaller` intent directly from the app.
 - **Material 3 AMOLED Dark Dialog**: Modern update notification sheet with version transition pill (`v1.0.0 → v1.1.0`), scrollable changelog, and a TopAppBar update badge icon with a pulsing cyan notification dot.
-
----
-
-## 🍏 Offline Apple `.pages` Desktop Converter Suite
-
-A brand-new standalone utility in `pages-converter/`:
-- **100% Offline & Private**: Converts Apple Pages (`.pages`) documents without internet access or cloud services.
-- **Multi-Format Support**: Generates pixel-perfect vector PDF, reconstructed Microsoft Word (`.docx`), plain text (`.txt`), and extracts all embedded high-res images and figures.
-- **Modern Dark Desktop GUI & CLI**: Includes a sleek dark-themed Tkinter GUI, a command-line interface with recursive directory scanning, and a 1-click Windows batch launcher (`run_gui.bat`).
 
 ---
 
