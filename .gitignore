@@ -33,3 +33,13 @@ android/local.properties
 android/.idea/
 *.apk
 *.aab
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+test_run/
+
+# Graphify cache
+graphify-out/cache/

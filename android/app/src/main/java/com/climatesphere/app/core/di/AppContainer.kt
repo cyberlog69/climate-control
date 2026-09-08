@@ -55,4 +55,25 @@ class AppContainer(private val context: Context) {
             dao = database.weatherDao()
         )
     }
+
+    private val gitHubRetrofit: Retrofit by lazy {
+        val contentType = "application/json".toMediaType()
+        Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    val gitHubApiService: com.climatesphere.app.data.remote.GitHubApiService by lazy {
+        gitHubRetrofit.create(com.climatesphere.app.data.remote.GitHubApiService::class.java)
+    }
+
+    val appUpdateManager: com.climatesphere.app.core.update.AppUpdateManager by lazy {
+        com.climatesphere.app.core.update.AppUpdateManager(
+            context = context,
+            api = gitHubApiService,
+            okHttpClient = okHttpClient
+        )
+    }
 }

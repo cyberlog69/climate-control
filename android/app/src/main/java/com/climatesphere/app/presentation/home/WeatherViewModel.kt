@@ -3,6 +3,9 @@ package com.climatesphere.app.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.climatesphere.app.core.update.AppUpdateInfo
+import com.climatesphere.app.core.update.AppUpdateManager
+import com.climatesphere.app.core.update.DownloadState
 import com.climatesphere.app.core.util.Resource
 import com.climatesphere.app.domain.model.LocationModel
 import com.climatesphere.app.domain.repository.WeatherRepository
@@ -13,19 +16,30 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 
 class WeatherViewModel(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val updateManager: AppUpdateManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private val _updateInfo = MutableStateFlow<AppUpdateInfo?>(null)
+    val updateInfo: StateFlow<AppUpdateInfo?> = _updateInfo.asStateFlow()
+
+    private val _isUpdateDialogOpen = MutableStateFlow(false)
+    val isUpdateDialogOpen: StateFlow<Boolean> = _isUpdateDialogOpen.asStateFlow()
+
+    val downloadState: StateFlow<DownloadState> = updateManager.downloadState
 
     private var weatherJob: Job? = null
     private var searchJob: Job? = null
 
     init {
         loadWeather(forceRefresh = false)
+        checkForUpdates()
     }
 
     fun loadWeather(forceRefresh: Boolean = false) {
@@ -111,12 +125,45 @@ class WeatherViewModel(
         }
     }
 
+    fun checkForUpdates() {
+        viewModelScope.launch {
+            updateManager.checkForUpdates().onSuccess { info ->
+                _updateInfo.value = info
+                if (info.isUpdateAvailable) {
+                    _isUpdateDialogOpen.value = true
+                }
+            }
+        }
+    }
+
+    fun setUpdateDialogOpen(isOpen: Boolean) {
+        _isUpdateDialogOpen.value = isOpen
+    }
+
+    fun downloadUpdate(downloadUrl: String) {
+        viewModelScope.launch {
+            updateManager.downloadApk(downloadUrl)
+        }
+    }
+
+    fun installUpdate(apkFile: File) {
+        updateManager.installApk(apkFile)
+    }
+
+    fun dismissUpdateDialog() {
+        _isUpdateDialogOpen.value = false
+        updateManager.resetDownloadState()
+    }
+
     companion object {
-        fun provideFactory(repository: WeatherRepository): ViewModelProvider.Factory =
+        fun provideFactory(
+            repository: WeatherRepository,
+            updateManager: AppUpdateManager
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return WeatherViewModel(repository) as T
+                    return WeatherViewModel(repository, updateManager) as T
                 }
             }
     }

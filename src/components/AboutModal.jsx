@@ -11,7 +11,7 @@ const GithubIcon = ({ size = 20 }) => (
 export default function AboutModal({ onClose }) {
   const netlifyUrl = "https://climate-sphere.netlify.app/";
   const githubUrl = "https://github.com/cyberlog69/climate-control";
-  const apkReleaseUrl = "https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk";
+  const apkReleaseUrl = "https://github.com/cyberlog69/climate-control/releases/download/v1.1.0/ClimateSphere-v1.1.0.apk";
 
   return (
     <div

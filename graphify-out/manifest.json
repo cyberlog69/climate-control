@@ -1,0 +1,524 @@
+{
+  ".oxlintrc.json": {
+    "mtime": 1786377021.5282493,
+    "seen": 1788885956.3134952,
+    "ast_hash": "2d750bd852cf8fe072f64a62ab29084b",
+    "semantic_hash": "2d750bd852cf8fe072f64a62ab29084b"
+  },
+  "android/app/build.gradle.kts": {
+    "mtime": 1788874708.1055264,
+    "seen": 1788885956.3135045,
+    "ast_hash": "7076feed97e3bed24b18a0c4779b6ba7",
+    "semantic_hash": "7076feed97e3bed24b18a0c4779b6ba7"
+  },
+  "android/app/src/main/java/com/climatesphere/app/ClimateSphereApplication.kt": {
+    "mtime": 1788380859.6228971,
+    "seen": 1788885956.313508,
+    "ast_hash": "ffbf37192af5808cf471987a4da72795",
+    "semantic_hash": "ffbf37192af5808cf471987a4da72795"
+  },
+  "android/app/src/main/java/com/climatesphere/app/MainActivity.kt": {
+    "mtime": 1788873936.1045282,
+    "seen": 1788885956.3135107,
+    "ast_hash": "f0dd3ba798e45fbd46c9901761627237",
+    "semantic_hash": "f0dd3ba798e45fbd46c9901761627237"
+  },
+  "android/app/src/main/java/com/climatesphere/app/core/di/AppContainer.kt": {
+    "mtime": 1788873868.3334503,
+    "seen": 1788885956.3135135,
+    "ast_hash": "bbcd79acd7d3941c54040791793a6202",
+    "semantic_hash": "bbcd79acd7d3941c54040791793a6202"
+  },
+  "android/app/src/main/java/com/climatesphere/app/core/theme/Color.kt": {
+    "mtime": 1788380670.7842762,
+    "seen": 1788885956.3135154,
+    "ast_hash": "6c86452c58c2bc05ac1117941d4257ec",
+    "semantic_hash": "6c86452c58c2bc05ac1117941d4257ec"
+  },
+  "android/app/src/main/java/com/climatesphere/app/core/theme/Theme.kt": {
+    "mtime": 1788380702.296025,
+    "seen": 1788885956.313518,
+    "ast_hash": "fe3fbc225341b9e6e275e97e77bb76a3",
+    "semantic_hash": "fe3fbc225341b9e6e275e97e77bb76a3"
+  },
+  "android/app/src/main/java/com/climatesphere/app/core/theme/Type.kt": {
+    "mtime": 1788380681.6340735,
+    "seen": 1788885956.3135202,
+    "ast_hash": "7776cf7bf6194f521623087d07e46b65",
+    "semantic_hash": "7776cf7bf6194f521623087d07e46b65"
+  },
+  "android/app/src/main/java/com/climatesphere/app/core/update/AppUpdateManager.kt": {
+    "mtime": 1788873859.0617063,
+    "seen": 1788885956.313522,
+    "ast_hash": "2e853b518e4a55ad312ced5051ef9375",
+    "semantic_hash": "2e853b518e4a55ad312ced5051ef9375"
+  },
+  "android/app/src/main/java/com/climatesphere/app/core/util/Resource.kt": {
+    "mtime": 1788380712.317193,
+    "seen": 1788885956.3135242,
+    "ast_hash": "ff8792f7edb3a82e584f2b465208aa76",
+    "semantic_hash": "ff8792f7edb3a82e584f2b465208aa76"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/local/ClimateDatabase.kt": {
+    "mtime": 1788380807.7296824,
+    "seen": 1788885956.313526,
+    "ast_hash": "ec26a075020e2614fcdc758f17fd6b82",
+    "semantic_hash": "ec26a075020e2614fcdc758f17fd6b82"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/local/WeatherDao.kt": {
+    "mtime": 1788380798.4522178,
+    "seen": 1788885956.3135285,
+    "ast_hash": "4d46eba680024bb0171571e0f20d17e4",
+    "semantic_hash": "4d46eba680024bb0171571e0f20d17e4"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/local/entity/WeatherEntity.kt": {
+    "mtime": 1788380788.0468304,
+    "seen": 1788885956.3135307,
+    "ast_hash": "00f8b7dfe3011f3c42a415ed927270de",
+    "semantic_hash": "00f8b7dfe3011f3c42a415ed927270de"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/mapper/WeatherMappers.kt": {
+    "mtime": 1788444895.901651,
+    "seen": 1788885956.3135328,
+    "ast_hash": "db46d1c93b35a4c63bfd6bd0588e328b",
+    "semantic_hash": "db46d1c93b35a4c63bfd6bd0588e328b"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/GitHubApiService.kt": {
+    "mtime": 1788873744.1149356,
+    "seen": 1788885956.313535,
+    "ast_hash": "eb87888a73d39359195c83ee9d45476b",
+    "semantic_hash": "eb87888a73d39359195c83ee9d45476b"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/OpenMeteoApi.kt": {
+    "mtime": 1788445557.5418844,
+    "seen": 1788885956.3135371,
+    "ast_hash": "0bfc36608ebc5002f6d804af12be56fc",
+    "semantic_hash": "0bfc36608ebc5002f6d804af12be56fc"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/dto/AirQualityDto.kt": {
+    "mtime": 1788380752.1984248,
+    "seen": 1788885956.3135388,
+    "ast_hash": "9b7890ac582172cde4a4b04df6c7e0e5",
+    "semantic_hash": "9b7890ac582172cde4a4b04df6c7e0e5"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/dto/GeocodingDto.kt": {
+    "mtime": 1788380762.5453558,
+    "seen": 1788885956.3135407,
+    "ast_hash": "c2169fb6fc8c14e36a568460cad627d4",
+    "semantic_hash": "c2169fb6fc8c14e36a568460cad627d4"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/dto/GitHubReleaseDto.kt": {
+    "mtime": 1788873732.6268525,
+    "seen": 1788885956.3135428,
+    "ast_hash": "79d0f5abb3ad517f28a342593ce4e88b",
+    "semantic_hash": "79d0f5abb3ad517f28a342593ce4e88b"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/dto/ReverseGeocodeDto.kt": {
+    "mtime": 1788445543.757267,
+    "seen": 1788885956.313545,
+    "ast_hash": "5edcfc79429ced7cd92e8c37298b3dd2",
+    "semantic_hash": "5edcfc79429ced7cd92e8c37298b3dd2"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/remote/dto/WeatherDto.kt": {
+    "mtime": 1788380741.7932906,
+    "seen": 1788885956.313547,
+    "ast_hash": "6977f516eb3706f989b2f5d8d14c0fd2",
+    "semantic_hash": "6977f516eb3706f989b2f5d8d14c0fd2"
+  },
+  "android/app/src/main/java/com/climatesphere/app/data/repository/WeatherRepositoryImpl.kt": {
+    "mtime": 1788445592.0546713,
+    "seen": 1788885956.3135488,
+    "ast_hash": "34e1c635dcb76ff6ce747164d116d30f",
+    "semantic_hash": "34e1c635dcb76ff6ce747164d116d30f"
+  },
+  "android/app/src/main/java/com/climatesphere/app/domain/model/WeatherInfo.kt": {
+    "mtime": 1788444709.6351597,
+    "seen": 1788885956.313552,
+    "ast_hash": "93a6e725a0c3a49b137895621da78690",
+    "semantic_hash": "93a6e725a0c3a49b137895621da78690"
+  },
+  "android/app/src/main/java/com/climatesphere/app/domain/repository/WeatherRepository.kt": {
+    "mtime": 1788445573.067036,
+    "seen": 1788885956.3135538,
+    "ast_hash": "ab96d9ba618a085112357aab1279b669",
+    "semantic_hash": "ab96d9ba618a085112357aab1279b669"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/components/AirQualityCard.kt": {
+    "mtime": 1788380925.5779135,
+    "seen": 1788885956.3135562,
+    "ast_hash": "161baa6acb0031fbd72881da85a33479",
+    "semantic_hash": "161baa6acb0031fbd72881da85a33479"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/components/DailyForecastList.kt": {
+    "mtime": 1788380944.193969,
+    "seen": 1788885956.3135583,
+    "ast_hash": "1a9a843ee32a4dd15a4048d9c9b2ed33",
+    "semantic_hash": "1a9a843ee32a4dd15a4048d9c9b2ed33"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/components/HourlyForecastRow.kt": {
+    "mtime": 1788380935.2143598,
+    "seen": 1788885956.3135602,
+    "ast_hash": "2fadc31995af229c7edcdd219e164802",
+    "semantic_hash": "2fadc31995af229c7edcdd219e164802"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/components/LocationSearchDialog.kt": {
+    "mtime": 1788380995.4863431,
+    "seen": 1788885956.3135622,
+    "ast_hash": "921cf5f468c69db2640e811ab745a5d7",
+    "semantic_hash": "921cf5f468c69db2640e811ab745a5d7"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/components/UpdateDialog.kt": {
+    "mtime": 1788874374.6568844,
+    "seen": 1788885956.313564,
+    "ast_hash": "0ade275a0fa9bdf6c41263bd481f23fc",
+    "semantic_hash": "0ade275a0fa9bdf6c41263bd481f23fc"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/components/WeatherHeroCard.kt": {
+    "mtime": 1788380916.175879,
+    "seen": 1788885956.313566,
+    "ast_hash": "ace93710c5c8ac6f6edb3c1d4ff9a851",
+    "semantic_hash": "ace93710c5c8ac6f6edb3c1d4ff9a851"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/home/HomeScreen.kt": {
+    "mtime": 1788874001.4456196,
+    "seen": 1788885956.313568,
+    "ast_hash": "ca8dc4246e05c20c57e82823d9e5982c",
+    "semantic_hash": "ca8dc4246e05c20c57e82823d9e5982c"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/home/HomeUiState.kt": {
+    "mtime": 1788380871.8101714,
+    "seen": 1788885956.31357,
+    "ast_hash": "07243d792a9e31b8042e9eeadaebd871",
+    "semantic_hash": "07243d792a9e31b8042e9eeadaebd871"
+  },
+  "android/app/src/main/java/com/climatesphere/app/presentation/home/WeatherViewModel.kt": {
+    "mtime": 1788873925.740456,
+    "seen": 1788885956.3135722,
+    "ast_hash": "d095bbbdd6d796195513da1503766d9c",
+    "semantic_hash": "d095bbbdd6d796195513da1503766d9c"
+  },
+  "android/app/src/test/java/com/climatesphere/app/AppUpdateManagerTest.kt": {
+    "mtime": 1788874390.3612711,
+    "seen": 1788885956.3135738,
+    "ast_hash": "1be1b05a55ccefa94f45ae0afc6c15f2",
+    "semantic_hash": "1be1b05a55ccefa94f45ae0afc6c15f2"
+  },
+  "android/build.gradle.kts": {
+    "mtime": 1788380355.0173573,
+    "seen": 1788885956.3135757,
+    "ast_hash": "b938f07e9cf543d1c5c5eae802b4a5a4",
+    "semantic_hash": "b938f07e9cf543d1c5c5eae802b4a5a4"
+  },
+  "android/gradlew": {
+    "mtime": 1788381201.5850463,
+    "seen": 1788885956.3135774,
+    "ast_hash": "f092910dfa8e47c5a37a452c3f6baf8a",
+    "semantic_hash": "f092910dfa8e47c5a37a452c3f6baf8a"
+  },
+  "android/settings.gradle.kts": {
+    "mtime": 1788380326.7282622,
+    "seen": 1788885956.3135796,
+    "ast_hash": "a40cfaa7a428d55ef54ca1f4132f6488",
+    "semantic_hash": "a40cfaa7a428d55ef54ca1f4132f6488"
+  },
+  "package.json": {
+    "mtime": 1786710836.1850863,
+    "seen": 1788885956.3135817,
+    "ast_hash": "ba410aec099905efb114af4a6b299bdc",
+    "semantic_hash": "ba410aec099905efb114af4a6b299bdc"
+  },
+  "pages-converter/cli.py": {
+    "mtime": 1788462605.1936169,
+    "seen": 1788885956.3135839,
+    "ast_hash": "7a25fe2cae8868b368452676a09a5d46",
+    "semantic_hash": "7a25fe2cae8868b368452676a09a5d46"
+  },
+  "pages-converter/converter.py": {
+    "mtime": 1788462480.3367815,
+    "seen": 1788885956.313586,
+    "ast_hash": "c8eb083935ab1e94770b4cc5908049be",
+    "semantic_hash": "c8eb083935ab1e94770b4cc5908049be"
+  },
+  "pages-converter/gui.py": {
+    "mtime": 1788462533.9042628,
+    "seen": 1788885956.3135877,
+    "ast_hash": "ea67904ccda6dbb807c23159ba65b7d9",
+    "semantic_hash": "ea67904ccda6dbb807c23159ba65b7d9"
+  },
+  "pages-converter/test_converter.py": {
+    "mtime": 1788462608.6241615,
+    "seen": 1788885956.3135896,
+    "ast_hash": "fa1bcc3ded14813d32888abd5cf4072f",
+    "semantic_hash": "fa1bcc3ded14813d32888abd5cf4072f"
+  },
+  "public/sw.js": {
+    "mtime": 1788450610.0337434,
+    "seen": 1788885956.3135915,
+    "ast_hash": "008de9e602a4d51c371c4c317f3e87c4",
+    "semantic_hash": "008de9e602a4d51c371c4c317f3e87c4"
+  },
+  "src/App.jsx": {
+    "mtime": 1788456587.325654,
+    "seen": 1788885956.3135946,
+    "ast_hash": "22aa7c4de434dda986c140393b975b9a",
+    "semantic_hash": "22aa7c4de434dda986c140393b975b9a"
+  },
+  "src/components/AboutModal.jsx": {
+    "mtime": 1788456683.0309143,
+    "seen": 1788885956.3135965,
+    "ast_hash": "2136fd325594b91ed7ea6c7f2d92ea73",
+    "semantic_hash": "2136fd325594b91ed7ea6c7f2d92ea73"
+  },
+  "src/components/AirQualityCard.jsx": {
+    "mtime": 1786377021.536297,
+    "seen": 1788885956.3135982,
+    "ast_hash": "586a9f47d26433b2098826f515d56c88",
+    "semantic_hash": "586a9f47d26433b2098826f515d56c88"
+  },
+  "src/components/CarbonFootprintCalculator.jsx": {
+    "mtime": 1786645852.8112273,
+    "seen": 1788885956.3136,
+    "ast_hash": "842bc94076cf6d6c4fe7be808a77f862",
+    "semantic_hash": "842bc94076cf6d6c4fe7be808a77f862"
+  },
+  "src/components/ClimateAlertSystem.jsx": {
+    "mtime": 1786377021.536297,
+    "seen": 1788885956.3136017,
+    "ast_hash": "aef53b58562e2bda046108dafb018b0a",
+    "semantic_hash": "aef53b58562e2bda046108dafb018b0a"
+  },
+  "src/components/ClimateComparisonModal.jsx": {
+    "mtime": 1786377021.5372965,
+    "seen": 1788885956.3136036,
+    "ast_hash": "27b72230af1ffc91046c98f8ae4d3be8",
+    "semantic_hash": "27b72230af1ffc91046c98f8ae4d3be8"
+  },
+  "src/components/ClimateImpactSimulator.jsx": {
+    "mtime": 1786645841.8117485,
+    "seen": 1788885956.3136053,
+    "ast_hash": "281b1e95d1507dbe050a1c34b5d27fa9",
+    "semantic_hash": "281b1e95d1507dbe050a1c34b5d27fa9"
+  },
+  "src/components/ClimateVitals.jsx": {
+    "mtime": 1786377021.5408266,
+    "seen": 1788885956.3136072,
+    "ast_hash": "b7d5becbba892c94e516c018e74311c6",
+    "semantic_hash": "b7d5becbba892c94e516c018e74311c6"
+  },
+  "src/components/DataExportModal.jsx": {
+    "mtime": 1786651361.319787,
+    "seen": 1788885956.3136091,
+    "ast_hash": "e978eb726b56ded5be603ce11f45b659",
+    "semantic_hash": "e978eb726b56ded5be603ce11f45b659"
+  },
+  "src/components/EarthGlobe3D.jsx": {
+    "mtime": 1786651233.9361627,
+    "seen": 1788885956.3136113,
+    "ast_hash": "df011b164bfd49f8228145d53cefbbd4",
+    "semantic_hash": "df011b164bfd49f8228145d53cefbbd4"
+  },
+  "src/components/ExtremeEventsRadar.jsx": {
+    "mtime": 1786377021.541818,
+    "seen": 1788885956.3136137,
+    "ast_hash": "ed7f3aa5b7c53e64221003840672ce9a",
+    "semantic_hash": "ed7f3aa5b7c53e64221003840672ce9a"
+  },
+  "src/components/ForecastSection.jsx": {
+    "mtime": 1786377021.5428176,
+    "seen": 1788885956.3136156,
+    "ast_hash": "c1e1a385e48af94ceaeb3c4baadb9137",
+    "semantic_hash": "c1e1a385e48af94ceaeb3c4baadb9137"
+  },
+  "src/components/HistoricalAnomalyChart.jsx": {
+    "mtime": 1786377021.5428176,
+    "seen": 1788885956.3136175,
+    "ast_hash": "8e4bc44e7f8f0625e5ae3e9fea8efa4e",
+    "semantic_hash": "8e4bc44e7f8f0625e5ae3e9fea8efa4e"
+  },
+  "src/components/HistoricalTimeMachine.jsx": {
+    "mtime": 1786643622.3167892,
+    "seen": 1788885956.3136194,
+    "ast_hash": "0222ac5c0f72d2589480b4a7335dd471",
+    "semantic_hash": "0222ac5c0f72d2589480b4a7335dd471"
+  },
+  "src/components/InteractiveMap.jsx": {
+    "mtime": 1788452339.7856874,
+    "seen": 1788885956.3136215,
+    "ast_hash": "5cc284507903907ea7513eb3d190d0d4",
+    "semantic_hash": "5cc284507903907ea7513eb3d190d0d4"
+  },
+  "src/components/Navbar.jsx": {
+    "mtime": 1788456617.3057933,
+    "seen": 1788885956.3136232,
+    "ast_hash": "d1a858051c89d8224fa715882e89c30d",
+    "semantic_hash": "d1a858051c89d8224fa715882e89c30d"
+  },
+  "src/components/RenewableEnergyEstimator.jsx": {
+    "mtime": 1786644297.4689128,
+    "seen": 1788885956.3136256,
+    "ast_hash": "7cbbd7d8d189937e0f53893cfd8a0873",
+    "semantic_hash": "7cbbd7d8d189937e0f53893cfd8a0873"
+  },
+  "src/components/ReportGeneratorModal.jsx": {
+    "mtime": 1786377021.5461795,
+    "seen": 1788885956.3136275,
+    "ast_hash": "cd0976b511374e1fc9916978b3c5eeb8",
+    "semantic_hash": "cd0976b511374e1fc9916978b3c5eeb8"
+  },
+  "src/components/VoiceBriefingModal.jsx": {
+    "mtime": 1786651347.062907,
+    "seen": 1788885956.3136296,
+    "ast_hash": "aa3be8eb1e5522e6618d09015d491795",
+    "semantic_hash": "aa3be8eb1e5522e6618d09015d491795"
+  },
+  "src/components/WatchlistModal.jsx": {
+    "mtime": 1786644927.717437,
+    "seen": 1788885956.3136315,
+    "ast_hash": "b2c022e186161af3ce3b0023b32dfdcb",
+    "semantic_hash": "b2c022e186161af3ce3b0023b32dfdcb"
+  },
+  "src/components/WeatherDetailCard.jsx": {
+    "mtime": 1786645171.978751,
+    "seen": 1788885956.3136332,
+    "ast_hash": "8f47300d12b68874d5bea0d7b1614d35",
+    "semantic_hash": "8f47300d12b68874d5bea0d7b1614d35"
+  },
+  "src/components/WeatherParticles.jsx": {
+    "mtime": 1786651258.0242596,
+    "seen": 1788885956.3136358,
+    "ast_hash": "8ddf49fbe36b50f0eddb8c4e47a43307",
+    "semantic_hash": "8ddf49fbe36b50f0eddb8c4e47a43307"
+  },
+  "src/components/WildfireSatelliteCard.jsx": {
+    "mtime": 1786643912.0453045,
+    "seen": 1788885956.313638,
+    "ast_hash": "1d6adabf380932f3f10c68220ed932d4",
+    "semantic_hash": "1d6adabf380932f3f10c68220ed932d4"
+  },
+  "src/hooks/useTouchSwipe.js": {
+    "mtime": 1786377021.5485814,
+    "seen": 1788885956.3136399,
+    "ast_hash": "a37a165e3cc9b35834aa38564a8e7134",
+    "semantic_hash": "a37a165e3cc9b35834aa38564a8e7134"
+  },
+  "src/main.jsx": {
+    "mtime": 1786650545.2480414,
+    "seen": 1788885956.313642,
+    "ast_hash": "7fcc82d1a6ac268259011077caa76cee",
+    "semantic_hash": "7fcc82d1a6ac268259011077caa76cee"
+  },
+  "src/services/audioSynth.js": {
+    "mtime": 1786377021.5527349,
+    "seen": 1788885956.3136442,
+    "ast_hash": "4d76818631e30039731791d63e648ded",
+    "semantic_hash": "4d76818631e30039731791d63e648ded"
+  },
+  "src/services/carbonFootprintApi.js": {
+    "mtime": 1786644487.819127,
+    "seen": 1788885956.313646,
+    "ast_hash": "a85f7756f3141a2e12f646ea9b5624cc",
+    "semantic_hash": "a85f7756f3141a2e12f646ea9b5624cc"
+  },
+  "src/services/climateData.js": {
+    "mtime": 1786377021.5527349,
+    "seen": 1788885956.3136482,
+    "ast_hash": "2c9fa9bc44a4e04f59cae0791bd2ab0e",
+    "semantic_hash": "2c9fa9bc44a4e04f59cae0791bd2ab0e"
+  },
+  "src/services/dataExportApi.js": {
+    "mtime": 1786645590.5931172,
+    "seen": 1788885956.3136501,
+    "ast_hash": "becd644122ab411d4e228cda6bf0b46b",
+    "semantic_hash": "becd644122ab411d4e228cda6bf0b46b"
+  },
+  "src/services/historicalClimateApi.js": {
+    "mtime": 1786643605.4499526,
+    "seen": 1788885956.3136523,
+    "ast_hash": "85aec956f8414cd8c298786af16fa5fa",
+    "semantic_hash": "85aec956f8414cd8c298786af16fa5fa"
+  },
+  "src/services/renewableEnergyApi.js": {
+    "mtime": 1786644281.769652,
+    "seen": 1788885956.313654,
+    "ast_hash": "506cf9498d784cc3387e6232a79da6a1",
+    "semantic_hash": "506cf9498d784cc3387e6232a79da6a1"
+  },
+  "src/services/voiceBriefingApi.js": {
+    "mtime": 1786646021.0703256,
+    "seen": 1788885956.313656,
+    "ast_hash": "57d3c4a13f4a882a0f6d127d5223cd36",
+    "semantic_hash": "57d3c4a13f4a882a0f6d127d5223cd36"
+  },
+  "src/services/watchlistApi.js": {
+    "mtime": 1786644914.0187416,
+    "seen": 1788885956.313658,
+    "ast_hash": "a6bd6bddf70a8e921b5966132dd69536",
+    "semantic_hash": "a6bd6bddf70a8e921b5966132dd69536"
+  },
+  "src/services/weatherApi.js": {
+    "mtime": 1786377021.55483,
+    "seen": 1788885956.313668,
+    "ast_hash": "7f77062c797388823642ac723a8172d1",
+    "semantic_hash": "7f77062c797388823642ac723a8172d1"
+  },
+  "src/services/wildfireSatelliteApi.js": {
+    "mtime": 1786643900.5795345,
+    "seen": 1788885956.3136704,
+    "ast_hash": "adf00f174c65fe7b95fa879724c27dce",
+    "semantic_hash": "adf00f174c65fe7b95fa879724c27dce"
+  },
+  "vite.config.js": {
+    "mtime": 1788450595.1760025,
+    "seen": 1788885956.3136728,
+    "ast_hash": "d05349b9f610421e7f01f9a0cf143510",
+    "semantic_hash": "d05349b9f610421e7f01f9a0cf143510"
+  },
+  "README.md": {
+    "mtime": 1788456647.8535724,
+    "seen": 1788885956.3136747,
+    "ast_hash": "92e4af63ed6b68a29ca34a2d69ed4303",
+    "semantic_hash": "92e4af63ed6b68a29ca34a2d69ed4303"
+  },
+  "index.html": {
+    "mtime": 1788450623.7813704,
+    "seen": 1788885956.313677,
+    "ast_hash": "215544944c422d9f58d847ec1b65b1c7",
+    "semantic_hash": "215544944c422d9f58d847ec1b65b1c7"
+  },
+  "pages-converter/README.md": {
+    "mtime": 1788462555.8766267,
+    "seen": 1788885956.3136792,
+    "ast_hash": "2ef86bfd07d1e573c9e92409a880868d",
+    "semantic_hash": "2ef86bfd07d1e573c9e92409a880868d"
+  },
+  "pages-converter/requirements.txt": {
+    "mtime": 1788461977.3605416,
+    "seen": 1788885956.313681,
+    "ast_hash": "8f86866ad8332d6874c1159b5e016427",
+    "semantic_hash": "8f86866ad8332d6874c1159b5e016427"
+  },
+  "release/README.md": {
+    "mtime": 1788448744.5926597,
+    "seen": 1788885956.313683,
+    "ast_hash": "c0bda570a99e0beb6cd1b68df1a35784",
+    "semantic_hash": "c0bda570a99e0beb6cd1b68df1a35784"
+  },
+  "release/release_notes_v1.0.0.md": {
+    "mtime": 1788448798.1338065,
+    "seen": 1788885956.313685,
+    "ast_hash": "f813c372b9ab793295b4e79d69cc4824",
+    "semantic_hash": "f813c372b9ab793295b4e79d69cc4824"
+  },
+  "public/favicon.svg": {
+    "mtime": 1786377021.5312645,
+    "seen": 1788885956.3136868,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": "7e840862161341271697daa99a40d76b"
+  },
+  "src/assets/hero.png": {
+    "mtime": 1786377021.5342984,
+    "seen": 1788885956.3136902,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+  }
+}

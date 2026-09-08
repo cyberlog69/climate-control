@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.climatesphere.app.core.theme.CyanPrimary
+import com.climatesphere.app.presentation.components.UpdateDialog
 import com.climatesphere.app.core.theme.PureBlack
 import com.climatesphere.app.core.theme.RedAlert
 import com.climatesphere.app.core.theme.TextMuted
@@ -63,6 +65,9 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val updateInfo by viewModel.updateInfo.collectAsState()
+    val isUpdateDialogOpen by viewModel.isUpdateDialogOpen.collectAsState()
+    val downloadState by viewModel.downloadState.collectAsState()
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -168,6 +173,23 @@ fun HomeScreen(
                     }
                 },
                 actions = {
+                    if (updateInfo?.isUpdateAvailable == true) {
+                        IconButton(onClick = { viewModel.setUpdateDialogOpen(true) }) {
+                            Box(contentAlignment = Alignment.TopEnd) {
+                                Icon(
+                                    imageVector = Icons.Default.SystemUpdate,
+                                    contentDescription = "Update Available",
+                                    tint = CyanPrimary
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(CyanPrimary)
+                                )
+                            }
+                        }
+                    }
                     IconButton(onClick = onAutoLocateClick) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
@@ -315,6 +337,17 @@ fun HomeScreen(
                     isSearching = uiState.isSearching,
                     searchResults = uiState.searchResults,
                     onLocationSelected = { viewModel.selectLocation(it) }
+                )
+            }
+
+            // In-App OTA Update Dialog
+            if (isUpdateDialogOpen && updateInfo != null) {
+                UpdateDialog(
+                    updateInfo = updateInfo!!,
+                    downloadState = downloadState,
+                    onDownloadClick = { url -> viewModel.downloadUpdate(url) },
+                    onInstallClick = { file -> viewModel.installUpdate(file) },
+                    onDismiss = { viewModel.dismissUpdateDialog() }
                 )
             }
         }

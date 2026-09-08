@@ -13,7 +13,10 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: WeatherViewModel by viewModels {
         val app = application as ClimateSphereApplication
-        WeatherViewModel.provideFactory(app.container.weatherRepository)
+        WeatherViewModel.provideFactory(
+            repository = app.container.weatherRepository,
+            updateManager = app.container.appUpdateManager
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
