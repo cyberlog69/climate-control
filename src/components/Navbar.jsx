@@ -263,21 +263,9 @@ export default function Navbar({
           </button>
 
           {/* UTC Clock Pill */}
-          <div
-            className="nav-clock-pill"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.45rem",
-              background: "var(--bg-inner)",
-              padding: "0.4rem 0.75rem",
-              borderRadius: "18px",
-              border: "1px solid var(--border-light)",
-              fontSize: "0.75rem"
-            }}
-          >
+          <div className="nav-clock-pill glass-pill">
             <span className="pulse-dot"></span>
-            <span style={{ fontFamily: "monospace", color: "var(--text-main)" }}>{utcTime || "UTC Sync"}</span>
+            <span style={{ fontFamily: "monospace", color: "var(--text-main)", letterSpacing: "0.02em" }}>{utcTime || "UTC Sync"}</span>
           </div>
 
           <button className="locate-btn" onClick={onAutoLocate} title="My Geolocation">
@@ -377,8 +365,9 @@ export default function Navbar({
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(3, 7, 18, 0.95)",
-            backdropFilter: "blur(24px)",
+            background: "var(--bg-card)",
+            backdropFilter: "var(--blur-glass)",
+            WebkitBackdropFilter: "var(--blur-glass)",
             zIndex: 1300,
             display: "flex",
             flexDirection: "column",

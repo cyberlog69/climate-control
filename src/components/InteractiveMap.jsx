@@ -162,10 +162,11 @@ export default function InteractiveMap({
           <div
             style={{
               display: "flex",
-              background: "var(--bg-inner)",
-              padding: "0.2rem",
-              borderRadius: "20px",
-              border: "1px solid var(--border-light)"
+              background: "var(--bg-card-glass)",
+              padding: "3px",
+              borderRadius: "var(--radius-pill)",
+              border: "1px solid var(--border-light)",
+              backdropFilter: "var(--blur-subtle)"
             }}
           >
             <button
@@ -173,16 +174,17 @@ export default function InteractiveMap({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.35rem",
-                padding: "0.35rem 0.75rem",
-                borderRadius: "16px",
+                gap: "0.4rem",
+                padding: "0.35rem 0.85rem",
+                borderRadius: "var(--radius-pill)",
                 border: "none",
-                background: viewMode === "3d" ? "var(--accent-cyan)" : "transparent",
-                color: viewMode === "3d" ? "#000" : "var(--text-muted)",
+                background: viewMode === "3d" ? "linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))" : "transparent",
+                color: viewMode === "3d" ? "#fff" : "var(--text-muted)",
                 fontSize: "0.78rem",
                 fontWeight: 700,
                 cursor: "pointer",
-                transition: "all 0.2s"
+                transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
+                boxShadow: viewMode === "3d" ? "0 2px 10px rgba(6, 182, 212, 0.35)" : "none"
               }}
               title="3D WebGL Earth Globe View"
             >
@@ -195,16 +197,17 @@ export default function InteractiveMap({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.35rem",
-                padding: "0.35rem 0.75rem",
-                borderRadius: "16px",
+                gap: "0.4rem",
+                padding: "0.35rem 0.85rem",
+                borderRadius: "var(--radius-pill)",
                 border: "none",
-                background: viewMode === "2d" ? "var(--accent-cyan)" : "transparent",
-                color: viewMode === "2d" ? "#000" : "var(--text-muted)",
+                background: viewMode === "2d" ? "linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))" : "transparent",
+                color: viewMode === "2d" ? "#fff" : "var(--text-muted)",
                 fontSize: "0.78rem",
                 fontWeight: 700,
                 cursor: "pointer",
-                transition: "all 0.2s"
+                transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
+                boxShadow: viewMode === "2d" ? "0 2px 10px rgba(6, 182, 212, 0.35)" : "none"
               }}
               title="2D Leaflet Flat Map View"
             >
@@ -223,19 +226,15 @@ export default function InteractiveMap({
                   <button
                     key={l.id}
                     onClick={() => setActiveLayer(l.id)}
+                    className="glass-pill"
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.35rem",
-                      padding: "0.4rem 0.7rem",
-                      borderRadius: "20px",
+                      padding: "0.38rem 0.75rem",
+                      borderRadius: "var(--radius-pill)",
                       border: isActive ? `1px solid ${l.color}` : "1px solid var(--border-light)",
-                      background: isActive ? `${l.color}22` : "var(--bg-card)",
+                      background: isActive ? `${l.color}28` : "var(--bg-glass-pill)",
                       color: isActive ? "var(--text-main)" : "var(--text-muted)",
-                      fontSize: "0.78rem",
-                      fontWeight: 600,
                       cursor: "pointer",
-                      transition: "all 0.2s"
+                      boxShadow: isActive ? `0 0 14px ${l.color}35` : "none"
                     }}
                   >
                     <Icon size={14} style={{ color: isActive ? l.color : "inherit" }} />
@@ -258,31 +257,28 @@ export default function InteractiveMap({
           marginBottom: "0.6rem"
         }}
       >
-        {CLIMATE_HOTSPOTS.map((h) => (
-          <button
-            key={h.id}
-            onClick={() => handleHotspotClick(h)}
-            style={{
-              whiteSpace: "nowrap",
-              padding: "0.35rem 0.7rem",
-              borderRadius: "14px",
-              background:
-                currentLocation?.cityName?.toLowerCase() === h.name.split(",")[0].toLowerCase()
-                  ? "rgba(6, 182, 212, 0.25)"
-                  : "var(--bg-card)",
-              border:
-                currentLocation?.cityName?.toLowerCase() === h.name.split(",")[0].toLowerCase()
-                  ? "1px solid var(--accent-cyan)"
-                  : "1px solid var(--border-light)",
-              color: "var(--text-main)",
-              fontSize: "0.78rem",
-              fontWeight: 500,
-              cursor: "pointer"
-            }}
-          >
-            🔥 {h.name.split(",")[0]}
-          </button>
-        ))}
+        {CLIMATE_HOTSPOTS.map((h) => {
+          const isSelected = currentLocation?.cityName?.toLowerCase() === h.name.split(",")[0].toLowerCase();
+          return (
+            <button
+              key={h.id}
+              onClick={() => handleHotspotClick(h)}
+              className="glass-pill"
+              style={{
+                whiteSpace: "nowrap",
+                padding: "0.35rem 0.8rem",
+                borderRadius: "var(--radius-pill)",
+                background: isSelected ? "rgba(6, 182, 212, 0.2)" : "var(--bg-glass-pill)",
+                border: isSelected ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                color: isSelected ? "var(--accent-cyan)" : "var(--text-main)",
+                boxShadow: isSelected ? "0 0 12px rgba(6, 182, 212, 0.25)" : "none",
+                cursor: "pointer"
+              }}
+            >
+              🔥 {h.name.split(",")[0]}
+            </button>
+          );
+        })}
       </div>
 
       {/* Map or 3D Globe Container */}

@@ -57,31 +57,29 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
   const todayForecast = weatherData.daily?.[0] || {};
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", position: "relative", overflow: "hidden" }}>
+    <div className="glass-card" style={{ padding: "1.35rem", position: "relative" }}>
       {/* Location Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem" }}>
         <div>
-          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
             Current Weather Sentinel
           </div>
-          <h2 style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--text-main)" }}>{locationName}</h2>
+          <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--text-main)", letterSpacing: "-0.025em", marginTop: "0.15rem" }}>
+            {locationName}
+          </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
           {onOpenVoiceBriefing && (
             <button
               onClick={onOpenVoiceBriefing}
+              className="glass-pill"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.3rem",
-                background: "rgba(6, 182, 212, 0.15)",
-                border: "1px solid var(--accent-cyan)",
+                background: "rgba(6, 182, 212, 0.12)",
+                border: "1px solid rgba(6, 182, 212, 0.3)",
                 color: "var(--accent-cyan)",
-                borderRadius: "12px",
-                padding: "0.25rem 0.55rem",
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                cursor: "pointer"
+                cursor: "pointer",
+                padding: "4px 10px",
+                fontSize: "0.74rem"
               }}
               title="Listen to AI Climate Briefing"
             >
@@ -89,7 +87,10 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
               <span>AI Briefing</span>
             </button>
           )}
-          <span className="badge badge-cyan">{current.isDay ? "Daytime" : "Nighttime"}</span>
+          <span className="badge badge-cyan">
+            <span className="pulse-dot" style={{ width: 6, height: 6 }}></span>
+            {current.isDay ? "Daytime" : "Nighttime"}
+          </span>
         </div>
       </div>
 
@@ -99,73 +100,99 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          margin: "0.75rem 0",
-          padding: "0.85rem 1rem",
+          margin: "0.85rem 0",
+          padding: "1rem 1.15rem",
           background: "var(--bg-inner)",
-          borderRadius: "16px",
-          border: "1px solid var(--border-light)"
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid var(--border-light)",
+          boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08)",
+          position: "relative",
+          overflow: "hidden"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-          {getIconComponent(wmo.icon)}
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div style={{ filter: "drop-shadow(0 4px 12px rgba(6, 182, 212, 0.25))" }}>
+            {getIconComponent(wmo.icon)}
+          </div>
           <div>
-            <div style={{ fontSize: "2.75rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
-              {displayTemp(current.temp)}°{unit}
+            <div
+              style={{
+                fontSize: "3rem",
+                fontWeight: 800,
+                color: "var(--text-main)",
+                lineHeight: 1,
+                letterSpacing: "-0.04em",
+                fontFamily: "var(--font-heading)",
+                fontFeatureSettings: "'tnum' 1"
+              }}
+            >
+              {displayTemp(current.temp)}°<span style={{ fontSize: "1.75rem", fontWeight: 600, color: "var(--text-muted)" }}>{unit}</span>
             </div>
-            <div style={{ fontSize: "0.88rem", color: "var(--accent-cyan)", fontWeight: 600, marginTop: "0.2rem" }}>
+            <div style={{ fontSize: "0.88rem", color: "var(--accent-cyan)", fontWeight: 600, marginTop: "0.25rem", letterSpacing: "-0.01em" }}>
               {wmo.label}
             </div>
           </div>
         </div>
 
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>Feels Like</div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "var(--text-main)" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
+            Feels Like
+          </div>
+          <div
+            style={{
+              fontSize: "1.3rem",
+              fontWeight: 800,
+              color: "var(--text-main)",
+              letterSpacing: "-0.02em",
+              fontFamily: "var(--font-heading)",
+              fontFeatureSettings: "'tnum' 1"
+            }}
+          >
             {displayTemp(current.feelsLike)}°{unit}
           </div>
           {todayForecast.maxTemp !== undefined && (
-            <div style={{ fontSize: "0.78rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
-              H: {displayTemp(todayForecast.maxTemp)}° | L: {displayTemp(todayForecast.minTemp)}°
+            <div style={{ fontSize: "0.76rem", color: "var(--text-dim)", marginTop: "0.25rem", fontWeight: 500 }}>
+              H: <span style={{ color: "var(--text-main)" }}>{displayTemp(todayForecast.maxTemp)}°</span> · L: <span style={{ color: "var(--text-main)" }}>{displayTemp(todayForecast.minTemp)}°</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Grid Specs */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.65rem", marginTop: "0.75rem" }}>
+      {/* Grid Specs with Glass Stat Chips */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.65rem", marginTop: "0.85rem" }}>
         {/* Humidity */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
-          <Droplets size={18} style={{ color: "var(--accent-cyan)" }} />
+        <div className="glass-stat-chip">
+          <Droplets size={19} style={{ color: "var(--accent-cyan)", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Humidity</div>
-            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.humidity}%</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Humidity</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.humidity}%</div>
           </div>
         </div>
 
         {/* Wind */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
-          <Wind size={18} style={{ color: "#38bdf8" }} />
+        <div className="glass-stat-chip">
+          <Wind size={19} style={{ color: "#38bdf8", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Wind Speed</div>
-            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.windSpeed} km/h</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Wind Speed</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.windSpeed} km/h</div>
           </div>
         </div>
 
         {/* Pressure */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
-          <Gauge size={18} style={{ color: "var(--accent-amber)" }} />
+        <div className="glass-stat-chip">
+          <Gauge size={19} style={{ color: "var(--accent-amber)", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Pressure</div>
-            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.pressure} hPa</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Pressure</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.pressure} hPa</div>
           </div>
         </div>
 
         {/* Cloud Cover */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.65rem 0.85rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.65rem", border: "1px solid var(--border-light)" }}>
-          <Cloud size={18} style={{ color: "var(--text-muted)" }} />
+        <div className="glass-stat-chip">
+          <Cloud size={19} style={{ color: "var(--accent-purple)", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Cloud Cover</div>
-            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--text-main)" }}>{current.cloudCover}%</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Cloud Cover</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.cloudCover}%</div>
           </div>
         </div>
       </div>
@@ -176,20 +203,20 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "0.75rem",
-            paddingTop: "0.65rem",
-            borderTop: "1px solid var(--border-light)",
+            marginTop: "0.85rem",
+            paddingTop: "0.75rem",
+            borderTop: "1px solid var(--border-subtle)",
             fontSize: "0.82rem",
             color: "var(--text-muted)"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <Sunrise size={16} style={{ color: "var(--accent-amber)" }} />
-            <span>Sunrise: <strong style={{ color: "var(--text-main)" }}>{todayForecast.sunrise}</strong></span>
+            <span>Sunrise: <strong style={{ color: "var(--text-main)", fontWeight: 600 }}>{todayForecast.sunrise}</strong></span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <Sunset size={16} style={{ color: "var(--accent-red)" }} />
-            <span>Sunset: <strong style={{ color: "var(--text-main)" }}>{todayForecast.sunset}</strong></span>
+            <span>Sunset: <strong style={{ color: "var(--text-main)", fontWeight: 600 }}>{todayForecast.sunset}</strong></span>
           </div>
         </div>
       )}

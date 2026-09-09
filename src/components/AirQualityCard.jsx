@@ -23,20 +23,25 @@ export default function AirQualityCard({ airQualityData }) {
   ];
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Wind size={18} style={{ color: "var(--accent-cyan)" }} />
-          <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)" }}>Air Quality & Atmospheric Health</h3>
+    <div className="glass-card" style={{ padding: "1.35rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.95rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+          <Wind size={20} style={{ color: "var(--accent-cyan)" }} />
+          <h3 style={{ fontSize: "1.08rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.02em", margin: 0 }}>
+            Air Quality & Atmospheric Health
+          </h3>
         </div>
         <span
           className="badge"
           style={{
-            background: `${aqiInfo.color}22`,
+            background: `${aqiInfo.color}1c`,
             color: aqiInfo.color,
-            border: `1px solid ${aqiInfo.color}66`
+            border: `1px solid ${aqiInfo.color}44`,
+            fontSize: "0.72rem",
+            padding: "0.25rem 0.65rem"
           }}
         >
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: aqiInfo.color, display: "inline-block" }}></span>
           {aqiInfo.status}
         </span>
       </div>
@@ -46,61 +51,86 @@ export default function AirQualityCard({ airQualityData }) {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "1rem",
-          padding: "0.85rem 1rem",
+          gap: "1.15rem",
+          padding: "1rem 1.15rem",
           background: "var(--bg-inner)",
-          borderRadius: "16px",
-          border: `1px solid ${aqiInfo.color}33`,
-          marginBottom: "1rem"
+          borderRadius: "var(--radius-lg)",
+          border: `1px solid ${aqiInfo.color}35`,
+          boxShadow: `inset 0 1px 1px rgba(255, 255, 255, 0.06), 0 8px 24px -6px ${aqiInfo.color}15`,
+          marginBottom: "1.1rem"
         }}
       >
         <div
           style={{
-            width: "60px",
-            height: "60px",
+            width: "66px",
+            height: "66px",
             borderRadius: "50%",
-            background: `radial-gradient(circle, ${aqiInfo.color}33 0%, var(--bg-card-hover) 70%)`,
-            border: `3px solid ${aqiInfo.color}`,
+            background: `radial-gradient(circle, ${aqiInfo.color}25 0%, var(--bg-card) 75%)`,
+            border: `2.5px solid ${aqiInfo.color}`,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: `0 0 15px ${aqiInfo.color}44`,
+            boxShadow: `0 0 20px ${aqiInfo.color}35, inset 0 0 12px ${aqiInfo.color}20`,
             flexShrink: 0
           }}
         >
-          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>{usAqi}</div>
-          <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase" }}>AQI</div>
+          <div
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 800,
+              color: "var(--text-main)",
+              lineHeight: 1,
+              fontFamily: "var(--font-heading)",
+              letterSpacing: "-0.03em"
+            }}
+          >
+            {usAqi}
+          </div>
+          <div style={{ fontSize: "0.62rem", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em", marginTop: "2px" }}>
+            AQI
+          </div>
         </div>
 
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--text-main)", marginBottom: "0.2rem" }}>
+          <div style={{ fontSize: "0.86rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.25rem", letterSpacing: "-0.01em" }}>
             Health Advisory
           </div>
-          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.4 }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", lineHeight: 1.45, fontWeight: 450 }}>
             {aqiInfo.desc}
           </div>
         </div>
       </div>
 
       {/* Pollutant Progress Bars */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         {pollutants.map((p, idx) => {
           const pct = Math.min(100, Math.round((p.current / p.max) * 100));
+          const barColor = pct > 75 ? "linear-gradient(90deg, #f59e0b, #ef4444)" : pct > 45 ? "linear-gradient(90deg, #06b6d4, #f59e0b)" : "linear-gradient(90deg, #10b981, #06b6d4)";
           return (
             <div key={idx}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.2rem" }}>
-                <span>{p.label}</span>
-                <span style={{ color: "var(--text-main)", fontWeight: 600 }}>{p.val}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.76rem", color: "var(--text-muted)", marginBottom: "0.3rem" }}>
+                <span style={{ fontWeight: 500 }}>{p.label}</span>
+                <span style={{ color: "var(--text-main)", fontWeight: 700, fontFamily: "monospace" }}>{p.val}</span>
               </div>
-              <div style={{ height: "6px", width: "100%", background: "var(--bg-inner)", borderRadius: "3px", overflow: "hidden", border: "1px solid var(--border-light)" }}>
+              <div
+                style={{
+                  height: "7px",
+                  width: "100%",
+                  background: "var(--bg-inner)",
+                  borderRadius: "var(--radius-pill)",
+                  overflow: "hidden",
+                  border: "1px solid var(--border-subtle)",
+                  boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.2)"
+                }}
+              >
                 <div
                   style={{
                     height: "100%",
                     width: `${pct}%`,
-                    background: pct > 75 ? "var(--accent-red)" : pct > 45 ? "var(--accent-amber)" : "var(--accent-cyan)",
-                    borderRadius: "3px",
-                    transition: "width 0.5s ease"
+                    background: barColor,
+                    borderRadius: "var(--radius-pill)",
+                    transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                   }}
                 />
               </div>
