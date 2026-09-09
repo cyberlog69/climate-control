@@ -19,12 +19,24 @@ import VoiceBriefingModal from "./components/VoiceBriefingModal";
 import DataExportModal from "./components/DataExportModal";
 import AboutModal from "./components/AboutModal";
 import WeatherParticles from "./components/WeatherParticles";
-import SpatialDock from "./components/SpatialDock";
-import TimelineScrubber from "./components/TimelineScrubber";
+import MaterialNavRail from "./components/MaterialNavRail";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
-import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal, Eye, EyeOff, Layers, X } from "lucide-react";
+import {
+  LayoutDashboard,
+  Globe,
+  Globe2,
+  Compass,
+  History,
+  Activity,
+  Zap,
+  Leaf,
+  Sliders,
+  AlertCircle,
+  ChevronRight,
+  X
+} from "lucide-react";
 
 export default function App() {
   const [currentLocation, setCurrentLocation] = useState({
@@ -38,7 +50,8 @@ export default function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [unit, setUnit] = useState("C"); // 'C' | 'F'
-  const [activeTab, setActiveTab] = useState("live"); // 'live' | 'forecast' | 'vitals' | 'sim'
+  const [activeTab, setActiveTab] = useState("dashboard");
+
   const [viewMode, setViewMode] = useState("3d");
   const [isHudCollapsed, setIsHudCollapsed] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
@@ -78,7 +91,7 @@ export default function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const tabs = ["live", "forecast", "history", "vitals", "energy", "footprint", "sim"];
+  const tabs = ["dashboard", "map", "forecast", "history", "vitals", "energy", "footprint", "sim"];
 
   useTouchSwipe({
     onSwipeLeft: () => {
@@ -197,25 +210,14 @@ export default function App() {
   };
 
   return (
-    <div className="orbital-viewport" data-theme={theme}>
+    <div className="m3-app-shell" data-theme={theme}>
       {/* Background Weather Particle Canvas */}
       <WeatherParticles
         weatherCode={weatherData?.current?.weatherCode || 0}
         isDay={weatherData?.current?.isDay ?? true}
       />
 
-      {/* Living 100vw/100vh 3D Earth Globe / Map Canvas */}
-      <InteractiveMap
-        currentLocation={currentLocation}
-        onSelectLocation={handleSelectLocation}
-        weatherData={weatherData}
-        theme={theme}
-        isSpatialCockpit={true}
-        viewMode={viewMode}
-        onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
-      />
-
-      {/* Floating Dynamic Island Header */}
+      {/* Google Material 3 Top App Bar */}
       <Navbar
         currentLocation={currentLocation}
         onSelectLocation={handleSelectLocation}
@@ -239,149 +241,188 @@ export default function App() {
         onOpenAbout={() => setIsAboutOpen(true)}
       />
 
-      {/* Floating Left Spatial Dock */}
-      <div className="hide-on-mobile">
-        <SpatialDock
-          activeTab={activeTab}
-          onSelectTab={(tab) => {
-            setActiveTab(tab);
-            setIsHudCollapsed(false);
-          }}
-          viewMode={viewMode}
-          onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
-        />
-      </div>
-
-      {/* Floating Right Telemetry Stack (Collapsible HUD) */}
-      {isHudCollapsed && (
-        <button
-          className="hud-expand-trigger hide-on-mobile"
-          onClick={() => setIsHudCollapsed(false)}
-          title="Expand Live Telemetry HUD"
-        >
-          <Layers size={16} />
-          <span>Telemetry HUD</span>
-        </button>
-      )}
-
-      <aside
-        className={`spatial-telemetry-stack ${isHudCollapsed ? "collapsed" : ""} ${
-          isMobileDrawerOpen ? "mobile-drawer-open" : "mobile-drawer-closed"
-        }`}
-      >
-        {/* Mobile Drawer Header with Drag Handle & Close */}
-        <div className="mobile-drawer-header">
-          <div
-            className="mobile-drawer-handle"
-            onClick={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
-            title="Drag or tap to minimize"
+      {/* Material 3 Body: Left Navigation Rail & Main Viewport */}
+      <div className="m3-shell-body">
+        {/* Left Navigation Rail (Desktop & Tablet) */}
+        <div className="hide-on-mobile">
+          <MaterialNavRail
+            activeTab={activeTab}
+            onSelectTab={setActiveTab}
+            onOpenComparison={() => setIsComparisonOpen(true)}
+            onOpenReport={() => setIsReportOpen(true)}
+            onOpenAbout={() => setIsAboutOpen(true)}
           />
-          <button
-            className="mobile-drawer-close-btn"
-            onClick={() => setIsMobileDrawerOpen(false)}
-            aria-label="Close telemetry panel"
-          >
-            <X size={15} />
-          </button>
         </div>
 
-        {/* Desktop Collapse HUD Button */}
-        <button
-          className="hud-collapse-btn hide-on-mobile"
-          onClick={() => setIsHudCollapsed(true)}
-          title="Collapse HUD to view full 3D Earth"
-        >
-          <EyeOff size={14} />
-          <span>Hide HUD</span>
-        </button>
+        {/* Main Scrollable Viewport */}
+        <main className="m3-main-viewport">
+          {/* Tab 1: Dashboard Overview (Default) */}
+          {activeTab === "dashboard" && (
+            <div className="m3-dashboard-grid">
+              {/* Hero Section: Global Climate Overview Card */}
+              <div className="m3-card m3-hero-globe-card">
+                <div className="m3-card-header">
+                  <div className="m3-card-title-group">
+                    <Globe size={18} className="m3-card-icon" />
+                    <h2 className="m3-card-title">Global Climate Overview</h2>
+                  </div>
+                  <div className="m3-card-actions">
+                    <button
+                      className="m3-chip"
+                      onClick={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
+                      title={`Switch to ${viewMode === "3d" ? "2D Map" : "3D Earth Globe"}`}
+                    >
+                      {viewMode === "3d" ? <Globe size={14} /> : <Compass size={14} />}
+                      <span>{viewMode === "3d" ? "3D Globe" : "2D Map"}</span>
+                    </button>
+                    <button
+                      className="m3-chip"
+                      onClick={() => setActiveTab("map")}
+                      title="Expand to Full Map View"
+                    >
+                      <span>Expand</span>
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
+                </div>
 
-        {/* Tab 1: Live Terminal */}
-        {activeTab === "live" && (
-          <>
-            <WeatherDetailCard
-              locationName={currentLocation.name}
-              weatherData={weatherData}
-              unit={unit}
-              onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
-            />
-            <AirQualityCard airQualityData={airQualityData} />
-          </>
-        )}
+                <div className="m3-globe-container">
+                  <InteractiveMap
+                    currentLocation={currentLocation}
+                    onSelectLocation={handleSelectLocation}
+                    weatherData={weatherData}
+                    theme={theme}
+                    viewMode={viewMode}
+                    onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
+                    isM3Embedded={true}
+                  />
+                </div>
+              </div>
 
-        {/* Tab 2: Forecast & Climate Trends */}
-        {activeTab === "forecast" && (
-          <>
-            <ForecastSection weatherData={weatherData} unit={unit} />
-            <HistoricalAnomalyChart
-              locationName={currentLocation.name}
-              weatherData={weatherData}
-              unit={unit}
-            />
-          </>
-        )}
+              {/* Right Column: Weather Detail Card & Air Quality */}
+              <div className="m3-dashboard-side-col">
+                <WeatherDetailCard
+                  locationName={currentLocation.name}
+                  weatherData={weatherData}
+                  unit={unit}
+                  onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
+                />
+                <AirQualityCard airQualityData={airQualityData} />
+              </div>
 
-        {/* Tab 3: Historical Climate Time Machine (1950 - 2026) */}
-        {activeTab === "history" && (
-          <HistoricalTimeMachine
-            locationName={currentLocation.name}
-            lat={currentLocation.lat}
-            lon={currentLocation.lon}
-            currentTemp={weatherData?.current?.temp}
-            unit={unit}
-          />
-        )}
+              {/* Bottom Full Row: Forecast & Anomaly Section */}
+              <div className="m3-dashboard-bottom-row">
+                <ForecastSection weatherData={weatherData} unit={unit} />
+              </div>
+            </div>
+          )}
 
-        {/* Tab 4: Earth's Vital Signs, Climate Radar & NASA Wildfire Sentinel */}
-        {activeTab === "vitals" && (
-          <>
-            <ClimateVitals />
-            <WildfireSatelliteCard
-              currentLocation={currentLocation}
-              weatherData={weatherData}
-              onSelectLocation={handleSelectLocation}
-            />
-            <ExtremeEventsRadar />
-          </>
-        )}
+          {/* Tab 2: Full-Size Interactive Globe & Map View */}
+          {activeTab === "map" && (
+            <div className="m3-tab-content-container">
+              <div className="m3-card" style={{ padding: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem", flexWrap: "wrap", gap: "0.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <Globe2 size={20} style={{ color: "var(--md-sys-color-primary)" }} />
+                    <h2 style={{ fontSize: "1.05rem", fontWeight: 700, margin: 0 }}>Interactive Planetary Map & Thermal Hotspots</h2>
+                  </div>
+                  <button
+                    className="m3-chip active"
+                    onClick={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
+                  >
+                    <span>Switch to {viewMode === "3d" ? "2D Map" : "3D Globe"}</span>
+                  </button>
+                </div>
+                <div style={{ height: "calc(100vh - 180px)", minHeight: "480px", borderRadius: "16px", overflow: "hidden" }}>
+                  <InteractiveMap
+                    currentLocation={currentLocation}
+                    onSelectLocation={handleSelectLocation}
+                    weatherData={weatherData}
+                    theme={theme}
+                    viewMode={viewMode}
+                    onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
+                    isM3Embedded={true}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* Tab 5: Renewable Energy Yield Estimator (Solar & Wind) */}
-        {activeTab === "energy" && (
-          <RenewableEnergyEstimator
-            locationName={currentLocation.name}
-            lat={currentLocation.lat}
-            lon={currentLocation.lon}
-            weatherData={weatherData}
-          />
-        )}
+          {/* Tab 3: Forecast & Trends */}
+          {activeTab === "forecast" && (
+            <div className="m3-tab-content-container">
+              <ForecastSection weatherData={weatherData} unit={unit} />
+              <HistoricalAnomalyChart
+                locationName={currentLocation.name}
+                weatherData={weatherData}
+                unit={unit}
+              />
+            </div>
+          )}
 
-        {/* Tab 6: Personal Carbon Footprint & Offset Calculator */}
-        {activeTab === "footprint" && (
-          <CarbonFootprintCalculator locationName={currentLocation.name} />
-        )}
+          {/* Tab 4: Historical Climate Time Machine (1950 - 2026) */}
+          {activeTab === "history" && (
+            <div className="m3-tab-content-container">
+              <HistoricalTimeMachine
+                locationName={currentLocation.name}
+                lat={currentLocation.lat}
+                lon={currentLocation.lon}
+                currentTemp={weatherData?.current?.temp}
+                unit={unit}
+              />
+            </div>
+          )}
 
-        {/* Tab 7: AI Climate Impact Simulator */}
-        {activeTab === "sim" && (
-          <ClimateImpactSimulator
-            locationName={currentLocation.name}
-            lat={currentLocation.lat}
-            lon={currentLocation.lon}
-            unit={unit}
-          />
-        )}
-      </aside>
+          {/* Tab 5: Earth's Vital Signs & NASA Wildfire Sentinel */}
+          {activeTab === "vitals" && (
+            <div className="m3-tab-content-container">
+              <ClimateVitals />
+              <WildfireSatelliteCard
+                currentLocation={currentLocation}
+                weatherData={weatherData}
+                onSelectLocation={handleSelectLocation}
+              />
+              <ExtremeEventsRadar />
+            </div>
+          )}
 
-      {/* Floating Bottom Timeline Scrubber */}
-      <div className="hide-on-mobile">
-        <TimelineScrubber
-          weatherData={weatherData}
-          unit={unit}
-        />
+          {/* Tab 6: Clean Energy Yield Estimator */}
+          {activeTab === "energy" && (
+            <div className="m3-tab-content-container">
+              <RenewableEnergyEstimator
+                locationName={currentLocation.name}
+                lat={currentLocation.lat}
+                lon={currentLocation.lon}
+                weatherData={weatherData}
+              />
+            </div>
+          )}
+
+          {/* Tab 7: Personal Carbon Footprint Calculator */}
+          {activeTab === "footprint" && (
+            <div className="m3-tab-content-container">
+              <CarbonFootprintCalculator locationName={currentLocation.name} />
+            </div>
+          )}
+
+          {/* Tab 8: AI Climate Impact Simulator */}
+          {activeTab === "sim" && (
+            <div className="m3-tab-content-container">
+              <ClimateImpactSimulator
+                locationName={currentLocation.name}
+                lat={currentLocation.lat}
+                lon={currentLocation.lon}
+                unit={unit}
+              />
+            </div>
+          )}
+        </main>
       </div>
 
       {/* Error Notification */}
       {error && (
         <div
-          className="glass-card"
+          className="m3-card"
           style={{
             position: "fixed",
             bottom: "5rem",
@@ -389,15 +430,14 @@ export default function App() {
             transform: "translateX(-50%)",
             zIndex: 130,
             padding: "0.65rem 1.2rem",
-            background: "rgba(239, 68, 68, 0.25)",
-            borderColor: "rgba(239, 68, 68, 0.5)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(239, 68, 68, 0.2)",
+            borderColor: "rgba(239, 68, 68, 0.4)",
             display: "flex",
             alignItems: "center",
             gap: "0.6rem",
             color: "#fca5a5",
             fontSize: "0.82rem",
-            borderRadius: "var(--radius-pill)"
+            borderRadius: "var(--md-shape-full)"
           }}
         >
           <AlertCircle size={16} />
@@ -405,99 +445,75 @@ export default function App() {
         </div>
       )}
 
-      {/* 📱 Android Native Bottom Navigation Bar (Thumb-Accessible on Mobile) */}
-      <nav className="mobile-bottom-nav">
+      {/* Material 3 Bottom Navigation Bar (Mobile) */}
+      <nav className="m3-bottom-nav">
         <button
-          className={`mobile-nav-item ${activeTab === "live" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("live");
-            setIsMobileDrawerOpen(true);
-          }}
+          className={`m3-bottom-item ${activeTab === "dashboard" ? "active" : ""}`}
+          onClick={() => setActiveTab("dashboard")}
+          aria-label="Dashboard"
         >
-          <div className="mobile-nav-icon-wrapper">
-            <Thermometer size={18} />
+          <div className="m3-bottom-item-pill">
+            <LayoutDashboard size={18} />
           </div>
-          <span>Live</span>
+          <span className="m3-bottom-label">Dashboard</span>
         </button>
 
         <button
-          className={`mobile-nav-item ${activeTab === "forecast" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("forecast");
-            setIsMobileDrawerOpen(true);
-          }}
+          className={`m3-bottom-item ${activeTab === "map" ? "active" : ""}`}
+          onClick={() => setActiveTab("map")}
+          aria-label="Map & Globe"
         >
-          <div className="mobile-nav-icon-wrapper">
+          <div className="m3-bottom-item-pill">
+            <Globe2 size={18} />
+          </div>
+          <span className="m3-bottom-label">Map</span>
+        </button>
+
+        <button
+          className={`m3-bottom-item ${activeTab === "forecast" ? "active" : ""}`}
+          onClick={() => setActiveTab("forecast")}
+          aria-label="Forecast"
+        >
+          <div className="m3-bottom-item-pill">
             <Compass size={18} />
           </div>
-          <span>Forecast</span>
+          <span className="m3-bottom-label">Forecast</span>
         </button>
 
         <button
-          className={`mobile-nav-item ${activeTab === "history" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("history");
-            setIsMobileDrawerOpen(true);
-          }}
+          className={`m3-bottom-item ${activeTab === "history" ? "active" : ""}`}
+          onClick={() => setActiveTab("history")}
+          aria-label="History"
         >
-          <div className="mobile-nav-icon-wrapper">
+          <div className="m3-bottom-item-pill">
             <History size={18} />
           </div>
-          <span>History</span>
+          <span className="m3-bottom-label">History</span>
         </button>
 
         <button
-          className={`mobile-nav-item ${activeTab === "vitals" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("vitals");
-            setIsMobileDrawerOpen(true);
-          }}
+          className={`m3-bottom-item ${activeTab === "vitals" ? "active" : ""}`}
+          onClick={() => setActiveTab("vitals")}
+          aria-label="Vitals"
         >
-          <div className="mobile-nav-icon-wrapper">
-            <TrendingUp size={18} />
+          <div className="m3-bottom-item-pill">
+            <Activity size={18} />
           </div>
-          <span>Vitals</span>
+          <span className="m3-bottom-label">Vitals</span>
         </button>
 
         <button
-          className={`mobile-nav-item ${activeTab === "energy" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("energy");
-            setIsMobileDrawerOpen(true);
-          }}
+          className={`m3-bottom-item ${activeTab === "energy" ? "active" : ""}`}
+          onClick={() => setActiveTab("energy")}
+          aria-label="Energy"
         >
-          <div className="mobile-nav-icon-wrapper">
+          <div className="m3-bottom-item-pill">
             <Zap size={18} />
           </div>
-          <span>Energy</span>
-        </button>
-
-        <button
-          className={`mobile-nav-item ${activeTab === "footprint" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("footprint");
-            setIsMobileDrawerOpen(true);
-          }}
-        >
-          <div className="mobile-nav-icon-wrapper">
-            <Leaf size={18} />
-          </div>
-          <span>Carbon</span>
-        </button>
-
-        <button
-          className={`mobile-nav-item ${activeTab === "sim" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("sim");
-            setIsMobileDrawerOpen(true);
-          }}
-        >
-          <div className="mobile-nav-icon-wrapper">
-            <Sliders size={18} />
-          </div>
-          <span>AI Sim</span>
+          <span className="m3-bottom-label">Energy</span>
         </button>
       </nav>
+
 
       {/* Dual City Comparison Modal */}
       {isComparisonOpen && (

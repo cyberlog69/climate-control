@@ -23,7 +23,7 @@ export default function AirQualityCard({ airQualityData }) {
   ];
 
   return (
-    <div className="glass-card" style={{ padding: "1.35rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.95rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
           <Wind size={20} style={{ color: "var(--accent-cyan)" }} />

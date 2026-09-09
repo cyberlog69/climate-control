@@ -121,23 +121,18 @@ export default function Navbar({
 
   return (
     <>
-      <header className="dynamic-island">
+      <header className="m3-top-app-bar">
         {/* Brand Header */}
-        <div className="brand-logo">
-          <div className="brand-icon-wrapper">
-            <Globe size={20} />
-          </div>
-          <div>
-            <h1 className="brand-title">ClimateSphere</h1>
-            <div className="brand-subtitle">Orbital Sentinel</div>
-          </div>
+        <div className="m3-brand">
+          <Globe size={22} className="m3-brand-icon" />
+          <span className="m3-brand-title">ClimateSphere</span>
           {weatherData?.current && (
-            <div className="glass-pill" style={{ marginLeft: "0.25rem", padding: "3px 9px", fontSize: "0.75rem" }}>
+            <div className="m3-location-chip hide-on-mobile">
               <span className="pulse-dot" style={{ width: 6, height: 6 }} />
-              <span style={{ fontWeight: 800, color: "var(--text-main)" }}>
+              <strong>
                 {unit === "F" ? Math.round((weatherData.current.temp * 9) / 5 + 32) : weatherData.current.temp}°{unit}
-              </span>
-              <span style={{ color: "var(--accent-cyan)", fontSize: "0.7rem", fontWeight: 600 }}>
+              </strong>
+              <span className="m3-location-name">
                 {currentLocation?.cityName || currentLocation?.name?.split(",")[0]}
               </span>
             </div>
@@ -145,32 +140,46 @@ export default function Navbar({
         </div>
 
         {/* Global City Search (Desktop) */}
-        <div className="search-container hide-on-mobile" ref={dropdownRef}>
-          <div className="search-input-wrapper">
-            <Search size={18} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search any global city, region, or coordinate..."
-              value={query}
-              onChange={handleInputChange}
-              onFocus={() => query.length >= 2 && setShowDropdown(true)}
-            />
-            {isSearching && <RefreshCw size={16} className="animate-spin" style={{ color: "var(--accent-cyan)" }} />}
-          </div>
+        <div className="m3-search-bar hide-on-mobile" ref={dropdownRef}>
+          <Search size={18} style={{ color: "var(--md-sys-color-on-surface-variant)", flexShrink: 0 }} />
+          <input
+            type="text"
+            className="m3-search-input"
+            placeholder="Search location (e.g., London, UK)..."
+            value={query}
+            onChange={handleInputChange}
+            onFocus={() => query.length >= 2 && setShowDropdown(true)}
+          />
+          {isSearching && <RefreshCw size={15} className="animate-spin" style={{ color: "var(--md-sys-color-primary)" }} />}
+          {query && (
+            <button
+              onClick={() => { setQuery(""); setSearchResults([]); setShowDropdown(false); }}
+              style={{ background: "transparent", border: "none", color: "var(--md-sys-color-on-surface-variant)", cursor: "pointer", display: "flex", padding: 0 }}
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
+          <button
+            onClick={onAutoLocate}
+            title="My Current Location"
+            style={{ background: "transparent", border: "none", color: "var(--md-sys-color-primary)", cursor: "pointer", display: "flex", padding: 0 }}
+            aria-label="Current Location"
+          >
+            <Navigation size={16} />
+          </button>
 
           {showDropdown && searchResults.length > 0 && (
-            <div className="search-results-dropdown">
+            <div className="m3-search-dropdown">
               {searchResults.map((item) => (
-                <div key={item.id} className="search-result-item" onClick={() => handleSelect(item)}>
+                <div key={item.id} className="m3-search-item" onClick={() => handleSelect(item)}>
                   <div>
-                    <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{item.cityName}</div>
-                    <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                      {item.admin ? `${item.admin}, ` : ""}
-                      {item.country}
+                    <div style={{ fontWeight: 600, color: "var(--md-sys-color-on-background)" }}>{item.cityName}</div>
+                    <div style={{ fontSize: "0.78rem", color: "var(--md-sys-color-on-surface-variant)" }}>
+                      {item.admin ? `${item.admin}, ` : ""}{item.country}
                     </div>
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", fontFamily: "monospace" }}>
+                  <div style={{ fontSize: "0.74rem", color: "var(--md-sys-color-primary)", fontFamily: "monospace" }}>
                     {item.lat.toFixed(2)}°, {item.lon.toFixed(2)}°
                   </div>
                 </div>
@@ -180,7 +189,7 @@ export default function Navbar({
         </div>
 
         {/* Desktop Quick Actions */}
-        <div className="nav-actions hide-on-mobile">
+        <div className="m3-actions-group hide-on-mobile">
           {/* Live Climate Alert System Pill */}
           <ClimateAlertSystem
             weatherData={weatherData}
@@ -190,39 +199,40 @@ export default function Navbar({
 
           {/* AI Voice Briefing Button */}
           <button
-            className="locate-btn"
+            className="m3-icon-btn"
             onClick={onOpenVoiceBriefing}
             title="Play AI Voice Climate Briefing"
+            aria-label="Voice Briefing"
           >
-            <Mic size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span className="nav-btn-label">Voice Briefing</span>
+            <Mic size={18} style={{ color: "var(--md-sys-color-primary)" }} />
           </button>
 
           {/* Ambient Sound Player */}
           <button
-            className="locate-btn"
+            className="m3-icon-btn"
             onClick={handleToggleAudio}
             title={isAudioPlaying ? "Mute Ambient Weather Audio" : "Play Ambient Weather Audio"}
+            aria-label="Ambient Audio"
           >
-            {isAudioPlaying ? <Volume2 size={15} style={{ color: "var(--accent-cyan)" }} /> : <VolumeX size={15} />}
+            {isAudioPlaying ? <Volume2 size={18} style={{ color: "var(--md-sys-color-primary)" }} /> : <VolumeX size={18} />}
           </button>
 
           {/* Multi-City Watchlist Button */}
           <button
-            className="locate-btn"
+            className="m3-chip"
             onClick={onOpenWatchlist}
             title="Open Multi-City Watchlist"
           >
-            <Bookmark size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span className="nav-btn-label">Watchlist</span>
+            <Bookmark size={15} />
+            <span>Watchlist</span>
             {watchlist.length > 0 && (
               <span
                 style={{
-                  background: "var(--accent-cyan)",
-                  color: "#000",
+                  background: "var(--md-sys-color-primary)",
+                  color: "var(--md-sys-color-on-primary)",
                   fontSize: "0.65rem",
                   fontWeight: 800,
-                  padding: "0.1rem 0.4rem",
+                  padding: "1px 5px",
                   borderRadius: "10px"
                 }}
               >
@@ -231,64 +241,41 @@ export default function Navbar({
             )}
           </button>
 
-          {/* Pin Active City */}
-          <button
-            className="locate-btn nav-btn-secondary"
-            onClick={onTogglePin}
-            title={isCurrentPinned ? "Unpin Active City" : "Pin Active City"}
-            style={{
-              color: isCurrentPinned ? "var(--accent-green)" : "inherit",
-              borderColor: isCurrentPinned ? "var(--accent-green)" : "var(--border-light)"
-            }}
-          >
-            {isCurrentPinned ? <BookmarkCheck size={15} /> : <Bookmark size={15} />}
-          </button>
-
-          {/* Dual City Comparison */}
-          <button className="locate-btn nav-btn-secondary" onClick={onOpenComparison} title="Compare Cities">
-            <GitCompare size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span className="nav-btn-label">Compare</span>
-          </button>
-
-          {/* Report Generator */}
-          <button className="locate-btn nav-btn-secondary" onClick={onOpenReport} title="Diagnostic Report">
-            <FileText size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span className="nav-btn-label">Report</span>
-          </button>
-
-          {/* CSV/JSON Exporter */}
-          <button className="locate-btn nav-btn-secondary" onClick={onOpenExport} title="Export Raw Data">
-            <Download size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span className="nav-btn-label">Export</span>
-          </button>
-
-          {/* About ClimateSphere Modal */}
-          <button className="locate-btn nav-btn-secondary" onClick={onOpenAbout} title="About ClimateSphere">
-            <Info size={15} style={{ color: "var(--accent-cyan)" }} />
-            <span className="nav-btn-label">About</span>
-          </button>
-
-          {/* Theme Toggle */}
-          <button className="theme-toggle-btn" onClick={onToggleTheme}>
-            {theme === "dark" ? <Sun size={15} style={{ color: "#f59e0b" }} /> : <Moon size={15} style={{ color: "#38bdf8" }} />}
-          </button>
-
-          {/* UTC Clock Pill */}
-          <div className="nav-clock-pill glass-pill">
-            <span className="pulse-dot"></span>
-            <span style={{ fontFamily: "monospace", color: "var(--text-main)", letterSpacing: "0.02em" }}>{utcTime || "UTC Sync"}</span>
+          {/* Temperature Unit Segmented Chip */}
+          <div className="m3-segmented-chip">
+            <button
+              className={`m3-segment ${unit === "C" ? "active" : ""}`}
+              onClick={() => unit !== "C" && onToggleUnit()}
+            >
+              °C
+            </button>
+            <button
+              className={`m3-segment ${unit === "F" ? "active" : ""}`}
+              onClick={() => unit !== "F" && onToggleUnit()}
+            >
+              °F
+            </button>
           </div>
 
-          <button className="locate-btn" onClick={onAutoLocate} title="My Geolocation">
-            <Navigation size={14} />
+          {/* Theme Toggle */}
+          <button
+            className="m3-icon-btn"
+            onClick={onToggleTheme}
+            title="Toggle Light / Dark Mode"
+            aria-label="Toggle Theme"
+          >
+            {theme === "dark" ? <Sun size={18} style={{ color: "#fbbf24" }} /> : <Moon size={18} style={{ color: "#38bdf8" }} />}
           </button>
 
-          <button className={`unit-btn ${unit === "C" ? "active" : ""}`} onClick={onToggleUnit}>
-            °C/°F
-          </button>
-
-          <button className="locate-btn" onClick={onRefresh} disabled={isRefreshing} title="Refresh Feeds">
-            <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
+          {/* Refresh Button */}
+          <button
+            className="m3-icon-btn"
+            onClick={onRefresh}
+            disabled={isRefreshing}
+            title="Refresh Feeds"
+            aria-label="Refresh Data"
+          >
+            <RefreshCw size={17} className={isRefreshing ? "animate-spin" : ""} />
           </button>
         </div>
 

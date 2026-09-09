@@ -21,57 +21,25 @@ export default function ForecastSection({ weatherData, unit }) {
   const daily = weatherData.daily || [];
 
   return (
-    <div className="glass-card" style={{ padding: "1.35rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem" }}>
       {/* Tab Controls Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.1rem", flexWrap: "wrap", gap: "0.5rem" }}>
-        <div className="section-title" style={{ margin: 0 }}>
-          <Clock size={19} style={{ color: "var(--accent-cyan)" }} />
-          <span style={{ letterSpacing: "-0.015em" }}>Forecast & Atmospheric Trajectory</span>
+        <div className="m3-card-title-group" style={{ margin: 0 }}>
+          <Clock size={19} className="m3-card-icon" />
+          <span style={{ fontSize: "1rem", fontWeight: 700, color: "var(--md-sys-color-on-background)" }}>Forecast Trajectory</span>
         </div>
 
-        {/* Linear Segmented Control */}
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            background: "var(--bg-inner)",
-            padding: "3px",
-            borderRadius: "var(--radius-pill)",
-            border: "1px solid var(--border-light)",
-            backdropFilter: "var(--blur-subtle)"
-          }}
-        >
+        {/* Material 3 Segmented Control */}
+        <div className="m3-segmented-chip">
           <button
             onClick={() => setActiveTab("hourly")}
-            style={{
-              padding: "0.35rem 0.85rem",
-              borderRadius: "var(--radius-pill)",
-              border: "none",
-              background: activeTab === "hourly" ? "linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))" : "transparent",
-              color: activeTab === "hourly" ? "#fff" : "var(--text-muted)",
-              fontSize: "0.78rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
-              boxShadow: activeTab === "hourly" ? "0 2px 10px rgba(6, 182, 212, 0.35)" : "none"
-            }}
+            className={`m3-segment ${activeTab === "hourly" ? "active" : ""}`}
           >
             24-Hour Hourly
           </button>
           <button
             onClick={() => setActiveTab("daily")}
-            style={{
-              padding: "0.35rem 0.85rem",
-              borderRadius: "var(--radius-pill)",
-              border: "none",
-              background: activeTab === "daily" ? "linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))" : "transparent",
-              color: activeTab === "daily" ? "#fff" : "var(--text-muted)",
-              fontSize: "0.78rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
-              boxShadow: activeTab === "daily" ? "0 2px 10px rgba(6, 182, 212, 0.35)" : "none"
-            }}
+            className={`m3-segment ${activeTab === "daily" ? "active" : ""}`}
           >
             7-Day Outlook
           </button>

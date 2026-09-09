@@ -57,14 +57,14 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
   const todayForecast = weatherData.daily?.[0] || {};
 
   return (
-    <div className="glass-card" style={{ padding: "1.35rem", position: "relative" }}>
+    <div className="m3-card" style={{ padding: "1.35rem", position: "relative" }}>
       {/* Location Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem" }}>
         <div>
-          <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
-            Current Weather Sentinel
+          <div style={{ fontSize: "0.72rem", color: "var(--md-sys-color-on-surface-variant)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+            Current Conditions
           </div>
-          <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--text-main)", letterSpacing: "-0.025em", marginTop: "0.15rem" }}>
+          <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--md-sys-color-on-background)", letterSpacing: "-0.025em", marginTop: "0.15rem" }}>
             {locationName}
           </h2>
         </div>
@@ -72,14 +72,11 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
           {onOpenVoiceBriefing && (
             <button
               onClick={onOpenVoiceBriefing}
-              className="glass-pill"
+              className="m3-chip"
               style={{
-                background: "rgba(6, 182, 212, 0.12)",
-                border: "1px solid rgba(6, 182, 212, 0.3)",
-                color: "var(--accent-cyan)",
-                cursor: "pointer",
-                padding: "4px 10px",
-                fontSize: "0.74rem"
+                background: "var(--md-sys-color-primary-container)",
+                color: "var(--md-sys-color-on-primary-container)",
+                borderColor: "transparent"
               }}
               title="Listen to AI Climate Briefing"
             >
@@ -87,7 +84,7 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
               <span>AI Briefing</span>
             </button>
           )}
-          <span className="badge badge-cyan">
+          <span className="m3-chip" style={{ background: "var(--md-sys-color-surface-container)", fontSize: "0.72rem" }}>
             <span className="pulse-dot" style={{ width: 6, height: 6 }}></span>
             {current.isDay ? "Daytime" : "Nighttime"}
           </span>
