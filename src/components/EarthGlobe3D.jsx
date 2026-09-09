@@ -244,7 +244,10 @@ export default function EarthGlobe3D({
       console.error("WebGL renderer creation failed:", e);
       return; // Bail out — InteractiveMap WebGL check should have prevented this
     }
-    renderer.setSize(width, height);
+    renderer.setSize(width, height, false);
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    renderer.domElement.style.display = "block";
     // Cap pixel ratio at 1.5 on Android to prevent GPU memory issues (DPR can be 3.5+ on flagship devices)
     const dpr = Math.min(window.devicePixelRatio, window.devicePixelRatio > 2 ? 1.5 : 2);
     renderer.setPixelRatio(dpr);
@@ -402,18 +405,32 @@ export default function EarthGlobe3D({
     };
     animFrameIdRef.current = requestAnimationFrame(animate);
 
-    // Resize Handler
+    // Resize Handler with ResizeObserver
     const handleResize = () => {
       if (!container || !renderer || !camera) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
+      if (w <= 0 || h <= 0) return;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      renderer.setSize(w, h, false);
     };
+
+    // Trigger initial resize after layout settles
+    const initRaf = requestAnimationFrame(handleResize);
+
+    let resizeObserver = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        handleResize();
+      });
+      resizeObserver.observe(container);
+    }
     window.addEventListener("resize", handleResize);
 
     return () => {
+      cancelAnimationFrame(initRaf);
+      if (resizeObserver) resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
       renderer.dispose();
@@ -664,7 +681,7 @@ export default function EarthGlobe3D({
         position: "relative",
         width: "100%",
         height: "100%",
-        minHeight: "360px",
+        minHeight: "220px",
         borderRadius: "16px",
         overflow: "hidden",
         background: theme === "dark" ? "radial-gradient(circle at 50% 50%, #081a2e 0%, #030811 100%)" : "radial-gradient(circle at 50% 50%, #0f2b48 0%, #04101e 100%)",

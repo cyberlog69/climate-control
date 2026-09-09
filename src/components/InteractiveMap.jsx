@@ -58,6 +58,37 @@ function MapController({ center, zoom }) {
   return null;
 }
 
+function MapResizeHandler() {
+  const map = useMap();
+  useEffect(() => {
+    // Invalidate size shortly after mount in case container size settled asynchronously
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+
+    const container = map.getContainer();
+    if (!container) return () => clearTimeout(timer);
+
+    let ro = null;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      ro.observe(container);
+    }
+    const onResize = () => map.invalidateSize();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      clearTimeout(timer);
+      if (ro) ro.disconnect();
+      window.removeEventListener("resize", onResize);
+    };
+  }, [map]);
+
+  return null;
+}
+
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click: (e) => {
@@ -147,7 +178,7 @@ export default function InteractiveMap({
 
   if (isM3Embedded) {
     return (
-      <div style={{ width: "100%", height: "100%", position: "relative", minHeight: "420px" }}>
+      <div style={{ width: "100%", height: "100%", position: "relative" }}>
         {viewMode === "3d" ? (
           <EarthGlobe3D
             currentLocation={currentLocation}
@@ -156,7 +187,8 @@ export default function InteractiveMap({
             theme={theme}
           />
         ) : (
-          <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%", minHeight: "420px" }}>
+          <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
+            <MapResizeHandler />
             <MapController center={mapCenter} zoom={5} />
             <MapClickHandler onMapClick={handleMapClick} />
 
@@ -416,6 +448,7 @@ export default function InteractiveMap({
           />
         ) : (
           <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
+            <MapResizeHandler />
             <MapController center={mapCenter} zoom={5} />
             <MapClickHandler onMapClick={handleMapClick} />
 

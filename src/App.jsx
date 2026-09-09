@@ -333,7 +333,7 @@ export default function App() {
                     <span>Switch to {viewMode === "3d" ? "2D Map" : "3D Globe"}</span>
                   </button>
                 </div>
-                <div style={{ height: "calc(100vh - 180px)", minHeight: "480px", borderRadius: "16px", overflow: "hidden" }}>
+                <div style={{ height: "clamp(340px, calc(100dvh - 170px), 850px)", minHeight: "300px", borderRadius: "16px", overflow: "hidden" }}>
                   <InteractiveMap
                     currentLocation={currentLocation}
                     onSelectLocation={handleSelectLocation}

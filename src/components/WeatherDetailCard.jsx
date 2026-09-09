@@ -114,7 +114,7 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
           <div>
             <div
               style={{
-                fontSize: "3rem",
+                fontSize: "clamp(2.1rem, 3.4vw, 3rem)",
                 fontWeight: 800,
                 color: "var(--text-main)",
                 lineHeight: 1,

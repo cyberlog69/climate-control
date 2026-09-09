@@ -199,7 +199,7 @@ export default function Navbar({
 
           {/* AI Voice Briefing Button */}
           <button
-            className="m3-icon-btn"
+            className="m3-icon-btn hide-on-tablet"
             onClick={onOpenVoiceBriefing}
             title="Play AI Voice Climate Briefing"
             aria-label="Voice Briefing"
@@ -209,7 +209,7 @@ export default function Navbar({
 
           {/* Ambient Sound Player */}
           <button
-            className="m3-icon-btn"
+            className="m3-icon-btn hide-on-tablet"
             onClick={handleToggleAudio}
             title={isAudioPlaying ? "Mute Ambient Weather Audio" : "Play Ambient Weather Audio"}
             aria-label="Ambient Audio"
@@ -219,12 +219,12 @@ export default function Navbar({
 
           {/* Multi-City Watchlist Button */}
           <button
-            className="m3-chip"
+            className="m3-chip m3-watchlist-chip"
             onClick={onOpenWatchlist}
             title="Open Multi-City Watchlist"
           >
             <Bookmark size={15} />
-            <span>Watchlist</span>
+            <span className="m3-chip-label">Watchlist</span>
             {watchlist.length > 0 && (
               <span
                 style={{
@@ -280,17 +280,7 @@ export default function Navbar({
         </div>
 
         {/* Mobile Header Actions (Android Compact) */}
-        <div style={{ display: "none" }} className="mobile-actions-wrapper">
-          {/* Style rule to show only on mobile */}
-          <style>{`
-            @media (max-width: 900px) {
-              .mobile-actions-wrapper {
-                display: flex !important;
-                align-items: center;
-                gap: 0.35rem;
-              }
-            }
-          `}</style>
+        <div className="mobile-actions-wrapper">
 
           {/* Search Trigger Button */}
           <button
