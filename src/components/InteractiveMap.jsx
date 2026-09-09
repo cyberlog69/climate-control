@@ -86,10 +86,16 @@ export default function InteractiveMap({
   currentLocation,
   onSelectLocation,
   weatherData,
-  theme = "dark"
+  theme = "dark",
+  isSpatialCockpit = false,
+  viewMode: controlledViewMode,
+  onToggleViewMode
 }) {
   // Default to 2D map when WebGL is not available (common on older/low-end Android WebViews)
-  const [viewMode, setViewMode] = useState(webGLSupported ? "3d" : "2d");
+  const [internalViewMode, setInternalViewMode] = useState(webGLSupported ? "3d" : "2d");
+  const viewMode = controlledViewMode !== undefined ? controlledViewMode : internalViewMode;
+  const setViewMode = onToggleViewMode || setInternalViewMode;
+
   const [activeLayer, setActiveLayer] = useState("temp");
   const [mapCenter, setMapCenter] = useState([
     currentLocation?.lat || 35.6762,
@@ -137,6 +143,134 @@ export default function InteractiveMap({
     theme === "light"
       ? "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
       : "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}";
+
+  if (isSpatialCockpit) {
+    return (
+      <div className="canvas-background">
+        {/* Full Viewport 3D Globe or 2D Map */}
+        <div style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}>
+          {viewMode === "3d" ? (
+            <EarthGlobe3D
+              currentLocation={currentLocation}
+              onSelectLocation={onSelectLocation}
+              weatherData={weatherData}
+              theme={theme}
+            />
+          ) : (
+            <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
+              <MapController center={mapCenter} zoom={5} />
+              <MapClickHandler onMapClick={handleMapClick} />
+
+              <TileLayer
+                key={`base-${theme}`}
+                url={baseTileUrl}
+                attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+              />
+              <TileLayer
+                key={`ref-${theme}`}
+                url={referenceTileUrl}
+                pane="overlayPane"
+                opacity={0.85}
+              />
+
+              {/* Selected Location Marker */}
+              {currentLocation && (
+                <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
+                  <Popup>
+                    <div style={{ padding: "0.25rem" }}>
+                      <strong style={{ color: "var(--text-main)" }}>{currentLocation.name}</strong>
+                      <div style={{ fontSize: "0.8rem", color: "var(--accent-cyan)", marginTop: "0.2rem" }}>Active Location</div>
+                    </div>
+                  </Popup>
+                </Marker>
+              )}
+
+              {/* Climate Hotspots Markers */}
+              {CLIMATE_HOTSPOTS.map((h) => (
+                <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b", "🔥")}>
+                  <Popup>
+                    <div style={{ padding: "0.3rem" }}>
+                      <strong style={{ color: "var(--accent-amber)" }}>{h.name}</strong>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>{h.issue}</div>
+                      <button
+                        onClick={() => handleHotspotClick(h)}
+                        style={{
+                          marginTop: "0.4rem",
+                          padding: "0.2rem 0.5rem",
+                          background: "var(--accent-cyan)",
+                          color: "#000",
+                          border: "none",
+                          borderRadius: "4px",
+                          fontSize: "0.7rem",
+                          cursor: "pointer",
+                          fontWeight: "bold"
+                        }}
+                      >
+                        Inspect Location
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+
+              {/* NASA Global Wildfires (Only in wildfire layer) */}
+              {activeLayer === "wildfires" &&
+                GLOBAL_WILDFIRE_HOTSPOTS.map((fire) => (
+                  <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444", "🔥")}>
+                    <Popup>
+                      <div style={{ padding: "0.25rem" }}>
+                        <div style={{ color: "var(--accent-red)", fontWeight: 800 }}>NASA Satellite Alert</div>
+                        <div style={{ fontWeight: 600 }}>{fire.region}</div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>FRP: {fire.frp} MW · Confidence: {fire.confidence}%</div>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+            </MapContainer>
+          )}
+        </div>
+
+        {/* Floating 2D Layer Controls in Spatial View */}
+        {viewMode === "2d" && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "max(1.25rem, env(safe-area-inset-bottom))",
+              left: "5.5rem",
+              zIndex: 110,
+              display: "flex",
+              gap: "0.35rem"
+            }}
+          >
+            {layers.map((l) => {
+              const Icon = l.icon;
+              const isActive = activeLayer === l.id;
+              return (
+                <button
+                  key={l.id}
+                  onClick={() => setActiveLayer(l.id)}
+                  className="glass-pill"
+                  style={{
+                    padding: "0.42rem 0.85rem",
+                    borderRadius: "var(--radius-pill)",
+                    border: isActive ? `1px solid ${l.color}` : "1px solid var(--border-light)",
+                    background: isActive ? `${l.color}33` : "var(--bg-card)",
+                    color: isActive ? "var(--text-main)" : "var(--text-muted)",
+                    cursor: "pointer",
+                    boxShadow: isActive ? `0 0 16px ${l.color}44` : "var(--shadow-floating)",
+                    backdropFilter: "var(--blur-glass)"
+                  }}
+                >
+                  <Icon size={14} style={{ color: isActive ? l.color : "inherit" }} />
+                  <span>{l.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="glass-card map-globe-mobile-wrapper" style={{ padding: "1.1rem", height: "100%", display: "flex", flexDirection: "column" }}>

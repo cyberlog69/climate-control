@@ -121,16 +121,27 @@ export default function Navbar({
 
   return (
     <>
-      <header className="navbar glass-card">
+      <header className="dynamic-island">
         {/* Brand Header */}
         <div className="brand-logo">
           <div className="brand-icon-wrapper">
-            <Globe size={22} />
+            <Globe size={20} />
           </div>
           <div>
             <h1 className="brand-title">ClimateSphere</h1>
-            <div className="brand-subtitle">Global Realtime Sentinel</div>
+            <div className="brand-subtitle">Orbital Sentinel</div>
           </div>
+          {weatherData?.current && (
+            <div className="glass-pill" style={{ marginLeft: "0.25rem", padding: "3px 9px", fontSize: "0.75rem" }}>
+              <span className="pulse-dot" style={{ width: 6, height: 6 }} />
+              <span style={{ fontWeight: 800, color: "var(--text-main)" }}>
+                {unit === "F" ? Math.round((weatherData.current.temp * 9) / 5 + 32) : weatherData.current.temp}°{unit}
+              </span>
+              <span style={{ color: "var(--accent-cyan)", fontSize: "0.7rem", fontWeight: 600 }}>
+                {currentLocation?.cityName || currentLocation?.name?.split(",")[0]}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Global City Search (Desktop) */}

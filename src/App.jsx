@@ -19,10 +19,12 @@ import VoiceBriefingModal from "./components/VoiceBriefingModal";
 import DataExportModal from "./components/DataExportModal";
 import AboutModal from "./components/AboutModal";
 import WeatherParticles from "./components/WeatherParticles";
+import SpatialDock from "./components/SpatialDock";
+import TimelineScrubber from "./components/TimelineScrubber";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
-import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal } from "lucide-react";
+import { Thermometer, TrendingUp, Compass, Sliders, History, Zap, Leaf, AlertCircle, MoveHorizontal, Eye, EyeOff, Layers, X } from "lucide-react";
 
 export default function App() {
   const [currentLocation, setCurrentLocation] = useState({
@@ -37,6 +39,8 @@ export default function App() {
   const [airQualityData, setAirQualityData] = useState(null);
   const [unit, setUnit] = useState("C"); // 'C' | 'F'
   const [activeTab, setActiveTab] = useState("live"); // 'live' | 'forecast' | 'vitals' | 'sim'
+  const [viewMode, setViewMode] = useState("3d");
+  const [isHudCollapsed, setIsHudCollapsed] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
@@ -193,14 +197,25 @@ export default function App() {
   };
 
   return (
-    <div className="control-room-container">
+    <div className="orbital-viewport" data-theme={theme}>
       {/* Background Weather Particle Canvas */}
       <WeatherParticles
         weatherCode={weatherData?.current?.weatherCode || 0}
         isDay={weatherData?.current?.isDay ?? true}
       />
 
-      {/* Header & Navbar */}
+      {/* Living 100vw/100vh 3D Earth Globe / Map Canvas */}
+      <InteractiveMap
+        currentLocation={currentLocation}
+        onSelectLocation={handleSelectLocation}
+        weatherData={weatherData}
+        theme={theme}
+        isSpatialCockpit={true}
+        viewMode={viewMode}
+        onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
+      />
+
+      {/* Floating Dynamic Island Header */}
       <Navbar
         currentLocation={currentLocation}
         onSelectLocation={handleSelectLocation}
@@ -224,207 +239,171 @@ export default function App() {
         onOpenAbout={() => setIsAboutOpen(true)}
       />
 
+      {/* Floating Left Spatial Dock */}
+      <div className="hide-on-mobile">
+        <SpatialDock
+          activeTab={activeTab}
+          onSelectTab={(tab) => {
+            setActiveTab(tab);
+            setIsHudCollapsed(false);
+          }}
+          viewMode={viewMode}
+          onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
+        />
+      </div>
+
+      {/* Floating Right Telemetry Stack (Collapsible HUD) */}
+      {isHudCollapsed && (
+        <button
+          className="hud-expand-trigger hide-on-mobile"
+          onClick={() => setIsHudCollapsed(false)}
+          title="Expand Live Telemetry HUD"
+        >
+          <Layers size={16} />
+          <span>Telemetry HUD</span>
+        </button>
+      )}
+
+      <aside
+        className={`spatial-telemetry-stack ${isHudCollapsed ? "collapsed" : ""} ${
+          isMobileDrawerOpen ? "mobile-drawer-open" : "mobile-drawer-closed"
+        }`}
+      >
+        {/* Mobile Drawer Header with Drag Handle & Close */}
+        <div className="mobile-drawer-header">
+          <div
+            className="mobile-drawer-handle"
+            onClick={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
+            title="Drag or tap to minimize"
+          />
+          <button
+            className="mobile-drawer-close-btn"
+            onClick={() => setIsMobileDrawerOpen(false)}
+            aria-label="Close telemetry panel"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        {/* Desktop Collapse HUD Button */}
+        <button
+          className="hud-collapse-btn hide-on-mobile"
+          onClick={() => setIsHudCollapsed(true)}
+          title="Collapse HUD to view full 3D Earth"
+        >
+          <EyeOff size={14} />
+          <span>Hide HUD</span>
+        </button>
+
+        {/* Tab 1: Live Terminal */}
+        {activeTab === "live" && (
+          <>
+            <WeatherDetailCard
+              locationName={currentLocation.name}
+              weatherData={weatherData}
+              unit={unit}
+              onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
+            />
+            <AirQualityCard airQualityData={airQualityData} />
+          </>
+        )}
+
+        {/* Tab 2: Forecast & Climate Trends */}
+        {activeTab === "forecast" && (
+          <>
+            <ForecastSection weatherData={weatherData} unit={unit} />
+            <HistoricalAnomalyChart
+              locationName={currentLocation.name}
+              weatherData={weatherData}
+              unit={unit}
+            />
+          </>
+        )}
+
+        {/* Tab 3: Historical Climate Time Machine (1950 - 2026) */}
+        {activeTab === "history" && (
+          <HistoricalTimeMachine
+            locationName={currentLocation.name}
+            lat={currentLocation.lat}
+            lon={currentLocation.lon}
+            currentTemp={weatherData?.current?.temp}
+            unit={unit}
+          />
+        )}
+
+        {/* Tab 4: Earth's Vital Signs, Climate Radar & NASA Wildfire Sentinel */}
+        {activeTab === "vitals" && (
+          <>
+            <ClimateVitals />
+            <WildfireSatelliteCard
+              currentLocation={currentLocation}
+              weatherData={weatherData}
+              onSelectLocation={handleSelectLocation}
+            />
+            <ExtremeEventsRadar />
+          </>
+        )}
+
+        {/* Tab 5: Renewable Energy Yield Estimator (Solar & Wind) */}
+        {activeTab === "energy" && (
+          <RenewableEnergyEstimator
+            locationName={currentLocation.name}
+            lat={currentLocation.lat}
+            lon={currentLocation.lon}
+            weatherData={weatherData}
+          />
+        )}
+
+        {/* Tab 6: Personal Carbon Footprint & Offset Calculator */}
+        {activeTab === "footprint" && (
+          <CarbonFootprintCalculator locationName={currentLocation.name} />
+        )}
+
+        {/* Tab 7: AI Climate Impact Simulator */}
+        {activeTab === "sim" && (
+          <ClimateImpactSimulator
+            locationName={currentLocation.name}
+            lat={currentLocation.lat}
+            lon={currentLocation.lon}
+            unit={unit}
+          />
+        )}
+      </aside>
+
+      {/* Floating Bottom Timeline Scrubber */}
+      <div className="hide-on-mobile">
+        <TimelineScrubber
+          weatherData={weatherData}
+          unit={unit}
+        />
+      </div>
+
       {/* Error Notification */}
       {error && (
         <div
           className="glass-card"
           style={{
-            padding: "0.65rem 1rem",
-            background: "rgba(239, 68, 68, 0.15)",
-            borderColor: "rgba(239, 68, 68, 0.4)",
+            position: "fixed",
+            bottom: "5rem",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 130,
+            padding: "0.65rem 1.2rem",
+            background: "rgba(239, 68, 68, 0.25)",
+            borderColor: "rgba(239, 68, 68, 0.5)",
+            backdropFilter: "blur(20px)",
             display: "flex",
             alignItems: "center",
             gap: "0.6rem",
             color: "#fca5a5",
-            fontSize: "0.82rem"
+            fontSize: "0.82rem",
+            borderRadius: "var(--radius-pill)"
           }}
         >
           <AlertCircle size={16} />
           <span>{error}</span>
         </div>
       )}
-
-      {/* Planetary Control Room Workspace */}
-      <div className="control-room-workspace">
-        {/* Left Pane: Interactive Global Climate Map */}
-        <InteractiveMap
-          currentLocation={currentLocation}
-          onSelectLocation={handleSelectLocation}
-          weatherData={weatherData}
-          theme={theme}
-        />
-
-        {/* Right Pane: Command Terminal with Mobile Bottom Drawer Support */}
-        <div className={`command-panel ${isMobileDrawerOpen ? "drawer-open" : ""}`}>
-          {/* Mobile Bottom Sheet Handle */}
-          <div
-            className="mobile-drawer-handle"
-            onClick={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
-          />
-
-          {/* Touch Gesture Hint Banner */}
-          <div className="touch-swipe-hint">
-            <MoveHorizontal size={14} />
-            <span>Swipe left/right to change panels</span>
-          </div>
-
-          {/* View Tab Switcher */}
-          <div className="control-tabs">
-            <button
-              className={`tab-btn ${activeTab === "live" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("live");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <Thermometer size={15} />
-              <span>Live Terminal</span>
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "forecast" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("forecast");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <Compass size={15} />
-              <span>Forecast</span>
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "history" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("history");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <History size={15} />
-              <span>Time Machine</span>
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "vitals" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("vitals");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <TrendingUp size={15} />
-              <span>Vitals</span>
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "energy" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("energy");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <Zap size={15} />
-              <span>Energy</span>
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "footprint" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("footprint");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <Leaf size={15} />
-              <span>Carbon</span>
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "sim" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("sim");
-                setIsMobileDrawerOpen(true);
-              }}
-            >
-              <Sliders size={15} />
-              <span>AI Sim</span>
-            </button>
-          </div>
-
-          {/* Tab 1: Live Terminal */}
-          {activeTab === "live" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <WeatherDetailCard
-                locationName={currentLocation.name}
-                weatherData={weatherData}
-                unit={unit}
-                onOpenVoiceBriefing={() => setIsVoiceBriefingOpen(true)}
-              />
-              <AirQualityCard airQualityData={airQualityData} />
-            </div>
-          )}
-
-          {/* Tab 2: Forecast & Climate Trends */}
-          {activeTab === "forecast" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <ForecastSection weatherData={weatherData} unit={unit} />
-              <HistoricalAnomalyChart
-                locationName={currentLocation.name}
-                weatherData={weatherData}
-                unit={unit}
-              />
-            </div>
-          )}
-
-          {/* Tab 3: Historical Climate Time Machine (1950 - 2026) */}
-          {activeTab === "history" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <HistoricalTimeMachine
-                locationName={currentLocation.name}
-                lat={currentLocation.lat}
-                lon={currentLocation.lon}
-                currentTemp={weatherData?.current?.temp}
-                unit={unit}
-              />
-            </div>
-          )}
-
-          {/* Tab 4: Earth's Vital Signs, Climate Radar & NASA Wildfire Sentinel */}
-          {activeTab === "vitals" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <ClimateVitals />
-              <WildfireSatelliteCard
-                currentLocation={currentLocation}
-                weatherData={weatherData}
-                onSelectLocation={handleSelectLocation}
-              />
-              <ExtremeEventsRadar />
-            </div>
-          )}
-
-          {/* Tab 5: Renewable Energy Yield Estimator (Solar & Wind) */}
-          {activeTab === "energy" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <RenewableEnergyEstimator
-                locationName={currentLocation.name}
-                lat={currentLocation.lat}
-                lon={currentLocation.lon}
-                weatherData={weatherData}
-              />
-            </div>
-          )}
-
-          {/* Tab 6: Personal Carbon Footprint & Offset Calculator */}
-          {activeTab === "footprint" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <CarbonFootprintCalculator locationName={currentLocation.name} />
-            </div>
-          )}
-
-          {/* Tab 7: AI Climate Impact Simulator */}
-          {activeTab === "sim" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              <ClimateImpactSimulator
-                locationName={currentLocation.name}
-                lat={currentLocation.lat}
-                lon={currentLocation.lon}
-                unit={unit}
-              />
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* 📱 Android Native Bottom Navigation Bar (Thumb-Accessible on Mobile) */}
       <nav className="mobile-bottom-nav">
