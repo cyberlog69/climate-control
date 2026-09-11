@@ -1,5 +1,6 @@
 package com.climatesphere.app.data.mapper
 
+import com.climatesphere.app.data.local.entity.WatchlistEntity
 import com.climatesphere.app.data.local.entity.WeatherEntity
 import com.climatesphere.app.data.remote.dto.AirQualityCurrentDto
 import com.climatesphere.app.data.remote.dto.DailyDto
@@ -167,9 +168,9 @@ fun WeatherResponseDto.toWeatherModel(
     )
 }
 
-fun WeatherModel.toEntity(): WeatherEntity {
+fun WeatherModel.toEntity(cacheId: String = "primary_weather"): WeatherEntity {
     return WeatherEntity(
-        id = "primary_weather",
+        id = cacheId,
         locationName = location.name,
         cityName = location.cityName,
         country = location.country,
@@ -199,6 +200,34 @@ fun WeatherModel.toEntity(): WeatherEntity {
         uvIndex = airQuality.uvIndex,
         cachedAtTimestamp = lastUpdatedTimestamp
     )
+}
+
+fun LocationModel.toWatchlistEntity(orderIndex: Int = 0): WatchlistEntity {
+    val locationId = "loc_%.2f_%.2f".format(Locale.US, latitude, longitude)
+    return WatchlistEntity(
+        id = locationId,
+        name = name,
+        cityName = cityName,
+        country = country,
+        latitude = latitude,
+        longitude = longitude,
+        orderIndex = orderIndex,
+        addedAtTimestamp = System.currentTimeMillis()
+    )
+}
+
+fun WatchlistEntity.toLocationModel(): LocationModel {
+    return LocationModel(
+        name = name,
+        cityName = cityName,
+        country = country,
+        latitude = latitude,
+        longitude = longitude
+    )
+}
+
+fun LocationModel.toLocationId(): String {
+    return "loc_%.2f_%.2f".format(Locale.US, latitude, longitude)
 }
 
 fun WeatherEntity.toDomainModel(): WeatherModel {

@@ -4,11 +4,14 @@ import android.content.Context
 import android.location.Geocoder
 import android.os.Build
 import com.climatesphere.app.core.util.Resource
+import com.climatesphere.app.data.local.WatchlistDao
 import com.climatesphere.app.data.local.WeatherDao
 import com.climatesphere.app.data.mapper.mapAirQuality
 import com.climatesphere.app.data.mapper.toDomainModel
 import com.climatesphere.app.data.mapper.toEntity
+import com.climatesphere.app.data.mapper.toLocationId
 import com.climatesphere.app.data.mapper.toLocationModel
+import com.climatesphere.app.data.mapper.toWatchlistEntity
 import com.climatesphere.app.data.mapper.toWeatherModel
 import com.climatesphere.app.data.remote.OpenMeteoApi
 import com.climatesphere.app.domain.model.LocationModel
@@ -20,6 +23,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -28,7 +32,8 @@ import kotlin.coroutines.resume
 class WeatherRepositoryImpl(
     private val context: Context,
     private val api: OpenMeteoApi,
-    private val dao: WeatherDao
+    private val dao: WeatherDao,
+    private val watchlistDao: WatchlistDao
 ) : WeatherRepository {
 
     override fun getWeatherForLocation(
@@ -37,8 +42,10 @@ class WeatherRepositoryImpl(
     ): Flow<Resource<WeatherModel>> = flow {
         emit(Resource.Loading())
 
+        val locationCacheId = location.toLocationId()
         // 1. Fetch from Room cache first for instantaneous startup
-        val cachedEntity = dao.getWeatherById().firstOrNull()
+        val cachedEntity = dao.getWeatherById(locationCacheId).firstOrNull()
+            ?: dao.getWeatherById("primary_weather").firstOrNull()
         val cachedModel = cachedEntity?.toDomainModel()
 
         if (cachedModel != null) {
@@ -73,7 +80,8 @@ class WeatherRepositoryImpl(
                     val freshWeather = weatherDto.toWeatherModel(location, airQualityModel)
 
                     // 3. Persist to Room Single Source of Truth
-                    dao.insertWeather(freshWeather.toEntity())
+                    dao.insertWeather(freshWeather.toEntity(locationCacheId))
+                    dao.insertWeather(freshWeather.toEntity("primary_weather"))
 
                     emit(Resource.Success(freshWeather))
                 }
@@ -85,6 +93,25 @@ class WeatherRepositoryImpl(
                 }
             }
         }
+    }
+
+    override fun getWatchlist(): Flow<List<LocationModel>> {
+        return watchlistDao.getWatchlist().map { list ->
+            list.map { it.toLocationModel() }
+        }
+    }
+
+    override suspend fun addToWatchlist(location: LocationModel) = withContext(Dispatchers.IO) {
+        val count = watchlistDao.getWatchlistCount()
+        watchlistDao.insertLocation(location.toWatchlistEntity(orderIndex = count))
+    }
+
+    override suspend fun removeFromWatchlist(locationId: String) = withContext(Dispatchers.IO) {
+        watchlistDao.deleteLocation(locationId)
+    }
+
+    override fun isLocationInWatchlist(locationId: String): Flow<Boolean> {
+        return watchlistDao.isInWatchlist(locationId).map { it > 0 }
     }
 
     override suspend fun searchLocations(query: String): List<LocationModel> {

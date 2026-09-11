@@ -19,6 +19,9 @@ interface WeatherDao {
     @Query("SELECT * FROM weather_cache ORDER BY cachedAtTimestamp DESC LIMIT 1")
     fun getLatestWeather(): Flow<WeatherEntity?>
 
+    @Query("SELECT * FROM weather_cache")
+    fun getAllCachedWeather(): Flow<List<WeatherEntity>>
+
     @Query("DELETE FROM weather_cache")
     suspend fun clearWeatherCache()
 }

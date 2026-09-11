@@ -14,4 +14,12 @@ interface WeatherRepository {
     suspend fun searchLocations(query: String): List<LocationModel>
 
     suspend fun getReverseGeocodedLocation(latitude: Double, longitude: Double): LocationModel
+
+    fun getWatchlist(): Flow<List<LocationModel>>
+
+    suspend fun addToWatchlist(location: LocationModel)
+
+    suspend fun removeFromWatchlist(locationId: String)
+
+    fun isLocationInWatchlist(locationId: String): Flow<Boolean>
 }

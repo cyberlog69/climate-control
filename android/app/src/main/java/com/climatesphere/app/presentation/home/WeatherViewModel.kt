@@ -40,6 +40,80 @@ class WeatherViewModel(
     init {
         loadWeather(forceRefresh = false)
         checkForUpdates()
+        observeWatchlist()
+    }
+
+    private fun observeWatchlist() {
+        viewModelScope.launch {
+            repository.getWatchlist().collect { list ->
+                _uiState.update { current ->
+                    val combined = mutableListOf(current.selectedLocation)
+                    for (item in list) {
+                        if (!combined.any { it.cityName.equals(item.cityName, ignoreCase = true) }) {
+                            combined.add(item)
+                        }
+                    }
+                    val isCurInWatchlist = list.any {
+                        it.cityName.equals(current.selectedLocation.cityName, ignoreCase = true)
+                    }
+                    current.copy(
+                        watchlist = list,
+                        activeLocations = combined,
+                        isCurrentInWatchlist = isCurInWatchlist
+                    )
+                }
+            }
+        }
+    }
+
+    fun toggleWatchlistCurrentLocation() {
+        viewModelScope.launch {
+            val current = _uiState.value.selectedLocation
+            val isSaved = _uiState.value.isCurrentInWatchlist
+            val locationId = "loc_%.2f_%.2f".format(java.util.Locale.US, current.latitude, current.longitude)
+            if (isSaved) {
+                repository.removeFromWatchlist(locationId)
+            } else {
+                repository.addToWatchlist(current)
+            }
+        }
+    }
+
+    fun addToWatchlist(location: LocationModel) {
+        viewModelScope.launch {
+            repository.addToWatchlist(location)
+        }
+    }
+
+    fun removeFromWatchlist(location: LocationModel) {
+        viewModelScope.launch {
+            val locationId = "loc_%.2f_%.2f".format(java.util.Locale.US, location.latitude, location.longitude)
+            repository.removeFromWatchlist(locationId)
+        }
+    }
+
+    fun setWatchlistSheetOpen(isOpen: Boolean) {
+        _uiState.update { it.copy(isWatchlistSheetOpen = isOpen) }
+    }
+
+    fun onPageSelected(index: Int) {
+        val locations = _uiState.value.activeLocations
+        if (index in locations.indices) {
+            val target = locations[index]
+            if (target != _uiState.value.selectedLocation) {
+                _uiState.update { current ->
+                    val isCurInWatchlist = current.watchlist.any {
+                        it.cityName.equals(target.cityName, ignoreCase = true)
+                    }
+                    current.copy(
+                        selectedLocation = target,
+                        activePageIndex = index,
+                        isCurrentInWatchlist = isCurInWatchlist
+                    )
+                }
+                loadWeather(forceRefresh = false)
+            }
+        }
     }
 
     fun loadWeather(forceRefresh: Boolean = false) {
@@ -83,10 +157,23 @@ class WeatherViewModel(
     }
 
     fun selectLocation(location: LocationModel) {
-        _uiState.update {
-            it.copy(
+        _uiState.update { current ->
+            val combined = mutableListOf(location)
+            for (item in current.watchlist) {
+                if (!combined.any { it.cityName.equals(item.cityName, ignoreCase = true) }) {
+                    combined.add(item)
+                }
+            }
+            val isCurInWatchlist = current.watchlist.any {
+                it.cityName.equals(location.cityName, ignoreCase = true)
+            }
+            current.copy(
                 selectedLocation = location,
+                activeLocations = combined,
+                activePageIndex = 0,
+                isCurrentInWatchlist = isCurInWatchlist,
                 isSearchDialogOpen = false,
+                isWatchlistSheetOpen = false,
                 searchResults = emptyList()
             )
         }

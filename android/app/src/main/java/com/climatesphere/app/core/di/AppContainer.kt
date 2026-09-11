@@ -52,7 +52,8 @@ class AppContainer(private val context: Context) {
         WeatherRepositoryImpl(
             context = context,
             api = openMeteoApi,
-            dao = database.weatherDao()
+            dao = database.weatherDao(),
+            watchlistDao = database.watchlistDao()
         )
     }
 

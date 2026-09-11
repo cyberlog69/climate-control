@@ -15,14 +15,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SystemUpdate
+import com.climatesphere.app.presentation.components.WatchlistBottomSheet
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -153,23 +161,48 @@ fun HomeScreen(
         }
     }
 
+    val pageCount = uiState.activeLocations.size.coerceAtLeast(1)
+    val pagerState = rememberPagerState(initialPage = uiState.activePageIndex.coerceIn(0, pageCount - 1)) {
+        pageCount
+    }
+
+    androidx.compose.runtime.LaunchedEffect(pagerState.currentPage) {
+        viewModel.onPageSelected(pagerState.currentPage)
+    }
+
+    androidx.compose.runtime.LaunchedEffect(uiState.activePageIndex) {
+        if (pagerState.currentPage != uiState.activePageIndex && uiState.activePageIndex in 0 until pageCount) {
+            pagerState.animateScrollToPage(uiState.activePageIndex)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Column {
+                    Column(
+                        modifier = Modifier.clickable { viewModel.setWatchlistSheetOpen(true) }
+                    ) {
                         Text(
                             text = "ClimateSphere",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = TextWhite
                         )
-                        Text(
-                            text = uiState.selectedLocation.cityName,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = CyanPrimary,
-                            fontSize = 12.sp
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = uiState.selectedLocation.cityName,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = CyanPrimary,
+                                fontSize = 12.sp
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "▾",
+                                color = CyanPrimary,
+                                fontSize = 10.sp
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -189,6 +222,20 @@ fun HomeScreen(
                                 )
                             }
                         }
+                    }
+                    IconButton(onClick = { viewModel.toggleWatchlistCurrentLocation() }) {
+                        Icon(
+                            imageVector = if (uiState.isCurrentInWatchlist) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            contentDescription = if (uiState.isCurrentInWatchlist) "Saved to Watchlist" else "Save to Watchlist",
+                            tint = if (uiState.isCurrentInWatchlist) CyanPrimary else TextMuted
+                        )
+                    }
+                    IconButton(onClick = { viewModel.setWatchlistSheetOpen(true) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
+                            contentDescription = "Watchlist",
+                            tint = TextWhite
+                        )
                     }
                     IconButton(onClick = onAutoLocateClick) {
                         Icon(
@@ -251,56 +298,88 @@ fun HomeScreen(
                 }
 
                 uiState.weather != null -> {
-                    val weather = uiState.weather!!
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                    ) {
-                        // Error notice banner if refresh failed
-                        if (uiState.errorMessage != null) {
-                            Box(
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Page indicator pills if multiple tracked locations
+                        if (uiState.activeLocations.size > 1) {
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 12.dp)
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .background(RedAlert.copy(alpha = 0.2f))
-                                    .padding(12.dp)
+                                    .padding(top = 4.dp, bottom = 4.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = uiState.errorMessage!!,
-                                    color = RedAlert,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Medium
-                                )
+                                uiState.activeLocations.forEachIndexed { index, _ ->
+                                    val isSelected = index == pagerState.currentPage
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(horizontal = 3.dp)
+                                            .height(4.dp)
+                                            .width(if (isSelected) 20.dp else 5.dp)
+                                            .clip(CircleShape)
+                                            .background(if (isSelected) CyanPrimary else TextMuted.copy(alpha = 0.35f))
+                                    )
+                                }
                             }
                         }
 
-                        // 1. Weather Hero Card
-                        WeatherHeroCard(
-                            current = weather.current,
-                            locationName = weather.location.name,
-                            isFromCache = weather.isFromCache
-                        )
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        ) { _ ->
+                            val weather = uiState.weather!!
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState())
+                                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                            ) {
+                                // Error notice banner if refresh failed
+                                if (uiState.errorMessage != null) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 12.dp)
+                                            .clip(MaterialTheme.shapes.medium)
+                                            .background(RedAlert.copy(alpha = 0.2f))
+                                            .padding(12.dp)
+                                    ) {
+                                        Text(
+                                            text = uiState.errorMessage!!,
+                                            color = RedAlert,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                }
 
-                        Spacer(modifier = Modifier.height(18.dp))
+                                // 1. Weather Hero Card
+                                WeatherHeroCard(
+                                    current = weather.current,
+                                    locationName = weather.location.name,
+                                    isFromCache = weather.isFromCache
+                                )
 
-                        // 2. 24-Hour Forecast Row
-                        if (weather.hourly.isNotEmpty()) {
-                            HourlyForecastRow(hourlyList = weather.hourly)
-                            Spacer(modifier = Modifier.height(18.dp))
-                        }
+                                Spacer(modifier = Modifier.height(18.dp))
 
-                        // 3. Air Quality Card
-                        AirQualityCard(airQuality = weather.airQuality)
+                                // 2. 24-Hour Forecast Row
+                                if (weather.hourly.isNotEmpty()) {
+                                    HourlyForecastRow(hourlyList = weather.hourly)
+                                    Spacer(modifier = Modifier.height(18.dp))
+                                }
 
-                        Spacer(modifier = Modifier.height(18.dp))
+                                // 3. Air Quality Card
+                                AirQualityCard(airQuality = weather.airQuality)
 
-                        // 4. 7-Day Daily Outlook
-                        if (weather.daily.isNotEmpty()) {
-                            DailyForecastList(dailyList = weather.daily)
-                            Spacer(modifier = Modifier.height(24.dp))
+                                Spacer(modifier = Modifier.height(18.dp))
+
+                                // 4. 7-Day Daily Outlook
+                                if (weather.daily.isNotEmpty()) {
+                                    DailyForecastList(dailyList = weather.daily)
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                }
+                            }
                         }
                     }
                 }
@@ -348,6 +427,18 @@ fun HomeScreen(
                     onDownloadClick = { url -> viewModel.downloadUpdate(url) },
                     onInstallClick = { file -> viewModel.installUpdate(file) },
                     onDismiss = { viewModel.dismissUpdateDialog() }
+                )
+            }
+
+            // Watchlist Bottom Sheet
+            if (uiState.isWatchlistSheetOpen) {
+                WatchlistBottomSheet(
+                    watchlist = uiState.watchlist,
+                    currentLocation = uiState.selectedLocation,
+                    onDismissRequest = { viewModel.setWatchlistSheetOpen(false) },
+                    onLocationSelected = { viewModel.selectLocation(it) },
+                    onRemoveLocation = { viewModel.removeFromWatchlist(it) },
+                    onAddLocationClick = { viewModel.setSearchDialogOpen(true) }
                 )
             }
         }

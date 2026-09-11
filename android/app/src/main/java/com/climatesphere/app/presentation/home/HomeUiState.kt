@@ -17,5 +17,10 @@ data class HomeUiState(
     val errorMessage: String? = null,
     val isSearching: Boolean = false,
     val searchResults: List<LocationModel> = emptyList(),
-    val isSearchDialogOpen: Boolean = false
+    val isSearchDialogOpen: Boolean = false,
+    val watchlist: List<LocationModel> = emptyList(),
+    val isCurrentInWatchlist: Boolean = false,
+    val isWatchlistSheetOpen: Boolean = false,
+    val activeLocations: List<LocationModel> = listOf(selectedLocation),
+    val activePageIndex: Int = 0
 )
