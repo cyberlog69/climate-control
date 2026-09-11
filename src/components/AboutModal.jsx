@@ -1,5 +1,5 @@
 import React from "react";
-import { Globe, X, ExternalLink, Download, Smartphone, CloudSun, Cpu, Code2 } from "lucide-react";
+import { Globe, X, ExternalLink, Download, Smartphone, CloudSun, Cpu } from "lucide-react";
 
 const GithubIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -144,7 +144,7 @@ export default function AboutModal({ onClose }) {
               }}
             >
               <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(255, 255, 255, 0.1)", color: "var(--text-main)" }}>
-                <Github size={20} />
+                <GithubIcon size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>GitHub Repository</div>
