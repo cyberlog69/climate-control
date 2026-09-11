@@ -210,7 +210,7 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ## 🤖 Native Android App (Kotlin & Jetpack Compose)
 
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.0.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.2.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
 
 ClimateSphere features a 100% native Android application built with modern Android standards in [`android/`](./android):
 
@@ -230,19 +230,19 @@ ClimateSphere features a 100% native Android application built with modern Andro
 - **🔍 Debounced Global City Search**: Instant location autocompletion dialog powered by Open-Meteo Geocoding.
 
 ### 📦 Download Pre-Built APK:
-- **Direct Download**: Get the latest signed [ClimateSphere-v1.0.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.0.0/ClimateSphere-v1.0.0.apk) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
-- **Local Copy**: Also packaged in `release/ClimateSphere-v1.0.0.apk`.
+- **Direct Download**: Get the latest signed [ClimateSphere-v1.2.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
+- **Local Copy**: Also packaged in `release/ClimateSphere-v1.2.0.apk`.
 
 ### 🛠️ Building the Android App from Source:
 ```bash
 cd android
 
-# Compile and package Release APK (Optimized, ~12 MB)
+# Compile and package Release APK (Optimized, ~13.7 MB)
 ./gradlew assembleRelease       # Linux / macOS
 .\gradlew.bat assembleRelease   # Windows
 
 # Output APK path:
-# android/app/build/outputs/apk/release/ClimateSphere-v1.0.0-release.apk
+# android/app/build/outputs/apk/release/ClimateSphere-v1.2.0-release.apk
 ```
 Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** and click **Run ▶**.
 

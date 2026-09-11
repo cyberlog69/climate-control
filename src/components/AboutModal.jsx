@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Globe, X, ExternalLink, Download, Smartphone, CloudSun, Cpu } from "lucide-react";
+import { getLatestReleaseInfo, FALLBACK_RELEASE_INFO } from "../services/githubReleaseApi";
 
 const GithubIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -11,7 +12,19 @@ const GithubIcon = ({ size = 20 }) => (
 export default function AboutModal({ onClose }) {
   const netlifyUrl = "https://climate-sphere.netlify.app/";
   const githubUrl = "https://github.com/cyberlog69/climate-control";
-  const apkReleaseUrl = "https://github.com/cyberlog69/climate-control/releases/download/v1.2.0/ClimateSphere-v1.2.0.apk";
+  const [releaseInfo, setReleaseInfo] = useState(FALLBACK_RELEASE_INFO);
+
+  useEffect(() => {
+    let isMounted = true;
+    getLatestReleaseInfo().then((info) => {
+      if (isMounted && info) {
+        setReleaseInfo(info);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div
@@ -64,7 +77,7 @@ export default function AboutModal({ onClose }) {
                   ClimateSphere
                 </h3>
                 <span className="badge badge-cyan" style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem" }}>
-                  v1.0.0
+                  {releaseInfo.version}
                 </span>
               </div>
               <div style={{ fontSize: "0.76rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
@@ -157,7 +170,7 @@ export default function AboutModal({ onClose }) {
 
             {/* Android APK */}
             <a
-              href={apkReleaseUrl}
+              href={releaseInfo.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="glass-card glass-card-interactive"
@@ -177,8 +190,13 @@ export default function AboutModal({ onClose }) {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Native Android Application (APK)</div>
-                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)" }}>
-                  Download ClimateSphere-v1.0.0.apk (12 MB)
+                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                  <span>Download {releaseInfo.fileName}</span>
+                  {releaseInfo.sizeFormatted && (
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 500 }}>
+                      ({releaseInfo.sizeFormatted})
+                    </span>
+                  )}
                 </div>
               </div>
               <Download size={16} style={{ color: "var(--accent-green)" }} />
