@@ -111,7 +111,7 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
           <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", textTransform: "uppercase" }}>Target Inspection Zone</div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>{locationName}</h2>
           <div style={{ fontSize: "0.85rem", color: "var(--accent-cyan)" }}>
-            Timezone: {weatherData.timezone} | Coordinates: {weatherData.raw?.latitude?.toFixed(2)}°, {weatherData.raw?.longitude?.toFixed(2)}°
+            Timezone: {weatherData.timezone || "UTC"} | Coordinates: {weatherData.raw?.latitude != null ? weatherData.raw.latitude.toFixed(2) : (weatherData.latitude != null ? weatherData.latitude.toFixed(2) : "0.00")}°, {weatherData.raw?.longitude != null ? weatherData.raw.longitude.toFixed(2) : (weatherData.longitude != null ? weatherData.longitude.toFixed(2) : "0.00")}°
           </div>
         </div>
 
@@ -173,7 +173,9 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
                   <td style={{ padding: "0.5rem", fontWeight: 600 }}>{d.date}</td>
                   <td style={{ padding: "0.5rem", textAlign: "right" }}>{d.maxTemp}°</td>
                   <td style={{ padding: "0.5rem", textAlign: "right", color: "var(--text-dim)" }}>{d.minTemp}°</td>
-                  <td style={{ padding: "0.5rem", textAlign: "right", color: "var(--accent-cyan)" }}>{d.precipSum.toFixed(1)} mm</td>
+                  <td style={{ padding: "0.5rem", textAlign: "right", color: "var(--accent-cyan)" }}>
+                    {d.precipSum != null ? d.precipSum.toFixed(1) : "0.0"} mm
+                  </td>
                 </tr>
               ))}
             </tbody>

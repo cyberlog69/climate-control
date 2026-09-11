@@ -105,7 +105,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
       </div>
 
       <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
-        Analyze personal greenhouse gas emissions ($t\text{CO}_2\text{e}$), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
+        Analyze personal greenhouse gas emissions (tCO₂e), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
       </p>
 
       {/* Main Footprint Score & Target Benchmark Card */}

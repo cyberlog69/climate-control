@@ -53,6 +53,12 @@ class ErrorBoundary extends Component {
           >
             Reload ClimateSphere
           </button>
+          {this.state.error && (
+            <details style={{ marginTop: "1.5rem", maxWidth: "500px", textAlign: "left", background: "rgba(255,255,255,0.05)", padding: "0.75rem 1rem", borderRadius: "8px", fontSize: "0.8rem", color: "#ef4444" }}>
+              <summary style={{ cursor: "pointer", color: "#94a3b8", marginBottom: "0.5rem" }}>Technical Details</summary>
+              <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, fontFamily: "monospace" }}>{this.state.error.toString()}</pre>
+            </details>
+          )}
         </div>
       );
     }
