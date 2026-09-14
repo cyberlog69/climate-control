@@ -16,6 +16,9 @@ interface WeatherDao {
     @Query("SELECT * FROM weather_cache WHERE id = :id LIMIT 1")
     fun getWeatherById(id: String = "primary_weather"): Flow<WeatherEntity?>
 
+    @Query("SELECT * FROM weather_cache WHERE id = 'primary_weather' LIMIT 1")
+    suspend fun getPrimaryWeatherSync(): WeatherEntity?
+
     @Query("SELECT * FROM weather_cache ORDER BY cachedAtTimestamp DESC LIMIT 1")
     fun getLatestWeather(): Flow<WeatherEntity?>
 

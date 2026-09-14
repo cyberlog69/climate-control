@@ -22,4 +22,8 @@ interface WeatherRepository {
     suspend fun removeFromWatchlist(locationId: String)
 
     fun isLocationInWatchlist(locationId: String): Flow<Boolean>
+    
+    suspend fun getLastKnownCachedLocation(): LocationModel?
+
+    suspend fun getIpLocation(): LocationModel?
 }

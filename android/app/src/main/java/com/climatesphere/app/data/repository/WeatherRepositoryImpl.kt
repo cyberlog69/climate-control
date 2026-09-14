@@ -210,4 +210,39 @@ class WeatherRepositoryImpl(
             longitude = longitude
         )
     }
+
+    override suspend fun getLastKnownCachedLocation(): LocationModel? = withContext(Dispatchers.IO) {
+        try {
+            val entity = dao.getPrimaryWeatherSync()
+            entity?.toLocationModel()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override suspend fun getIpLocation(): LocationModel? = withContext(Dispatchers.IO) {
+        try {
+            val dto = api.getIpLocation()
+            val lat = dto.latitude?.toDoubleOrNull()
+            val lon = dto.longitude?.toDoubleOrNull()
+            if (lat != null && lon != null) {
+                val city = dto.city?.takeIf { it.isNotBlank() }
+                    ?: dto.region?.takeIf { it.isNotBlank() }
+                    ?: "Local Area"
+                val country = dto.country ?: ""
+                val fullName = if (country.isNotBlank()) "$city, $country" else city
+                LocationModel(
+                    name = fullName,
+                    cityName = city,
+                    country = country,
+                    latitude = lat,
+                    longitude = lon
+                )
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

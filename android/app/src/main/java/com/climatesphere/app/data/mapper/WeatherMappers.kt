@@ -226,6 +226,16 @@ fun WatchlistEntity.toLocationModel(): LocationModel {
     )
 }
 
+fun WeatherEntity.toLocationModel(): LocationModel {
+    return LocationModel(
+        name = locationName,
+        cityName = cityName,
+        country = country,
+        latitude = latitude,
+        longitude = longitude
+    )
+}
+
 fun LocationModel.toLocationId(): String {
     return "loc_%.2f_%.2f".format(Locale.US, latitude, longitude)
 }

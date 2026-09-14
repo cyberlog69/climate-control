@@ -44,4 +44,9 @@ interface OpenMeteoApi {
         @Query("longitude") longitude: Double,
         @Query("localityLanguage") localityLanguage: String = "en"
     ): com.climatesphere.app.data.remote.dto.ReverseGeocodeDto
+
+    @GET
+    suspend fun getIpLocation(
+        @Url url: String = "https://get.geojs.io/v1/ip/geo.json"
+    ): com.climatesphere.app.data.remote.dto.IpLocationDto
 }

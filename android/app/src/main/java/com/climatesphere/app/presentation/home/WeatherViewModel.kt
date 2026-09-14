@@ -38,9 +38,28 @@ class WeatherViewModel(
     private var searchJob: Job? = null
 
     init {
-        loadWeather(forceRefresh = false)
+        initStartupLocation()
         checkForUpdates()
         observeWatchlist()
+    }
+
+    private fun initStartupLocation() {
+        viewModelScope.launch {
+            // 1. Check local Room database for last cached location
+            val cached = repository.getLastKnownCachedLocation()
+            if (cached != null && (cached.latitude != 0.0 || cached.longitude != 0.0)) {
+                selectLocation(cached)
+            }
+
+            // 2. Fetch fast IP location to resolve actual city instantly before or alongside GPS
+            val ipLocation = repository.getIpLocation()
+            if (ipLocation != null) {
+                val current = _uiState.value.selectedLocation
+                if (current.latitude == 0.0 && current.longitude == 0.0) {
+                    selectLocation(ipLocation)
+                }
+            }
+        }
     }
 
     private fun observeWatchlist() {
@@ -117,9 +136,12 @@ class WeatherViewModel(
     }
 
     fun loadWeather(forceRefresh: Boolean = false) {
+        val currentLocation = _uiState.value.selectedLocation
+        if (currentLocation.latitude == 0.0 && currentLocation.longitude == 0.0) {
+            return
+        }
         weatherJob?.cancel()
         weatherJob = viewModelScope.launch {
-            val currentLocation = _uiState.value.selectedLocation
             repository.getWeatherForLocation(currentLocation, forceRefresh)
                 .collect { resource ->
                     when (resource) {

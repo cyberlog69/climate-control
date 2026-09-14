@@ -86,6 +86,11 @@ fun HomeScreen(
                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         if (granted) {
             try {
+                fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
+                    if (lastLoc != null) {
+                        viewModel.updateLocationFromCoordinates(lastLoc.latitude, lastLoc.longitude)
+                    }
+                }
                 fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                     .addOnSuccessListener { location ->
                         if (location != null) {
@@ -110,6 +115,11 @@ fun HomeScreen(
 
         if (hasFine || hasCoarse) {
             try {
+                fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
+                    if (lastLoc != null) {
+                        viewModel.updateLocationFromCoordinates(lastLoc.latitude, lastLoc.longitude)
+                    }
+                }
                 fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                     .addOnSuccessListener { location ->
                         if (location != null) {
@@ -142,6 +152,11 @@ fun HomeScreen(
 
         if (hasFine || hasCoarse) {
             try {
+                fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
+                    if (lastLoc != null) {
+                        viewModel.updateLocationFromCoordinates(lastLoc.latitude, lastLoc.longitude)
+                    }
+                }
                 fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                     .addOnSuccessListener { location ->
                         if (location != null) {

@@ -215,3 +215,68 @@ function processWeatherData(data) {
     daily: dailyList
   };
 }
+
+/**
+ * Automatically detects the user's location via HTML5 Geolocation with rapid IP-based fallback
+ */
+export async function detectUserLocation() {
+  // 1. Try Browser Geolocation API if available
+  if (typeof window !== "undefined" && navigator.geolocation) {
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 4500,
+          maximumAge: 300000 // 5 minutes cache
+        });
+      });
+      const { latitude, longitude } = position.coords;
+      const geo = await reverseGeocode(latitude, longitude);
+      return {
+        name: geo.name,
+        cityName: geo.cityName,
+        country: geo.country,
+        lat: latitude,
+        lon: longitude
+      };
+    } catch (err) {
+      console.warn("Browser GPS unavailable or prompt pending/denied, initiating IP geolocation fallback:", err);
+    }
+  }
+
+  // 2. Fast IP Geolocation Fallback (free, CORS-enabled, ~50ms, works without user prompts)
+  try {
+    const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
+    if (res.ok) {
+      const data = await res.json();
+      const lat = parseFloat(data.latitude);
+      const lon = parseFloat(data.longitude);
+      if (!isNaN(lat) && !isNaN(lon)) {
+        const city = data.city || data.region || "Local Area";
+        const country = data.country || "";
+        return {
+          name: country ? `${city}, ${country}` : city,
+          cityName: city,
+          country: country,
+          lat: lat,
+          lon: lon
+        };
+      }
+    }
+  } catch (ipErr) {
+    console.warn("IP geolocation fallback failed:", ipErr);
+  }
+
+  // 3. Last-known cached location from localStorage
+  try {
+    const saved = localStorage.getItem("climatesphere_last_location");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed?.lat && parsed?.lon) {
+        return parsed;
+      }
+    }
+  } catch {}
+
+  return null;
+}

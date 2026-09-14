@@ -21,7 +21,7 @@ import AboutModal from "./components/AboutModal";
 import WeatherParticles from "./components/WeatherParticles";
 import MaterialNavRail from "./components/MaterialNavRail";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
-import { fetchWeatherData, fetchAirQualityData, reverseGeocode } from "./services/weatherApi";
+import { fetchWeatherData, fetchAirQualityData, reverseGeocode, detectUserLocation } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
 import {
   LayoutDashboard,
@@ -39,12 +39,23 @@ import {
 } from "lucide-react";
 
 export default function App() {
-  const [currentLocation, setCurrentLocation] = useState({
-    name: "Tokyo, Japan",
-    cityName: "Tokyo",
-    country: "Japan",
-    lat: 35.6762,
-    lon: 139.6503
+  const [currentLocation, setCurrentLocation] = useState(() => {
+    try {
+      const saved = localStorage.getItem("climatesphere_last_location");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.lat != null && parsed?.lon != null) {
+          return parsed;
+        }
+      }
+    } catch {}
+    return {
+      name: "Detecting Location...",
+      cityName: "Detecting...",
+      country: "",
+      lat: null,
+      lon: null
+    };
   });
 
   const [weatherData, setWeatherData] = useState(null);
@@ -109,6 +120,9 @@ export default function App() {
   });
 
   const loadDataForLocation = useCallback(async (location, showRefreshing = false) => {
+    if (!location || location.lat == null || location.lon == null) {
+      return;
+    }
     if (showRefreshing) setIsRefreshing(true);
     else setIsLoading(true);
     setError(null);
@@ -131,52 +145,63 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    loadDataForLocation(currentLocation);
+    if (currentLocation && currentLocation.lat != null && currentLocation.lon != null) {
+      loadDataForLocation(currentLocation);
+    }
   }, [currentLocation, loadDataForLocation]);
 
+  // Automatically detect user's location on startup (GPS with fast IP fallback)
+  useEffect(() => {
+    let isMounted = true;
+    detectUserLocation().then((loc) => {
+      if (isMounted && loc && loc.lat != null && loc.lon != null) {
+        setCurrentLocation(loc);
+        try {
+          localStorage.setItem("climatesphere_last_location", JSON.stringify(loc));
+        } catch {}
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleSelectLocation = async (loc) => {
+    let targetLoc = loc;
     if (!loc.cityName || loc.cityName === "Custom Coordinates") {
       const geo = await reverseGeocode(loc.lat, loc.lon);
-      setCurrentLocation({
+      targetLoc = {
         name: geo.name,
         cityName: geo.cityName,
         country: geo.country,
         lat: loc.lat,
         lon: loc.lon
-      });
-    } else {
-      setCurrentLocation(loc);
+      };
     }
+    setCurrentLocation(targetLoc);
+    try {
+      localStorage.setItem("climatesphere_last_location", JSON.stringify(targetLoc));
+    } catch {}
   };
 
-  const handleAutoLocate = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
+  const handleAutoLocate = async () => {
+    setIsRefreshing(true);
+    try {
+      const detected = await detectUserLocation();
+      if (detected && detected.lat != null && detected.lon != null) {
+        setCurrentLocation(detected);
         try {
-          const { latitude, longitude } = position.coords;
-          const geo = await reverseGeocode(latitude, longitude);
-          setCurrentLocation({
-            name: geo.name,
-            cityName: geo.cityName,
-            country: geo.country,
-            lat: latitude,
-            lon: longitude
-          });
-        } catch (err) {
-          console.warn("Geocoding failed for position:", err);
-        }
-      },
-      (err) => {
-        console.warn("Geolocation denied or failed:", err);
-        alert("Could not access your location. Using default location.");
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+          localStorage.setItem("climatesphere_last_location", JSON.stringify(detected));
+        } catch {}
+      } else {
+        alert("Could not automatically detect your location.");
+      }
+    } catch (err) {
+      console.warn("Auto-locate failed:", err);
+      alert("Could not access location.");
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const handleToggleUnit = () => {

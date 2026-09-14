@@ -5,14 +5,14 @@ import com.climatesphere.app.domain.model.WeatherModel
 
 data class HomeUiState(
     val selectedLocation: LocationModel = LocationModel(
-        name = "Tokyo, Japan",
-        cityName = "Tokyo",
-        country = "Japan",
-        latitude = 35.6762,
-        longitude = 139.6503
+        name = "Detecting Location...",
+        cityName = "Detecting...",
+        country = "",
+        latitude = 0.0,
+        longitude = 0.0
     ),
     val weather: WeatherModel? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val errorMessage: String? = null,
     val isSearching: Boolean = false,
