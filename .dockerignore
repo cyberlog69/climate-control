@@ -1,0 +1,14 @@
+node_modules
+dist
+android
+release
+pages-converter
+graphify-out
+.git
+.github
+.agents
+.gemini
+*.log
+.dockerignore
+.containerignore
+quadlet

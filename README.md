@@ -183,6 +183,81 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ---
 
+### 🦭 Self-Hosted & Container Deployment (Podman & Docker)
+
+ClimateSphere provides full support for rootless, unprivileged container execution via **Podman** and **Docker** using an unprivileged Nginx web server (`nginxinc/nginx-unprivileged:alpine`) on port `8080`.
+
+#### 1. Build and Run with Podman CLI
+
+```bash
+# Build container image with native Containerfile
+podman build -t climate-control:latest -f Containerfile .
+
+# Run rootlessly on port 8080
+podman run -d --name climate-control -p 8080:8080 localhost/climate-control:latest
+
+# Check container status
+podman ps
+podman logs climate-control
+
+# Stop and tear down
+podman stop climate-control
+podman rm climate-control
+```
+
+#### 2. Run with Podman Compose
+
+```bash
+# Launch container in background
+podman compose up -d
+
+# View logs
+podman compose logs -f
+
+# Shutdown
+podman compose down
+```
+
+#### 3. Run Natively as a Kubernetes / Podman Pod
+
+Podman can execute Kubernetes Pod YAML manifests directly without installing Kubernetes:
+
+```bash
+# Play Kubernetes Pod spec
+podman play kube podman-pod.yaml
+
+# Inspect running pods
+podman pod ps
+
+# Stop and remove pod
+podman play kube --down podman-pod.yaml
+```
+
+#### 4. Run as a Systemd Service (Podman Quadlet)
+
+For headless production servers (RHEL, Fedora, CentOS, Debian, Ubuntu), place the Quadlet configuration in your user systemd directory:
+
+```bash
+mkdir -p ~/.config/containers/systemd/
+cp quadlet/climatesphere.container ~/.config/containers/systemd/
+systemctl --user daemon-reload
+systemctl --user start climatesphere.service
+systemctl --user enable climatesphere.service
+```
+
+#### 5. Docker & Docker Compose
+
+```bash
+# Build and run with Docker
+docker build -t climate-control:latest .
+docker run -d -p 8080:8080 --name climate-control climate-control:latest
+
+# Or with Docker Compose
+docker compose up -d
+```
+
+---
+
 ### 🌐 Web & PWA Stack
 | Component | Technology / Library |
 | :--- | :--- |

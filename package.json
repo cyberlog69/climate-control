@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "podman:build": "podman build -t climate-control:latest -f Containerfile .",
+    "podman:run": "podman run -d --name climate-control -p 8080:8080 localhost/climate-control:latest",
+    "podman:stop": "podman stop climate-control",
+    "podman:rm": "podman rm -f climate-control"
   },
   "dependencies": {
     "clsx": "^2.1.1",
