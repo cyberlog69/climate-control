@@ -153,7 +153,20 @@ export default function App() {
   // Automatically detect user's location on startup (GPS with fast IP fallback)
   useEffect(() => {
     let isMounted = true;
-    detectUserLocation().then((loc) => {
+    detectUserLocation((fastLoc) => {
+      if (isMounted && fastLoc && fastLoc.lat != null && fastLoc.lon != null) {
+        setCurrentLocation((prev) => {
+          // Only apply fast IP if we haven't already locked onto a precise location
+          if (prev.lat == null || prev.name === "Detecting Location...") {
+            return fastLoc;
+          }
+          return prev;
+        });
+        try {
+          localStorage.setItem("climatesphere_last_location", JSON.stringify(fastLoc));
+        } catch {}
+      }
+    }).then((loc) => {
       if (isMounted && loc && loc.lat != null && loc.lon != null) {
         setCurrentLocation(loc);
         try {

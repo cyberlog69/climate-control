@@ -204,7 +204,7 @@ export default function InteractiveMap({
               opacity={0.85}
             />
 
-            {currentLocation && (
+            {currentLocation && currentLocation.lat != null && currentLocation.lon != null && (
               <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
                 <Popup>
                   <div style={{ padding: "0.25rem" }}>
@@ -465,7 +465,7 @@ export default function InteractiveMap({
             />
 
             {/* Selected Location Marker */}
-            {currentLocation && (
+            {currentLocation && currentLocation.lat != null && currentLocation.lon != null && (
               <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
                 <Popup>
                   <div style={{ padding: "0.25rem" }}>

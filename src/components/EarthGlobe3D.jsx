@@ -774,7 +774,9 @@ export default function EarthGlobe3D({
             </span>
           </div>
           <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace", marginTop: "0.15rem" }}>
-            {currentLocation.lat.toFixed(2)}°, {currentLocation.lon.toFixed(2)}°
+            {currentLocation.lat != null && currentLocation.lon != null
+              ? `${currentLocation.lat.toFixed(2)}°, ${currentLocation.lon.toFixed(2)}°`
+              : "Acquiring coordinates..."}
             {weatherData?.current?.temp != null && (
               <span style={{ marginLeft: "0.5rem", color: "#fff", fontWeight: 600 }}>
                 • {weatherData.current.temp}°C

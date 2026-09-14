@@ -40,7 +40,7 @@ export default function HistoricalAnomalyChart({ locationName, weatherData }) {
                 borderRadius: "10px",
                 color: "var(--text-main)"
               }}
-              formatter={(val) => [`+${val.toFixed(1)}°C Anomaly`, "Thermal Shift"]}
+              formatter={(val) => [val != null ? `+${Number(val).toFixed(1)}°C Anomaly` : "", "Thermal Shift"]}
             />
             <Bar dataKey="anomaly" radius={[6, 6, 0, 0]}>
               {historicalBars.map((entry, index) => (

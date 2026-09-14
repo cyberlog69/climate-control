@@ -180,7 +180,7 @@ export default function Navbar({
                     </div>
                   </div>
                   <div style={{ fontSize: "0.74rem", color: "var(--md-sys-color-primary)", fontFamily: "monospace" }}>
-                    {item.lat.toFixed(2)}°, {item.lon.toFixed(2)}°
+                    {item.lat != null && item.lon != null ? `${item.lat.toFixed(2)}°, ${item.lon.toFixed(2)}°` : ""}
                   </div>
                 </div>
               ))}
@@ -413,7 +413,7 @@ export default function Navbar({
                   </div>
                 </div>
                 <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", fontFamily: "monospace" }}>
-                  {item.lat.toFixed(2)}°, {item.lon.toFixed(2)}°
+                  {item.lat != null && item.lon != null ? `${item.lat.toFixed(2)}°, ${item.lon.toFixed(2)}°` : ""}
                 </div>
               </div>
             ))}

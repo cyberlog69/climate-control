@@ -219,14 +219,44 @@ function processWeatherData(data) {
 /**
  * Automatically detects the user's location via HTML5 Geolocation with rapid IP-based fallback
  */
-export async function detectUserLocation() {
-  // 1. Try Browser Geolocation API if available
+export async function detectUserLocation(onProgressLocation) {
+  // 1. Immediately launch fast IP Geolocation (~50ms) in parallel
+  const ipPromise = (async () => {
+    try {
+      const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
+      if (res.ok) {
+        const data = await res.json();
+        const lat = parseFloat(data.latitude);
+        const lon = parseFloat(data.longitude);
+        if (!isNaN(lat) && !isNaN(lon)) {
+          const city = data.city || data.region || "Local Area";
+          const country = data.country || "";
+          const loc = {
+            name: country ? `${city}, ${country}` : city,
+            cityName: city,
+            country: country,
+            lat: lat,
+            lon: lon
+          };
+          if (typeof onProgressLocation === "function") {
+            onProgressLocation(loc);
+          }
+          return loc;
+        }
+      }
+    } catch (ipErr) {
+      console.warn("Fast IP geolocation fallback error:", ipErr);
+    }
+    return null;
+  })();
+
+  // 2. Concurrently attempt Browser High-Accuracy GPS
   if (typeof window !== "undefined" && navigator.geolocation) {
     try {
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, {
           enableHighAccuracy: true,
-          timeout: 4500,
+          timeout: 4000,
           maximumAge: 300000 // 5 minutes cache
         });
       });
@@ -240,39 +270,20 @@ export async function detectUserLocation() {
         lon: longitude
       };
     } catch (err) {
-      console.warn("Browser GPS unavailable or prompt pending/denied, initiating IP geolocation fallback:", err);
+      console.warn("Browser GPS unavailable or prompt pending/denied, resolving with IP:", err);
     }
   }
 
-  // 2. Fast IP Geolocation Fallback (free, CORS-enabled, ~50ms, works without user prompts)
-  try {
-    const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
-    if (res.ok) {
-      const data = await res.json();
-      const lat = parseFloat(data.latitude);
-      const lon = parseFloat(data.longitude);
-      if (!isNaN(lat) && !isNaN(lon)) {
-        const city = data.city || data.region || "Local Area";
-        const country = data.country || "";
-        return {
-          name: country ? `${city}, ${country}` : city,
-          cityName: city,
-          country: country,
-          lat: lat,
-          lon: lon
-        };
-      }
-    }
-  } catch (ipErr) {
-    console.warn("IP geolocation fallback failed:", ipErr);
-  }
+  // If GPS wasn't available or timed out/denied, await fast IP result
+  const ipResult = await ipPromise;
+  if (ipResult) return ipResult;
 
-  // 3. Last-known cached location from localStorage
+  // 3. Fallback to localStorage last known location
   try {
     const saved = localStorage.getItem("climatesphere_last_location");
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed?.lat && parsed?.lon) {
+      if (parsed?.lat != null && parsed?.lon != null) {
         return parsed;
       }
     }
