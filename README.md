@@ -1,7 +1,7 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
 [![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--sphere.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://climate-sphere.netlify.app/)
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.2.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.2.0/ClimateSphere-v1.2.0.apk)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.3.0/ClimateSphere-v1.3.0.apk)
 [![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
 [![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > 🌐 **Live Web Application (Netlify)**: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)  
-> 🤖 **Native Android APK (v1.2.0)**: [Download ClimateSphere-v1.2.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.2.0/ClimateSphere-v1.2.0.apk)  
+> 🤖 **Native Android APK (v1.3.0)**: [Download ClimateSphere-v1.3.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.3.0/ClimateSphere-v1.3.0.apk)  
 > 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
 
 ---
@@ -210,14 +210,14 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
 
 ## 🤖 Native Android App (Kotlin & Jetpack Compose)
 
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.2.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
 
 ClimateSphere features a 100% native Android application built with modern Android standards in [`android/`](./android):
 
 ### 🌟 Key Highlights & Architecture:
 - **⚡ 0ms Cold Startup & Offline Cache**: Powered by a Room SQLite database acting as the Single Source of Truth. Cached weather is emitted instantly on launch, followed by silent background synchronization with Open-Meteo.
 - **📍 Smart Auto-Locate & Dual Reverse-Geocoding**:
-  - Automatically queries Google Play Services `FusedLocationProviderClient` on startup.
+  - Automatically queries Google Play Services `FusedLocationProviderClient` on startup with fast IP-based fallback.
   - Native `android.location.Geocoder` resolves coordinates into your real city, state, and country names, with an automatic fallback client to ensure location resolution always succeeds.
 - **🎨 Material You Dynamic Themed App Icon (Android 13+)**:
   - Full adaptive icon support with `<monochrome>` layer that dynamically tints with your phone's wallpaper palette.
@@ -230,19 +230,19 @@ ClimateSphere features a 100% native Android application built with modern Andro
 - **🔍 Debounced Global City Search**: Instant location autocompletion dialog powered by Open-Meteo Geocoding.
 
 ### 📦 Download Pre-Built APK:
-- **Direct Download**: Get the latest signed [ClimateSphere-v1.2.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
-- **Local Copy**: Also packaged in `release/ClimateSphere-v1.2.0.apk`.
+- **Direct Download**: Get the latest signed [ClimateSphere-v1.3.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
+- **Local Copy**: Also packaged in `release/ClimateSphere-v1.3.0.apk`.
 
 ### 🛠️ Building the Android App from Source:
 ```bash
 cd android
 
-# Compile and package Release APK (Optimized, ~13.7 MB)
+# Compile and package Release APK (Optimized, ~13.8 MB)
 ./gradlew assembleRelease       # Linux / macOS
 .\gradlew.bat assembleRelease   # Windows
 
 # Output APK path:
-# android/app/build/outputs/apk/release/ClimateSphere-v1.2.0-release.apk
+# android/app/build/outputs/apk/release/ClimateSphere-v1.3.0-release.apk
 ```
 Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** and click **Run ▶**.
 
