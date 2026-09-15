@@ -10,7 +10,7 @@ const GithubIcon = ({ size = 20 }) => (
 );
 
 export default function AboutModal({ onClose }) {
-  const netlifyUrl = "https://climate-sphere.netlify.app/";
+  const liveAppUrl = "https://climate-control.loggy69.workers.dev/";
   const githubUrl = "https://github.com/cyberlog69/climate-control";
   const [releaseInfo, setReleaseInfo] = useState(FALLBACK_RELEASE_INFO);
 
@@ -114,7 +114,7 @@ export default function AboutModal({ onClose }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0.75rem" }}>
             {/* Live Web App */}
             <a
-              href={netlifyUrl}
+              href={liveAppUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="glass-card glass-card-interactive"
@@ -132,9 +132,9 @@ export default function AboutModal({ onClose }) {
                 <Globe size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Deployed on Netlify</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Deployed on Cloudflare</div>
                 <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  climate-sphere.netlify.app
+                  climate-control.loggy69.workers.dev
                 </div>
               </div>
               <ExternalLink size={16} style={{ color: "var(--text-dim)" }} />
@@ -212,7 +212,7 @@ export default function AboutModal({ onClose }) {
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
                 <CloudSun size={16} style={{ color: "var(--accent-cyan)", marginTop: "0.15rem", flexShrink: 0 }} />
                 <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                  <strong style={{ color: "var(--text-main)" }}>Web & PWA:</strong> React 18, Three.js 3D Globe, Leaflet, Recharts, Open-Meteo & Netlify CI/CD.
+                  <strong style={{ color: "var(--text-main)" }}>Web & PWA:</strong> React 19, Three.js 3D Globe, Leaflet, Recharts, Open-Meteo & Cloudflare CI/CD.
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>

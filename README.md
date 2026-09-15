@@ -1,18 +1,18 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
-[![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--sphere.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://climate-sphere.netlify.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--control.loggy69.workers.dev-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://climate-control.loggy69.workers.dev/)
 [![Download APK](https://img.shields.io/badge/Download_APK-v1.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.3.0/ClimateSphere-v1.3.0.apk)
 [![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
 [![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Compose](https://img.shields.io/badge/Compose-Material_3-4285F4?style=flat&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev)
 [![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900?style=flat&logo=leaflet&logoColor=white)](https://leafletjs.com)
 [![Open-Meteo](https://img.shields.io/badge/API-Open--Meteo-06B6D4?style=flat)](https://open-meteo.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> 🌐 **Live Web Application (Netlify)**: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)  
+> 🌐 **Live Web Application (Cloudflare)**: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)  
 > 🤖 **Native Android APK (v1.3.0)**: [Download ClimateSphere-v1.3.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.3.0/ClimateSphere-v1.3.0.apk)  
 > 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
 
@@ -22,7 +22,7 @@
 
 **ClimateSphere** is a high-performance, cross-platform environmental intelligence and planetary monitoring system. It unites real-time atmospheric telemetry, satellite remote sensing, interactive 3D WebGL computer graphics, and native Android engineering into an open, telemetry-driven platform designed to monitor global weather, atmospheric carbon trends, wildfire clusters, and climate risks worldwide.
 
-- **🌐 Live Web Application**: Hosted on Netlify with automated continuous deployment from GitHub: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)
+- **🌐 Live Web Application**: Hosted on Cloudflare with automated continuous deployment from GitHub: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)
 - **🤖 Native Android App**: Engineered from scratch with **Kotlin 2.0**, **Jetpack Compose (Material 3)**, and **Room SQLite** for instant 0ms offline sync and Material You dynamic wallpaper tinting.
 - **🛰️ Satellite & Open Science**: 100% powered by Open-Meteo and NASA FIRMS (MODIS/VIIRS) with zero commercial API keys required.
 - **📱 Responsive & Cross-Device**: Seamlessly adapts across mobile phones, tablets, landscape orientations, and ultrawide desktop control room monitors.
@@ -109,15 +109,19 @@
 
 ## 🚀 Deployment Guide & Platform Comparison
 
-Since **ClimateSphere** is a modern Single Page Application (SPA) built with React 18 and Vite, it can be deployed seamlessly across a wide variety of free and enterprise cloud platforms.
+Since **ClimateSphere** is a modern Single Page Application (SPA) built with React and Vite, it can be deployed seamlessly across a wide variety of free and enterprise cloud platforms.
 
 ### 🟢 FREE & GENEROUS FREE-TIER PLATFORMS
 
-#### 1. [Netlify](https://climate-sphere.netlify.app/) — *Currently Live in Production* 🟢
-- **Live URL**: [**https://climate-sphere.netlify.app/**](https://climate-sphere.netlify.app/)
-- **Configuration**: Fully automated continuous deployment configured via [`netlify.toml`](./netlify.toml) and [`public/_redirects`](./public/_redirects) for instant Git push builds, client-side SPA routing (`/* -> /index.html 200`), and edge asset caching.
+#### 1. [Cloudflare Workers & Pages](https://climate-control.loggy69.workers.dev/) — *Currently Live in Production* 🟢
+- **Live URL**: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)
+- **Configuration**: Fully automated continuous deployment configured via [`wrangler.jsonc`](./wrangler.jsonc) with Single-Page Application asset routing (`not_found_handling: "single-page-application"`), unlimited free bandwidth, and ultra-fast global edge distribution across 300+ cities.
 
-#### 2. [Vercel](https://vercel.com) (Free Tier)
+#### 2. [Netlify](https://www.netlify.com) (Free Tier)
+- **Overview**: Provides automated continuous deployment from GitHub with edge asset caching and preview branches.
+- **Configuration**: Supported via [`netlify.toml`](./netlify.toml).
+
+#### 3. [Vercel](https://vercel.com) (Free Tier)
 - **Overview**: Native creator of Next.js and premier platform for frontend web apps. Provides instant global CDN deployment, continuous integration on `git push`, and automatic SSL.
 - **Deployment Steps**:
   1. Import your GitHub repository (`cyberlog69/climate-control`) on [vercel.com/new](https://vercel.com/new).
@@ -126,19 +130,12 @@ Since **ClimateSphere** is a modern Single Page Application (SPA) built with Rea
   4. Output Directory: `dist`.
   5. Click **Deploy**.
 
-#### 3. [GitHub Pages](https://pages.github.com) (100% Free)
+#### 4. [GitHub Pages](https://pages.github.com) (100% Free)
 - **Overview**: Host directly from your existing GitHub repository using GitHub Actions.
 - **Deployment Steps**:
   1. In your GitHub repository, go to **Settings** $\rightarrow$ **Pages**.
   2. Under **Source**, select **GitHub Actions**.
   3. Use the standard static site GitHub Action workflow targeting `npm run build` and publishing `dist/`.
-
-#### 4. [Cloudflare Pages](https://pages.cloudflare.com) (Free Tier - Unlimited Bandwidth)
-- **Overview**: Powered by Cloudflare's ultra-fast global edge network spanning 300+ cities. Offers unlimited free bandwidth.
-- **Deployment Steps**:
-  1. Connect GitHub repository in Cloudflare Pages dashboard.
-  2. Build command: `npm run build`.
-  3. Build output directory: `dist`.
 
 #### 5. [Render](https://render.com) (Free Tier)
 - **Overview**: Modern cloud provider supporting free static sites with fully managed TLS certificates and instant previews.
@@ -327,7 +324,7 @@ Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** a
 
 ClimateSphere also runs as a modern, responsive **Progressive Web App (PWA)**:
 
-1. Open [**climate-sphere.netlify.app**](https://climate-sphere.netlify.app/) in **Google Chrome / Edge / Safari / Firefox Mobile** on any device.
+1. Open [**climate-control.loggy69.workers.dev**](https://climate-control.loggy69.workers.dev/) in **Google Chrome / Edge / Safari / Firefox Mobile** on any device.
 2. Tap the browser menu and select **"Add to Home Screen"** or **"Install ClimateSphere"**.
 3. ClimateSphere installs as a standalone web app with offline caching support.
 
