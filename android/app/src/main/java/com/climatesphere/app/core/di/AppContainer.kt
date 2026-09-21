@@ -48,6 +48,10 @@ class AppContainer(private val context: Context) {
         ClimateDatabase.getDatabase(context)
     }
 
+    val carbonDao: com.climatesphere.app.data.local.CarbonDao by lazy {
+        database.carbonDao()
+    }
+
     val weatherRepository: WeatherRepository by lazy {
         WeatherRepositoryImpl(
             context = context,
@@ -55,6 +59,10 @@ class AppContainer(private val context: Context) {
             dao = database.weatherDao(),
             watchlistDao = database.watchlistDao()
         )
+    }
+
+    val barometerSensorManager: com.climatesphere.app.core.sensor.BarometerSensorManager by lazy {
+        com.climatesphere.app.core.sensor.BarometerSensorManager(context)
     }
 
     private val gitHubRetrofit: Retrofit by lazy {

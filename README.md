@@ -1,7 +1,7 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
 [![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--control.loggy69.workers.dev-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://climate-control.loggy69.workers.dev/)
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.3.0/ClimateSphere-v1.3.0.apk)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.4.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.4.0/ClimateSphere-v1.4.0.apk)
 [![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
 [![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > 🌐 **Live Web Application (Cloudflare)**: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)  
-> 🤖 **Native Android APK (v1.3.0)**: [Download ClimateSphere-v1.3.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.3.0/ClimateSphere-v1.3.0.apk)  
+> 🤖 **Native Android APK (v1.4.0)**: [Download ClimateSphere-v1.4.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.4.0/ClimateSphere-v1.4.0.apk)  
 > 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
 
 ---
@@ -282,7 +282,7 @@ docker compose up -d
 
 ## 🤖 Native Android App (Kotlin & Jetpack Compose)
 
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.4.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
 
 ClimateSphere features a 100% native Android application built with modern Android standards in [`android/`](./android):
 
@@ -291,30 +291,35 @@ ClimateSphere features a 100% native Android application built with modern Andro
 - **📍 Smart Auto-Locate & Dual Reverse-Geocoding**:
   - Automatically queries Google Play Services `FusedLocationProviderClient` on startup with fast IP-based fallback.
   - Native `android.location.Geocoder` resolves coordinates into your real city, state, and country names, with an automatic fallback client to ensure location resolution always succeeds.
+- **🌿 Native Carbon Footprint Engine (Room Persistent)**:
+  - Full IPCC GHG protocol compliant carbon calculator with lifestyle modeling (transport, aviation, home energy, diet, consumption).
+  - Paris Agreement $2.0\text{ tCO}_2\text{e}$ benchmark tracking, tree offset equivalents, and actionable mitigation milestones saved directly in SQLite (`CarbonDao`).
+- **⏱️ Hardware Barometer & Rapid Drop Storm Detection**:
+  - Live atmospheric pressure monitoring via on-device `Sensor.TYPE_PRESSURE`.
+  - Rapid pressure drop detector ($\ge 2.5\text{ hPa}$) alerting users of approaching storm fronts even offline, with graceful station fallback.
+- **⚡ WorkManager Periodic Background Sync & Severe Weather Alerts**:
+  - Periodic background worker (`WeatherSyncWorker`, 3-hour interval) updating cached telemetry and Glance AppWidgets.
+  - Automated hazard detection triggering native Android notifications for severe heatwaves ($\ge 38^\circ\text{C}$), freezing temps ($\le 0^\circ\text{C}$), gale winds ($\ge 50\text{ km/h}$), and hazardous AQI.
+- **📱 Jetpack Compose Glance AppWidgets**: Small (2×1) and Medium (4×2) home screen widgets with real-time temperature, condition emojis, and AQI status pills.
 - **🎨 Material You Dynamic Themed App Icon (Android 13+)**:
   - Full adaptive icon support with `<monochrome>` layer that dynamically tints with your phone's wallpaper palette.
 - **🖤 AMOLED Pure Black Theme**: Deep `#000000` background and `#06B6D4` cyan accents designed to maximize battery efficiency on mobile OLED displays.
-- **📊 Synoptic Dashboard**:
-  - Prominent temperature hero card with feels-like, humidity, wind, and surface pressure.
-  - 24-hour horizontal forecast scroll with rain probabilities and WMO condition emojis.
-  - Color-coded EPA Air Quality Index with PM2.5, PM10, Carbon Monoxide, and Ozone breakdown.
-  - 7-day extended outlook with min/max thermal bars.
-- **🔍 Debounced Global City Search**: Instant location autocompletion dialog powered by Open-Meteo Geocoding.
+- **🔍 Debounced Global City Search & Watchlist**: Multi-city watchlist with horizontal paging between your GPS location and saved cities.
 
 ### 📦 Download Pre-Built APK:
-- **Direct Download**: Get the latest signed [ClimateSphere-v1.3.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
-- **Local Copy**: Also packaged in `release/ClimateSphere-v1.3.0.apk`.
+- **Direct Download**: Get the latest signed [ClimateSphere-v1.4.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
+- **Local Copy**: Also packaged in `release/ClimateSphere-v1.4.0.apk`.
 
 ### 🛠️ Building the Android App from Source:
 ```bash
 cd android
 
-# Compile and package Release APK (Optimized, ~13.8 MB)
+# Compile and package Release APK (Optimized, ~13.9 MB)
 ./gradlew assembleRelease       # Linux / macOS
 .\gradlew.bat assembleRelease   # Windows
 
 # Output APK path:
-# android/app/build/outputs/apk/release/ClimateSphere-v1.3.0-release.apk
+# android/app/build/outputs/apk/release/ClimateSphere-v1.4.0-release.apk
 ```
 Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** and click **Run ▶**.
 

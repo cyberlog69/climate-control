@@ -29,3 +29,7 @@ val AqiUnhealthySensitive = Color(0xFFF97316)
 val AqiUnhealthy = Color(0xFFEF4444)
 val AqiVeryUnhealthy = Color(0xFF8B5CF6)
 val AqiHazardous = Color(0xFF7F1D1D)
+
+// Theme Aliases
+val GreenAqi = EmeraldGreen
+val YellowAqi = AmberWarning

@@ -15,7 +15,9 @@ class MainActivity : ComponentActivity() {
         val app = application as ClimateSphereApplication
         WeatherViewModel.provideFactory(
             repository = app.container.weatherRepository,
-            updateManager = app.container.appUpdateManager
+            updateManager = app.container.appUpdateManager,
+            carbonDao = app.container.carbonDao,
+            barometerManager = app.container.barometerSensorManager
         )
     }
 

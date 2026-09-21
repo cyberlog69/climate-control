@@ -18,9 +18,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
+import com.climatesphere.app.core.sensor.BarometerSensorManager
+import com.climatesphere.app.data.local.CarbonDao
+import com.climatesphere.app.data.local.entity.CarbonProfileEntity
+
 class WeatherViewModel(
     private val repository: WeatherRepository,
-    private val updateManager: AppUpdateManager
+    private val updateManager: AppUpdateManager,
+    private val carbonDao: CarbonDao,
+    private val barometerManager: BarometerSensorManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -38,9 +44,43 @@ class WeatherViewModel(
     private var searchJob: Job? = null
 
     init {
+        barometerManager.startListening()
+        observeBarometer()
+        observeCarbonProfile()
         initStartupLocation()
         checkForUpdates()
         observeWatchlist()
+    }
+
+    private fun observeBarometer() {
+        viewModelScope.launch {
+            barometerManager.barometerData.collect { data ->
+                _uiState.update { it.copy(barometerData = data) }
+            }
+        }
+    }
+
+    private fun observeCarbonProfile() {
+        viewModelScope.launch {
+            carbonDao.getCarbonProfile().collect { profile ->
+                _uiState.update { it.copy(carbonProfile = profile) }
+            }
+        }
+    }
+
+    fun saveCarbonProfile(profile: CarbonProfileEntity) {
+        viewModelScope.launch {
+            carbonDao.saveCarbonProfile(profile)
+        }
+    }
+
+    fun setCarbonSheetOpen(isOpen: Boolean) {
+        _uiState.update { it.copy(isCarbonSheetOpen = isOpen) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        barometerManager.stopListening()
     }
 
     private fun initStartupLocation() {
@@ -155,6 +195,7 @@ class WeatherViewModel(
                             }
                         }
                         is Resource.Success -> {
+                            barometerManager.updateStationFallback(resource.data?.current?.surfacePressure)
                             _uiState.update {
                                 it.copy(
                                     weather = resource.data,
@@ -267,12 +308,14 @@ class WeatherViewModel(
     companion object {
         fun provideFactory(
             repository: WeatherRepository,
-            updateManager: AppUpdateManager
+            updateManager: AppUpdateManager,
+            carbonDao: CarbonDao,
+            barometerManager: BarometerSensorManager
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return WeatherViewModel(repository, updateManager) as T
+                    return WeatherViewModel(repository, updateManager, carbonDao, barometerManager) as T
                 }
             }
     }

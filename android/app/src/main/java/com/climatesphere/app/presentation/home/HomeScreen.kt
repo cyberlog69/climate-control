@@ -29,7 +29,11 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.SystemUpdate
+import com.climatesphere.app.core.theme.GreenAqi
+import com.climatesphere.app.presentation.components.BarometerCard
+import com.climatesphere.app.presentation.components.CarbonCalculatorBottomSheet
 import com.climatesphere.app.presentation.components.WatchlistBottomSheet
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -252,6 +256,13 @@ fun HomeScreen(
                             tint = TextWhite
                         )
                     }
+                    IconButton(onClick = { viewModel.setCarbonSheetOpen(true) }) {
+                        Icon(
+                            imageVector = Icons.Default.Spa,
+                            contentDescription = "Carbon Footprint Calculator",
+                            tint = GreenAqi
+                        )
+                    }
                     IconButton(onClick = onAutoLocateClick) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
@@ -389,7 +400,12 @@ fun HomeScreen(
 
                                 Spacer(modifier = Modifier.height(18.dp))
 
-                                // 4. 7-Day Daily Outlook
+                                // 4. Barometric Pressure & Storm Tracking
+                                BarometerCard(barometerData = uiState.barometerData)
+
+                                Spacer(modifier = Modifier.height(18.dp))
+
+                                // 5. 7-Day Daily Outlook
                                 if (weather.daily.isNotEmpty()) {
                                     DailyForecastList(dailyList = weather.daily)
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -454,6 +470,17 @@ fun HomeScreen(
                     onLocationSelected = { viewModel.selectLocation(it) },
                     onRemoveLocation = { viewModel.removeFromWatchlist(it) },
                     onAddLocationClick = { viewModel.setSearchDialogOpen(true) }
+                )
+            }
+
+            // Carbon Footprint Calculator Bottom Sheet
+            if (uiState.isCarbonSheetOpen) {
+                CarbonCalculatorBottomSheet(
+                    initialProfile = uiState.carbonProfile,
+                    onDismiss = { viewModel.setCarbonSheetOpen(false) },
+                    onSaveProfile = { profile ->
+                        viewModel.saveCarbonProfile(profile)
+                    }
                 )
             }
         }
