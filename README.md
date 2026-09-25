@@ -14,8 +14,7 @@
 
 > 🌐 **Live Web Application (Cloudflare)**: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)  
 > 🤖 **Native Android APK (v1.4.0)**: [Download ClimateSphere-v1.4.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.4.0/ClimateSphere-v1.4.0.apk)  
-> 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)  
-> 🗺️ **Product & Engineering Roadmap**: [**ROADMAP.md**](ROADMAP.md)
+> 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
 
 ---
 
