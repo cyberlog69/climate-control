@@ -1,7 +1,7 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
 [![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--control.loggy69.workers.dev-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://climate-control.loggy69.workers.dev/)
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.4.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.4.0/ClimateSphere-v1.4.0.apk)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.5.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.5.0/ClimateSphere-v1.5.0.apk)
 [![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
 [![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > 🌐 **Live Web Application (Cloudflare)**: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)  
-> 🤖 **Native Android APK (v1.4.0)**: [Download ClimateSphere-v1.4.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.4.0/ClimateSphere-v1.4.0.apk)  
+> 🤖 **Native Android APK (v1.5.0)**: [Download ClimateSphere-v1.5.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.5.0/ClimateSphere-v1.5.0.apk)  
 > 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
 
 ---

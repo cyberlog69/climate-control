@@ -27,5 +27,12 @@ data class HomeUiState(
     val activePageIndex: Int = 0,
     val isCarbonSheetOpen: Boolean = false,
     val carbonProfile: CarbonProfileEntity? = null,
-    val barometerData: BarometerData = BarometerData()
+    val barometerData: BarometerData = BarometerData(),
+    val isRenewableSheetOpen: Boolean = false,
+    val isImpactSheetOpen: Boolean = false,
+    val isComparisonSheetOpen: Boolean = false,
+    val comparisonLocation: LocationModel? = null,
+    val comparisonWeather: WeatherModel? = null,
+    val isComparisonLoading: Boolean = false,
+    val comparisonSearchResults: List<LocationModel> = emptyList()
 )

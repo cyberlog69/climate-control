@@ -27,14 +27,25 @@ import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.Tune
+import com.climatesphere.app.core.theme.AmberWarning
 import com.climatesphere.app.core.theme.GreenAqi
+import com.climatesphere.app.core.theme.PurpleAura
 import com.climatesphere.app.presentation.components.BarometerCard
 import com.climatesphere.app.presentation.components.CarbonCalculatorBottomSheet
+import com.climatesphere.app.presentation.components.ClimateImpactCard
+import com.climatesphere.app.presentation.components.ClimateImpactSimulatorBottomSheet
+import com.climatesphere.app.presentation.components.DualCityComparisonBottomSheet
+import com.climatesphere.app.presentation.components.RenewableEnergyBottomSheet
+import com.climatesphere.app.presentation.components.RenewableEnergyCard
 import com.climatesphere.app.presentation.components.WatchlistBottomSheet
+import com.climatesphere.app.presentation.components.WildfireRadarCard
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -256,6 +267,27 @@ fun HomeScreen(
                             tint = TextWhite
                         )
                     }
+                    IconButton(onClick = { viewModel.setComparisonSheetOpen(true) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.CompareArrows,
+                            contentDescription = "Dual-City Comparison",
+                            tint = CyanPrimary
+                        )
+                    }
+                    IconButton(onClick = { viewModel.setRenewableSheetOpen(true) }) {
+                        Icon(
+                            imageVector = Icons.Default.Bolt,
+                            contentDescription = "Renewable Energy Potential",
+                            tint = AmberWarning
+                        )
+                    }
+                    IconButton(onClick = { viewModel.setImpactSheetOpen(true) }) {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = "Climate Impact Simulator",
+                            tint = PurpleAura
+                        )
+                    }
                     IconButton(onClick = { viewModel.setCarbonSheetOpen(true) }) {
                         Icon(
                             imageVector = Icons.Default.Spa,
@@ -405,7 +437,36 @@ fun HomeScreen(
 
                                 Spacer(modifier = Modifier.height(18.dp))
 
-                                // 5. 7-Day Daily Outlook
+                                // 5. NASA Wildfire & Thermal Sentinel Radar
+                                WildfireRadarCard(
+                                    currentLocation = weather.location,
+                                    temperatureC = weather.current.temperature,
+                                    humidityPercent = weather.current.humidity,
+                                    windSpeedKmH = weather.current.windSpeed,
+                                    onSelectHotspotLocation = { viewModel.selectLocation(it) }
+                                )
+
+                                Spacer(modifier = Modifier.height(18.dp))
+
+                                // 6. Renewable Energy Potential
+                                RenewableEnergyCard(
+                                    location = weather.location,
+                                    cloudCoverPercent = weather.current.cloudCover,
+                                    windSpeedKmH = weather.current.windSpeed,
+                                    onOpenCalculator = { viewModel.setRenewableSheetOpen(true) }
+                                )
+
+                                Spacer(modifier = Modifier.height(18.dp))
+
+                                // 7. Climate Impact Scenario Simulator
+                                ClimateImpactCard(
+                                    location = weather.location,
+                                    onOpenSimulator = { viewModel.setImpactSheetOpen(true) }
+                                )
+
+                                Spacer(modifier = Modifier.height(18.dp))
+
+                                // 8. 7-Day Daily Outlook
                                 if (weather.daily.isNotEmpty()) {
                                     DailyForecastList(dailyList = weather.daily)
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -481,6 +542,39 @@ fun HomeScreen(
                     onSaveProfile = { profile ->
                         viewModel.saveCarbonProfile(profile)
                     }
+                )
+            }
+
+            // Renewable Energy Bottom Sheet
+            if (uiState.isRenewableSheetOpen && uiState.weather != null) {
+                RenewableEnergyBottomSheet(
+                    location = uiState.weather!!.location,
+                    cloudCoverPercent = uiState.weather!!.current.cloudCover,
+                    windSpeedKmH = uiState.weather!!.current.windSpeed,
+                    onDismiss = { viewModel.setRenewableSheetOpen(false) }
+                )
+            }
+
+            // Climate Impact Simulator Bottom Sheet
+            if (uiState.isImpactSheetOpen && uiState.weather != null) {
+                ClimateImpactSimulatorBottomSheet(
+                    location = uiState.weather!!.location,
+                    onDismiss = { viewModel.setImpactSheetOpen(false) }
+                )
+            }
+
+            // Dual-City Comparison Bottom Sheet
+            if (uiState.isComparisonSheetOpen && uiState.weather != null) {
+                DualCityComparisonBottomSheet(
+                    currentLocation = uiState.weather!!.location,
+                    currentWeather = uiState.weather!!,
+                    comparisonLocation = uiState.comparisonLocation,
+                    comparisonWeather = uiState.comparisonWeather,
+                    isLoadingComparison = uiState.isComparisonLoading,
+                    onSearchLocation = { viewModel.searchComparisonLocations(it) },
+                    searchResults = uiState.comparisonSearchResults,
+                    onSelectComparisonLocation = { viewModel.selectComparisonLocation(it) },
+                    onDismiss = { viewModel.setComparisonSheetOpen(false) }
                 )
             }
         }

@@ -10,13 +10,13 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes cache to respect GitHub API r
 
 // Known baseline fallback if GitHub API is unreachable or rate-limited
 export const FALLBACK_RELEASE_INFO = {
-  version: "v1.4.0",
-  fileName: "ClimateSphere-v1.4.0.apk",
-  downloadUrl: `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/download/v1.4.0/ClimateSphere-v1.4.0.apk`,
-  sizeFormatted: "13.9 MB",
+  version: "v1.5.0",
+  fileName: "ClimateSphere-v1.5.0.apk",
+  downloadUrl: `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/download/v1.5.0/ClimateSphere-v1.5.0.apk`,
+  sizeFormatted: "14.0 MB",
   releaseUrl: `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`,
-  releaseTitle: "ClimateSphere v1.4.0 — Carbon Calculator, WorkManager Sync & Barometer Tracking",
-  publishedAt: "2026-09-22"
+  releaseTitle: "ClimateSphere v1.5.0 — Satellite Wildfire Radar, Renewable Yields & Dual-City Comparison",
+  publishedAt: "2026-10-08"
 };
 
 /**

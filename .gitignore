@@ -48,3 +48,6 @@ graphify-out/cache/
 pages-converter/
 
 .agents/
+
+#IGNORE ROADMAP
+ROADMAP.md
