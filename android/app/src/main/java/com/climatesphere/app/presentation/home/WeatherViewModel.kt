@@ -42,6 +42,8 @@ class WeatherViewModel(
 
     private var weatherJob: Job? = null
     private var searchJob: Job? = null
+    private var comparisonWeatherJob: Job? = null
+    private var comparisonSearchJob: Job? = null
 
     init {
         barometerManager.startListening()
@@ -76,6 +78,74 @@ class WeatherViewModel(
 
     fun setCarbonSheetOpen(isOpen: Boolean) {
         _uiState.update { it.copy(isCarbonSheetOpen = isOpen) }
+    }
+
+    fun setRenewableSheetOpen(isOpen: Boolean) {
+        _uiState.update { it.copy(isRenewableSheetOpen = isOpen) }
+    }
+
+    fun setImpactSheetOpen(isOpen: Boolean) {
+        _uiState.update { it.copy(isImpactSheetOpen = isOpen) }
+    }
+
+    fun setComparisonSheetOpen(isOpen: Boolean) {
+        _uiState.update { it.copy(isComparisonSheetOpen = isOpen) }
+        if (isOpen && _uiState.value.comparisonLocation == null) {
+            val defaultCompare = LocationModel(
+                name = "London, UK",
+                cityName = "London",
+                country = "UK",
+                latitude = 51.5074,
+                longitude = -0.1278
+            )
+            selectComparisonLocation(defaultCompare)
+        }
+    }
+
+    fun selectComparisonLocation(location: LocationModel) {
+        _uiState.update {
+            it.copy(
+                comparisonLocation = location,
+                comparisonSearchResults = emptyList(),
+                isComparisonLoading = true
+            )
+        }
+        comparisonWeatherJob?.cancel()
+        comparisonWeatherJob = viewModelScope.launch {
+            repository.getWeatherForLocation(location, forceRefresh = false)
+                .collect { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            _uiState.update { it.copy(isComparisonLoading = true) }
+                        }
+                        is Resource.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    comparisonWeather = resource.data,
+                                    isComparisonLoading = false
+                                )
+                            }
+                        }
+                        is Resource.Error -> {
+                            _uiState.update { it.copy(isComparisonLoading = false) }
+                        }
+                    }
+                }
+        }
+    }
+
+    fun searchComparisonLocations(query: String) {
+        comparisonSearchJob?.cancel()
+        if (query.trim().length < 2) {
+            _uiState.update { it.copy(comparisonSearchResults = emptyList()) }
+            return
+        }
+
+        comparisonSearchJob = viewModelScope.launch {
+            delay(300)
+            val results = repository.searchLocations(query)
+            _uiState.update { it.copy(comparisonSearchResults = results) }
+        }
     }
 
     override fun onCleared() {
