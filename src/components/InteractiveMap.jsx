@@ -8,10 +8,21 @@ import EarthGlobe3D from "./EarthGlobe3D";
 
 // Security: sanitize SVG parameters to prevent XSS via crafted map data
 const SAFE_COLOR_RE = /^[#a-zA-Z0-9(),%. ]+$/;
+
+function stripHtmlLikeTags(input) {
+  let current = input;
+  let previous;
+  do {
+    previous = current;
+    current = current.replace(/<[^>]*>/g, "");
+  } while (current !== previous);
+  return current.replace(/[<>]/g, "");
+}
+
 function sanitizeSvgParam(value, fallback) {
   if (typeof value !== "string") return fallback;
   // Strip any HTML tags or script-injectable characters
-  const stripped = value.replace(/<[^>]*>/g, "").replace(/["'`\\]/g, "");
+  const stripped = stripHtmlLikeTags(value).replace(/["'`\\]/g, "");
   if (!SAFE_COLOR_RE.test(stripped)) return fallback;
   return stripped;
 }
@@ -21,7 +32,7 @@ const createCustomMarkerIcon = (color, text = "") => {
   const safeColor = sanitizeSvgParam(color, "#06b6d4");
   // Only allow plain emoji or short alphanumeric text (no HTML)
   const safeText = typeof text === "string"
-    ? text.replace(/<[^>]*>/g, "").replace(/["'<>&`]/g, "").slice(0, 4)
+    ? stripHtmlLikeTags(text).replace(/["'&`]/g, "").slice(0, 4)
     : "";
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
