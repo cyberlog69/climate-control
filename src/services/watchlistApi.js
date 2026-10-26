@@ -5,6 +5,15 @@ import { fetchWeatherData, fetchAirQualityData } from "./weatherApi";
 
 const WATCHLIST_STORAGE_KEY = "climatesphere_pinned_watchlist";
 
+const toNonSensitiveStoredCity = (city) => ({
+  id: city?.id ?? "",
+  name: city?.name ?? "",
+  cityName: city?.cityName ?? "",
+  country: city?.country ?? "",
+  lat: null,
+  lon: null
+});
+
 // Default global sentinels pinned on initial visit
 export const DEFAULT_PINNED_CITIES = [
   {
@@ -65,7 +74,9 @@ export function getStoredWatchlist() {
     const raw = localStorage.getItem(WATCHLIST_STORAGE_KEY);
     if (!raw) return DEFAULT_PINNED_CITIES;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_PINNED_CITIES;
+    return Array.isArray(parsed) && parsed.length > 0
+      ? parsed.map(toNonSensitiveStoredCity)
+      : DEFAULT_PINNED_CITIES;
   } catch (e) {
     console.warn("Failed to load watchlist from localStorage:", e);
     return DEFAULT_PINNED_CITIES;
@@ -77,7 +88,8 @@ export function getStoredWatchlist() {
  */
 export function saveWatchlist(cities) {
   try {
-    localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(cities));
+    const safeCities = Array.isArray(cities) ? cities.map(toNonSensitiveStoredCity) : [];
+    localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(safeCities));
   } catch (e) {
     console.warn("Failed to save watchlist to localStorage:", e);
   }
