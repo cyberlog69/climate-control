@@ -39,6 +39,14 @@ import {
 } from "lucide-react";
 
 export default function App() {
+  const toNonSensitiveStoredLocation = (location) => ({
+    name: location?.name ?? "",
+    cityName: location?.cityName ?? "",
+    country: location?.country ?? "",
+    lat: null,
+    lon: null
+  });
+
   const [currentLocation, setCurrentLocation] = useState(() => {
     try {
       const saved = localStorage.getItem("climatesphere_last_location");
@@ -163,14 +171,14 @@ export default function App() {
           return prev;
         });
         try {
-          localStorage.setItem("climatesphere_last_location", JSON.stringify(fastLoc));
+          localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(fastLoc)));
         } catch {}
       }
     }).then((loc) => {
       if (isMounted && loc && loc.lat != null && loc.lon != null) {
         setCurrentLocation(loc);
         try {
-          localStorage.setItem("climatesphere_last_location", JSON.stringify(loc));
+          localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(loc)));
         } catch {}
       }
     });
@@ -193,7 +201,7 @@ export default function App() {
     }
     setCurrentLocation(targetLoc);
     try {
-      localStorage.setItem("climatesphere_last_location", JSON.stringify(targetLoc));
+      localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(targetLoc)));
     } catch {}
   };
 
