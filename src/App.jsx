@@ -212,7 +212,7 @@ export default function App() {
       if (detected && detected.lat != null && detected.lon != null) {
         setCurrentLocation(detected);
         try {
-          localStorage.setItem("climatesphere_last_location", JSON.stringify(detected));
+          localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(detected)));
         } catch {}
       } else {
         alert("Could not automatically detect your location.");
