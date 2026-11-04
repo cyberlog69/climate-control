@@ -61,9 +61,16 @@ import com.climatesphere.app.core.theme.DarkCard
 import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.GreenAqi
 import com.climatesphere.app.core.theme.PureBlack
+import com.climatesphere.app.core.theme.SkeuoBevelLight
+import com.climatesphere.app.core.theme.SkeuoLedDiode
+import com.climatesphere.app.core.theme.SkeuoMeterTrack
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
+import com.climatesphere.app.core.theme.skeuoCard
+import com.climatesphere.app.core.theme.skeuoLcdPanel
+import com.climatesphere.app.core.theme.skeuoPushButton
+import com.climatesphere.app.core.theme.skeuoRecessedWell
 import com.climatesphere.app.data.local.entity.CarbonProfileEntity
 import com.climatesphere.app.domain.model.AVAILABLE_MITIGATIONS
 import com.climatesphere.app.domain.model.CarbonBenchmarks
@@ -172,13 +179,11 @@ fun CarbonCalculatorBottomSheet(
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // Main Scorecard Display
+            // Main Scorecard Display (LCD Readout)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(DarkCard)
-                    .border(1.dp, result.rating.badgeColor.copy(alpha = 0.4f), RoundedCornerShape(20.dp))
+                    .skeuoLcdPanel(shape = RoundedCornerShape(20.dp), accentColor = result.rating.badgeColor)
                     .padding(18.dp)
             ) {
                 Column {
@@ -189,9 +194,11 @@ fun CarbonCalculatorBottomSheet(
                     ) {
                         Column {
                             Text(
-                                text = "Estimated Annual Footprint",
+                                text = "ESTIMATED ANNUAL EMISSIONS",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = TextDim
+                                color = TextDim,
+                                fontSize = 10.sp,
+                                letterSpacing = 1.sp
                             )
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
@@ -211,13 +218,17 @@ fun CarbonCalculatorBottomSheet(
                             }
                         }
 
-                        // Rating Badge
-                        Box(
+                        // Tactile Rating Badge with LED diode
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clip(CircleShape)
-                                .background(result.rating.badgeColor.copy(alpha = 0.15f))
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFF070B14))
+                                .border(1.dp, result.rating.badgeColor.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
+                            SkeuoLedDiode(color = result.rating.badgeColor, size = 6.dp)
+                            Spacer(modifier = Modifier.width(5.dp))
                             Text(
                                 text = result.rating.label,
                                 color = result.rating.badgeColor,
@@ -227,18 +238,14 @@ fun CarbonCalculatorBottomSheet(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
-                    // Paris Agreement Progress Bar
+                    // Paris Agreement Recessed Progress Track
                     val targetProgress = (result.totalTons / 10.0).coerceIn(0.0, 1.0).toFloat()
-                    LinearProgressIndicator(
-                        progress = { targetProgress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                            .clip(CircleShape),
-                        color = result.rating.badgeColor,
-                        trackColor = Color.White.copy(alpha = 0.1f)
+                    SkeuoMeterTrack(
+                        progress = targetProgress,
+                        trackHeight = 8.dp,
+                        fillColor = result.rating.badgeColor
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -364,17 +371,20 @@ fun CarbonCalculatorBottomSheet(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (isSelected) CyanPrimary else DarkCard)
-                            .clickable { vehicleType = id }
+                            .skeuoPushButton(
+                                isSelected = isSelected,
+                                shape = RoundedCornerShape(10.dp),
+                                activeAccent = CyanPrimary,
+                                onClick = { vehicleType = id }
+                            )
                             .padding(vertical = 8.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = label,
                             fontSize = 11.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) PureBlack else TextWhite
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                            color = if (isSelected) CyanPrimary else TextWhite
                         )
                     }
                 }
@@ -543,17 +553,20 @@ fun CarbonCalculatorBottomSheet(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (isSelected) GreenAqi else DarkCard)
-                            .clickable { dietType = id }
+                            .skeuoPushButton(
+                                isSelected = isSelected,
+                                shape = RoundedCornerShape(10.dp),
+                                activeAccent = GreenAqi,
+                                onClick = { dietType = id }
+                            )
                             .padding(vertical = 8.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = label,
                             fontSize = 11.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) PureBlack else TextWhite
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                            color = if (isSelected) GreenAqi else TextWhite
                         )
                     }
                 }
@@ -577,8 +590,8 @@ fun CarbonCalculatorBottomSheet(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(if (isChecked) GreenAqi.copy(alpha = 0.1f) else DarkCard)
+                        .skeuoRecessedWell(RoundedCornerShape(12.dp))
+                        .border(1.dp, if (isChecked) GreenAqi.copy(alpha = 0.5f) else Color.Transparent, RoundedCornerShape(12.dp))
                         .clickable {
                             activeMitigations = if (isChecked) {
                                 activeMitigations - action.id
