@@ -19,13 +19,13 @@ export default function ExtremeEventsRadar() {
   };
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.95rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
           <Radio size={18} style={{ color: "var(--accent-red)" }} />
           <span>Global Climate Anomaly Radar</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", color: "var(--accent-cyan)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", color: "var(--accent-cyan)", fontWeight: 600 }}>
           <span className="pulse-dot"></span>
           <span>Live Sentinel Stream</span>
         </div>
@@ -35,39 +35,40 @@ export default function ExtremeEventsRadar() {
         {EXTREME_EVENTS_FEED.map((event) => (
           <div
             key={event.id}
+            className="sk-recessed-tile"
             style={{
-              padding: "0.75rem 0.85rem",
-              borderRadius: "14px",
-              background: "var(--bg-inner)",
+              padding: "0.85rem 1rem",
               border: `1px solid ${
                 event.severity === "Critical"
-                  ? "rgba(239, 68, 68, 0.4)"
+                  ? "rgba(239, 68, 68, 0.45)"
                   : event.severity === "High"
-                  ? "rgba(245, 158, 11, 0.4)"
-                  : "var(--border-light)"
+                  ? "rgba(245, 158, 11, 0.45)"
+                  : "var(--md-sys-color-outline-variant)"
               }`,
               display: "flex",
-              gap: "0.75rem"
+              alignItems: "flex-start",
+              gap: "0.85rem"
             }}
           >
             <div
               style={{
-                width: "34px",
-                height: "34px",
-                borderRadius: "10px",
-                background: "var(--bg-card)",
+                width: "36px",
+                height: "36px",
+                borderRadius: "12px",
+                background: "var(--sk-surface-btn)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
-                border: "1px solid var(--border-light)"
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)"
               }}
             >
               {getIcon(event.type)}
             </div>
 
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.15rem" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.2rem" }}>
                 <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)" }}>{event.title}</div>
                 <span
                   className={`badge badge-${
@@ -77,13 +78,13 @@ export default function ExtremeEventsRadar() {
                   {event.severity}
                 </span>
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", fontWeight: 500, marginBottom: "0.2rem" }}>
+              <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", fontWeight: 600, marginBottom: "0.25rem" }}>
                 📍 {event.region}
               </div>
-              <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.35 }}>
+              <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.4 }}>
                 {event.description}
               </div>
-              <div style={{ fontSize: "0.68rem", color: "var(--text-dim)", marginTop: "0.3rem", textAlign: "right" }}>
+              <div style={{ fontSize: "0.68rem", color: "var(--text-dim)", marginTop: "0.35rem", textAlign: "right" }}>
                 {event.timestamp}
               </div>
             </div>

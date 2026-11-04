@@ -72,37 +72,29 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
           {onOpenVoiceBriefing && (
             <button
               onClick={onOpenVoiceBriefing}
-              className="m3-chip"
-              style={{
-                background: "var(--md-sys-color-primary-container)",
-                color: "var(--md-sys-color-on-primary-container)",
-                borderColor: "transparent"
-              }}
+              className="m3-chip active"
               title="Listen to AI Climate Briefing"
             >
               <Mic size={13} />
               <span>AI Briefing</span>
             </button>
           )}
-          <span className="m3-chip" style={{ background: "var(--md-sys-color-surface-container)", fontSize: "0.72rem" }}>
-            <span className="pulse-dot" style={{ width: 6, height: 6 }}></span>
+          <span className="m3-chip" style={{ fontSize: "0.72rem" }}>
+            <span className="pulse-dot"></span>
             {current.isDay ? "Daytime" : "Nighttime"}
           </span>
         </div>
       </div>
 
-      {/* Main Temperature & Icon Container */}
+      {/* Main Temperature & Icon Container (Skeuomorphic LCD Display Bay) */}
       <div
+        className="sk-lcd-panel"
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           margin: "0.85rem 0",
-          padding: "1rem 1.15rem",
-          background: "var(--bg-inner)",
-          borderRadius: "var(--radius-lg)",
-          border: "1px solid var(--border-light)",
-          boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08)",
+          padding: "1.1rem 1.25rem",
           position: "relative",
           overflow: "hidden"
         }}

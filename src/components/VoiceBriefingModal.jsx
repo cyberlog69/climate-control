@@ -197,7 +197,7 @@ export default function VoiceBriefingModal({
       }}
     >
       <div
-        className="glass-card"
+        className="m3-card"
         style={{
           width: "100%",
           maxWidth: "680px",
@@ -206,8 +206,8 @@ export default function VoiceBriefingModal({
           flexDirection: "column",
           borderRadius: "24px",
           overflow: "hidden",
-          border: "1px solid var(--border-light)",
-          background: "var(--bg-card-hover)"
+          border: "var(--sk-bezel-border)",
+          boxShadow: "var(--sk-shadow-card)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -215,7 +215,8 @@ export default function VoiceBriefingModal({
         <div
           style={{
             padding: "1.1rem 1.4rem",
-            borderBottom: "1px solid var(--border-light)",
+            borderBottom: "var(--sk-bezel-border)",
+            background: "var(--sk-surface-bar)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -226,15 +227,16 @@ export default function VoiceBriefingModal({
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <div
               style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
-                background: "rgba(6, 182, 212, 0.15)",
+                width: "38px",
+                height: "38px",
+                borderRadius: "12px",
+                background: "var(--sk-surface-btn)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "var(--accent-cyan)",
-                border: "1px solid var(--accent-cyan)"
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)"
               }}
             >
               <Mic size={20} />
@@ -254,18 +256,8 @@ export default function VoiceBriefingModal({
               speechController.stop();
               onClose();
             }}
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              background: "var(--bg-inner)",
-              border: "1px solid var(--border-light)",
-              color: "var(--text-main)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer"
-            }}
+            className="m3-icon-btn"
+            style={{ width: "36px", height: "36px" }}
           >
             <X size={18} />
           </button>
@@ -290,12 +282,12 @@ export default function VoiceBriefingModal({
           </div>
         )}
 
-        {/* Animated Audio Waveform Visualizer */}
+        {/* Animated Audio Waveform Visualizer (Skeuomorphic Audio Oscilloscope) */}
         <div
+          className="sk-lcd-panel"
           style={{
-            padding: "1.25rem 1.4rem",
-            background: "var(--bg-inner)",
-            borderBottom: "1px solid var(--border-light)",
+            margin: "0.85rem 1.4rem 0.2rem 1.4rem",
+            padding: "1.1rem 1.4rem",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -316,6 +308,7 @@ export default function VoiceBriefingModal({
                     background: isPlaying
                       ? `linear-gradient(180deg, var(--accent-cyan), var(--accent-purple))`
                       : "rgba(148, 163, 184, 0.3)",
+                    boxShadow: isPlaying ? "0 0 8px var(--accent-cyan)" : "none",
                     transition: isPlaying ? "height 0.15s ease" : "height 0.3s ease"
                   }}
                 />
@@ -323,7 +316,7 @@ export default function VoiceBriefingModal({
             })}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", color: isPlaying ? "var(--accent-cyan)" : "var(--text-dim)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", color: isPlaying ? "var(--accent-cyan)" : "var(--text-dim)", fontWeight: 600 }}>
             <Radio size={14} className={isPlaying ? "animate-pulse" : ""} />
             <span>
               {isPlaying
@@ -354,7 +347,7 @@ export default function VoiceBriefingModal({
               key={idx}
               style={{
                 margin: 0,
-                padding: "0.5rem 0.75rem",
+                padding: "0.6rem 0.85rem",
                 borderRadius: "10px",
                 background: isPlaying ? "rgba(6, 182, 212, 0.08)" : "transparent",
                 borderLeft: isPlaying ? "3px solid var(--accent-cyan)" : "3px solid transparent",
@@ -370,8 +363,8 @@ export default function VoiceBriefingModal({
         <div
           style={{
             padding: "1rem 1.4rem",
-            borderTop: "1px solid var(--border-light)",
-            background: "var(--bg-inner)",
+            borderTop: "var(--sk-bezel-border)",
+            background: "var(--sk-surface-bar)",
             display: "flex",
             flexDirection: "column",
             gap: "0.75rem"
@@ -384,18 +377,11 @@ export default function VoiceBriefingModal({
               {isPlaying ? (
                 <button
                   onClick={handlePause}
+                  className="m3-chip active"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
+                    background: "linear-gradient(180deg, #f59e0b 0%, #d97706 100%)",
                     gap: "0.4rem",
-                    background: "rgba(245, 158, 11, 0.2)",
-                    border: "1px solid var(--accent-amber)",
-                    color: "var(--accent-amber)",
-                    padding: "0.5rem 1.1rem",
-                    borderRadius: "14px",
-                    fontWeight: 800,
-                    fontSize: "0.85rem",
-                    cursor: "pointer"
+                    padding: "0.45rem 1.1rem"
                   }}
                 >
                   <Pause size={16} />
@@ -404,30 +390,21 @@ export default function VoiceBriefingModal({
               ) : (
                 <button
                   onClick={handlePlay}
+                  className="m3-chip active"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
                     gap: "0.4rem",
-                    background: "var(--accent-cyan)",
-                    border: "none",
-                    color: "#000",
-                    padding: "0.5rem 1.25rem",
-                    borderRadius: "14px",
-                    fontWeight: 800,
-                    fontSize: "0.85rem",
-                    cursor: "pointer",
-                    boxShadow: "0 0 15px rgba(6, 182, 212, 0.35)"
+                    padding: "0.45rem 1.25rem"
                   }}
                 >
-                  <Play size={16} fill="#000" />
+                  <Play size={16} fill="#fff" />
                   <span>{isPaused ? "Resume" : "Play Briefing"}</span>
                 </button>
               )}
 
               <button
                 onClick={handleStop}
-                className="locate-btn"
-                style={{ padding: "0.5rem 0.75rem" }}
+                className="m3-icon-btn"
+                style={{ width: "36px", height: "36px" }}
                 title="Stop Speech"
               >
                 <RotateCcw size={15} />
@@ -436,7 +413,7 @@ export default function VoiceBriefingModal({
 
             {/* Speed Presets */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              <span style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginRight: "0.2rem" }}>Speed:</span>
+              <span style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginRight: "0.2rem", fontWeight: 600 }}>Speed:</span>
               {speeds.map((s) => (
                 <button
                   key={s}
@@ -449,14 +426,16 @@ export default function VoiceBriefingModal({
                     }
                   }}
                   style={{
-                    background: rate === s ? "var(--accent-cyan)" : "var(--bg-card)",
-                    color: rate === s ? "#000" : "var(--text-muted)",
-                    border: rate === s ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                    background: rate === s ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                    color: rate === s ? "#ffffff" : "var(--text-muted)",
+                    border: rate === s ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                    boxShadow: rate === s ? "0 2px 6px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                     borderRadius: "8px",
-                    padding: "0.25rem 0.5rem",
+                    padding: "0.25rem 0.55rem",
                     fontSize: "0.72rem",
                     fontWeight: rate === s ? 800 : 500,
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    transition: "all 0.15s ease"
                   }}
                 >
                   {s}x
@@ -467,8 +446,8 @@ export default function VoiceBriefingModal({
             {/* Copy Script */}
             <button
               onClick={handleCopy}
-              className="locate-btn"
-              style={{ padding: "0.45rem 0.75rem", fontSize: "0.75rem" }}
+              className="m3-chip"
+              style={{ padding: "0.42rem 0.75rem", fontSize: "0.75rem", gap: "0.35rem" }}
             >
               {copied ? <Check size={14} style={{ color: "var(--accent-green)" }} /> : <Copy size={14} />}
               <span>{copied ? "Copied" : "Copy Script"}</span>
@@ -478,7 +457,7 @@ export default function VoiceBriefingModal({
           {/* Voice Selector Row */}
           {voices.length > 0 && (
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.72rem", color: "var(--text-dim)" }}>Voice:</span>
+              <span style={{ fontSize: "0.72rem", color: "var(--text-dim)", fontWeight: 600 }}>Voice:</span>
               <select
                 value={selectedVoiceIndex}
                 onChange={(e) => {
@@ -490,11 +469,12 @@ export default function VoiceBriefingModal({
                   }
                 }}
                 style={{
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border-light)",
+                  background: "var(--sk-surface-btn)",
+                  border: "var(--sk-bezel-border)",
+                  boxShadow: "var(--sk-shadow-btn)",
                   color: "var(--text-main)",
                   borderRadius: "10px",
-                  padding: "0.35rem 0.65rem",
+                  padding: "0.4rem 0.65rem",
                   fontSize: "0.75rem",
                   outline: "none",
                   flex: 1,

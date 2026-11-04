@@ -325,34 +325,12 @@ export default function InteractiveMap({
 
         {/* View Mode Toggle (2D Flat Map vs 3D Globe) & Layer Switches */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-          {/* 2D / 3D Toggle Pill */}
-          <div
-            style={{
-              display: "flex",
-              background: "var(--bg-card-glass)",
-              padding: "3px",
-              borderRadius: "var(--radius-pill)",
-              border: "1px solid var(--border-light)",
-              backdropFilter: "var(--blur-subtle)"
-            }}
-          >
+          {/* 2D / 3D Toggle Pill (Tactile Rocker Switch) */}
+          <div className="m3-segmented-chip">
             <button
               onClick={() => setViewMode("3d")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.35rem 0.85rem",
-                borderRadius: "var(--radius-pill)",
-                border: "none",
-                background: viewMode === "3d" ? "linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))" : "transparent",
-                color: viewMode === "3d" ? "#fff" : "var(--text-muted)",
-                fontSize: "0.78rem",
-                fontWeight: 700,
-                cursor: "pointer",
-                transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
-                boxShadow: viewMode === "3d" ? "0 2px 10px rgba(6, 182, 212, 0.35)" : "none"
-              }}
+              className={`m3-segment ${viewMode === "3d" ? "active" : ""}`}
+              style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}
               title="3D WebGL Earth Globe View"
             >
               <Globe2 size={14} />
@@ -361,21 +339,8 @@ export default function InteractiveMap({
 
             <button
               onClick={() => setViewMode("2d")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.35rem 0.85rem",
-                borderRadius: "var(--radius-pill)",
-                border: "none",
-                background: viewMode === "2d" ? "linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))" : "transparent",
-                color: viewMode === "2d" ? "#fff" : "var(--text-muted)",
-                fontSize: "0.78rem",
-                fontWeight: 700,
-                cursor: "pointer",
-                transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
-                boxShadow: viewMode === "2d" ? "0 2px 10px rgba(6, 182, 212, 0.35)" : "none"
-              }}
+              className={`m3-segment ${viewMode === "2d" ? "active" : ""}`}
+              style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}
               title="2D Leaflet Flat Map View"
             >
               <MapIcon size={14} />

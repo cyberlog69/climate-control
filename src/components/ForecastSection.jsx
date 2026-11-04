@@ -49,7 +49,15 @@ export default function ForecastSection({ weatherData, unit }) {
       {/* Hourly View */}
       {activeTab === "hourly" && (
         <div>
-          <div style={{ height: "205px", width: "100%", marginTop: "0.5rem" }}>
+          <div
+            className="sk-lcd-panel"
+            style={{
+              height: "215px",
+              width: "100%",
+              marginTop: "0.5rem",
+              padding: "0.85rem 0.6rem 0.35rem 0"
+            }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={hourly} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <defs>
@@ -62,13 +70,13 @@ export default function ForecastSection({ weatherData, unit }) {
                 <YAxis stroke="var(--text-dim)" domain={["auto", "auto"]} unit={`°`} tick={{ fontSize: 10, fill: "var(--text-dim)" }} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    background: "var(--bg-card)",
+                    background: "var(--sk-surface-card)",
                     backdropFilter: "blur(20px)",
                     WebkitBackdropFilter: "blur(20px)",
-                    border: "1px solid var(--border-light)",
+                    border: "var(--sk-bezel-border)",
                     borderRadius: "14px",
                     color: "var(--text-main)",
-                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)"
+                    boxShadow: "var(--sk-shadow-card)"
                   }}
                   formatter={(val, name) => [
                     name === "dispTemp" ? `${val}°${unit}` : `${val}%`,
@@ -80,7 +88,7 @@ export default function ForecastSection({ weatherData, unit }) {
             </ResponsiveContainer>
           </div>
 
-          {/* Quick Hourly Scroll Cards */}
+          {/* Quick Hourly Scroll Cards (Tactile Keys) */}
           <div
             style={{
               display: "flex",
@@ -95,21 +103,22 @@ export default function ForecastSection({ weatherData, unit }) {
                 key={idx}
                 style={{
                   minWidth: "75px",
-                  background: "var(--bg-inner)",
-                  border: "1px solid var(--border-light)",
+                  background: "var(--sk-surface-btn)",
+                  border: "var(--sk-bezel-border)",
                   borderRadius: "var(--radius-md)",
                   padding: "0.65rem 0.5rem",
                   textAlign: "center",
-                  transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease",
+                  boxShadow: "var(--sk-shadow-btn)",
+                  transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease",
                   cursor: "default"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.borderColor = "var(--accent-cyan)";
+                  e.currentTarget.style.boxShadow = "var(--sk-shadow-btn-hover)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.borderColor = "var(--border-light)";
+                  e.currentTarget.style.boxShadow = "var(--sk-shadow-btn)";
                 }}
               >
                 <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>{item.time}</div>
@@ -132,7 +141,7 @@ export default function ForecastSection({ weatherData, unit }) {
         </div>
       )}
 
-      {/* Daily View */}
+      {/* Daily View - Tactile Instrument Cards */}
       {activeTab === "daily" && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(125px, 1fr))", gap: "0.65rem" }}>
           {daily.map((d, idx) => {
@@ -142,13 +151,13 @@ export default function ForecastSection({ weatherData, unit }) {
               <div
                 key={idx}
                 style={{
-                  background: isToday ? "rgba(6, 182, 212, 0.12)" : "var(--bg-inner)",
-                  border: isToday ? "1px solid rgba(6, 182, 212, 0.4)" : "1px solid var(--border-light)",
+                  background: isToday ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                  border: isToday ? "1px solid rgba(255, 255, 255, 0.25)" : "var(--sk-bezel-border)",
                   borderRadius: "var(--radius-md)",
                   padding: "0.85rem 0.75rem",
                   textAlign: "center",
                   position: "relative",
-                  boxShadow: isToday ? "0 0 16px rgba(6, 182, 212, 0.15)" : "none",
+                  boxShadow: isToday ? "0 6px 18px rgba(2, 132, 199, 0.45), inset 0 1.5px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                   transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                 }}
               >
@@ -160,25 +169,28 @@ export default function ForecastSection({ weatherData, unit }) {
                       right: "6px",
                       fontSize: "0.6rem",
                       fontWeight: 800,
-                      color: "var(--accent-cyan)",
+                      color: "#ffffff",
                       textTransform: "uppercase",
-                      letterSpacing: "0.06em"
+                      letterSpacing: "0.06em",
+                      background: "rgba(0, 0, 0, 0.25)",
+                      padding: "2px 6px",
+                      borderRadius: "6px"
                     }}
                   >
                     TODAY
                   </span>
                 )}
-                <div style={{ fontWeight: 700, fontSize: "0.85rem", color: isToday ? "var(--accent-cyan)" : "var(--text-main)" }}>
+                <div style={{ fontWeight: 700, fontSize: "0.85rem", color: isToday ? "#ffffff" : "var(--text-main)" }}>
                   {d.date}
                 </div>
-                <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", margin: "0.25rem 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontSize: "0.74rem", color: isToday ? "rgba(255, 255, 255, 0.85)" : "var(--text-muted)", margin: "0.25rem 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {info.label}
                 </div>
                 <div
                   style={{
                     fontSize: "1.25rem",
                     fontWeight: 800,
-                    color: "var(--text-main)",
+                    color: isToday ? "#ffffff" : "var(--text-main)",
                     margin: "0.35rem 0",
                     fontFamily: "var(--font-heading)",
                     letterSpacing: "-0.02em"
@@ -186,11 +198,11 @@ export default function ForecastSection({ weatherData, unit }) {
                 >
                   {displayTemp(d.maxTemp)}°
                 </div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", fontWeight: 500 }}>
-                  Min: <span style={{ color: "var(--text-muted)" }}>{displayTemp(d.minTemp)}°</span>
+                <div style={{ fontSize: "0.75rem", color: isToday ? "rgba(255, 255, 255, 0.75)" : "var(--text-dim)", fontWeight: 500 }}>
+                  Min: <span style={{ color: isToday ? "#ffffff" : "var(--text-muted)" }}>{displayTemp(d.minTemp)}°</span>
                 </div>
                 {d.precipSum > 0 && (
-                  <div style={{ fontSize: "0.72rem", color: "#38bdf8", marginTop: "0.35rem", fontWeight: 600 }}>
+                  <div style={{ fontSize: "0.72rem", color: isToday ? "#ffffff" : "#38bdf8", marginTop: "0.35rem", fontWeight: 600 }}>
                     🌧️ {d.precipSum.toFixed(1)} mm
                   </div>
                 )}

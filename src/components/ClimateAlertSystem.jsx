@@ -143,23 +143,23 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
 
   return (
     <>
-      {/* Alert Header Trigger Pill */}
+      {/* Alert Header Trigger Pill (Tactile Skeuomorphic Button) */}
       <button
         onClick={() => setIsAlertDrawerOpen(true)}
-        className="glass-card"
+        className="glass-pill"
         style={{
-          display: "flex",
+          display: "inline-flex",
           alignItems: "center",
           gap: "0.5rem",
-          padding: "0.45rem 0.85rem",
-          borderRadius: "20px",
-          background: visibleAlerts.length > 0 ? "rgba(239, 68, 68, 0.2)" : "rgba(30, 41, 59, 0.7)",
-          border: visibleAlerts.length > 0 ? "1px solid rgba(239, 68, 68, 0.5)" : "1px solid var(--border-light)",
-          color: visibleAlerts.length > 0 ? "#fca5a5" : "var(--text-muted)",
+          padding: "0.42rem 0.85rem",
+          background: visibleAlerts.length > 0 ? "linear-gradient(180deg, rgba(239, 68, 68, 0.3) 0%, rgba(185, 28, 28, 0.2) 100%)" : "var(--sk-surface-btn)",
+          border: visibleAlerts.length > 0 ? "1px solid rgba(239, 68, 68, 0.6)" : "var(--sk-bezel-border)",
+          color: visibleAlerts.length > 0 ? "#fca5a5" : "var(--text-main)",
+          boxShadow: visibleAlerts.length > 0 ? "0 0 14px rgba(239, 68, 68, 0.4), var(--sk-shadow-btn)" : "var(--sk-shadow-btn)",
           cursor: "pointer",
           fontSize: "0.8rem",
-          fontWeight: 600,
-          transition: "all 0.25s ease"
+          fontWeight: 700,
+          transition: "all 0.18s cubic-bezier(0.2, 0, 0, 1)"
         }}
       >
         <Bell size={15} className={visibleAlerts.length > 0 ? "animate-bounce" : ""} />
@@ -167,16 +167,17 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
         {visibleAlerts.length > 0 && (
           <span
             style={{
-              background: "var(--accent-red)",
+              background: "linear-gradient(180deg, #ef4444 0%, #dc2626 100%)",
               color: "#fff",
               borderRadius: "50%",
-              width: "18px",
-              height: "18px",
+              width: "19px",
+              height: "19px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "0.7rem",
-              fontWeight: 800
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)"
             }}
           >
             {visibleAlerts.length}
@@ -195,6 +196,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
             bottom: 0,
             background: "rgba(0, 0, 0, 0.82)",
             backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
             zIndex: 1200,
             display: "flex",
             justifyContent: "flex-end"
@@ -202,17 +204,17 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
           onClick={() => setIsAlertDrawerOpen(false)}
         >
           <div
-            className="glass-card"
             style={{
               width: "100%",
               maxWidth: "460px",
               height: "100%",
               padding: "1.5rem",
               borderRadius: 0,
-              borderLeft: "1px solid var(--border-light)",
+              background: "var(--sk-surface-elevated)",
+              borderLeft: "var(--sk-bezel-border)",
               display: "flex",
               flexDirection: "column",
-              boxShadow: "-15px 0 35px rgba(0, 0, 0, 0.8)",
+              boxShadow: "-15px 0 40px rgba(0, 0, 0, 0.8), inset 1px 0 0 rgba(255, 255, 255, 0.1)",
               overflowY: "auto"
             }}
             onClick={(e) => e.stopPropagation()}
@@ -221,42 +223,22 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
                 <ShieldAlert size={22} style={{ color: "var(--accent-red)" }} />
-                <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text-main)" }}>Live Climate Emergency Hub</h3>
+                <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>Live Climate Emergency Hub</h3>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <button
                   onClick={() => setAudioEnabled(!audioEnabled)}
-                  style={{
-                    background: "rgba(255, 255, 255, 0.08)",
-                    border: "none",
-                    color: audioEnabled ? "var(--accent-cyan)" : "var(--text-dim)",
-                    borderRadius: "50%",
-                    width: "34px",
-                    height: "34px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
+                  className="m3-icon-btn"
+                  style={{ width: "36px", height: "36px" }}
                   title={audioEnabled ? "Mute Audio Alerts" : "Enable Audio Alerts"}
                 >
-                  {audioEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                  {audioEnabled ? <Volume2 size={18} style={{ color: "var(--accent-cyan)" }} /> : <VolumeX size={18} />}
                 </button>
 
                 <button
                   onClick={() => setIsAlertDrawerOpen(false)}
-                  style={{
-                    background: "rgba(255, 255, 255, 0.08)",
-                    border: "none",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    width: "34px",
-                    height: "34px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
+                  className="m3-icon-btn"
+                  style={{ width: "36px", height: "36px" }}
                 >
                   <X size={18} />
                 </button>
@@ -270,11 +252,14 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
             {/* Active Alerts List */}
             {visibleAlerts.length === 0 ? (
               <div
+                className="sk-recessed-tile"
                 style={{
                   padding: "2.5rem 1rem",
                   textAlign: "center",
-                  background: "rgba(16, 185, 129, 0.08)",
-                  borderRadius: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
                   border: "1px solid rgba(16, 185, 129, 0.3)"
                 }}
               >
@@ -288,12 +273,14 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
                     alignItems: "center",
                     justifyContent: "center",
                     margin: "0 auto 1rem auto",
-                    color: "var(--accent-green)"
+                    color: "var(--accent-green)",
+                    border: "1px solid rgba(16, 185, 129, 0.4)",
+                    boxShadow: "0 4px 12px rgba(16, 185, 129, 0.25)"
                   }}
                 >
                   ✓
                 </div>
-                <h4 style={{ color: "var(--text-main)", fontSize: "1.1rem", fontWeight: 700 }}>No Active Severe Warnings</h4>
+                <h4 style={{ color: "var(--text-main)", fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>No Active Severe Warnings</h4>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.4rem" }}>
                   Current environmental parameters for {locationName} are within normal safety baselines.
                 </p>
@@ -305,10 +292,9 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
                   return (
                     <div
                       key={alert.id}
+                      className="sk-lcd-panel"
                       style={{
-                        padding: "1rem",
-                        borderRadius: "16px",
-                        background: `${alert.color}15`,
+                        padding: "1rem 1.15rem",
                         border: `1px solid ${alert.color}55`,
                         position: "relative"
                       }}
@@ -337,7 +323,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
                         </span>
                       </div>
 
-                      <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.45 }}>
+                      <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.45, margin: 0 }}>
                         {alert.message}
                       </p>
                     </div>
@@ -350,7 +336,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
               style={{
                 marginTop: "auto",
                 paddingTop: "1rem",
-                borderTop: "1px solid var(--border-light)",
+                borderTop: "var(--sk-bezel-border)",
                 fontSize: "0.75rem",
                 color: "var(--text-dim)",
                 textAlign: "center"
