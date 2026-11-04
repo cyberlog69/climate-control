@@ -100,7 +100,7 @@ export default function HistoricalTimeMachine({
   }, [trajectory, unit]);
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header Bar */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
@@ -116,36 +116,35 @@ export default function HistoricalTimeMachine({
         Step through 75+ years of climate shifts for <strong>{cityName}</strong> to visualize thermal anomalies, atmospheric greenhouse gas escalation, and heatwave trends.
       </p>
 
-      {/* Timeline Controls & Scrubber */}
+      {/* Timeline Controls & Scrubber (Tactile Control Console) */}
       <div
+        className="sk-recessed-tile"
         style={{
-          background: "var(--bg-inner)",
-          padding: "1rem 1.1rem",
-          borderRadius: "18px",
-          border: "1px solid var(--border-light)",
+          padding: "1.1rem 1.25rem",
           display: "flex",
           flexDirection: "column",
-          gap: "0.75rem"
+          gap: "0.85rem"
         }}
       >
         {/* Playback Action Buttons */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem", width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.55rem" }}>
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.35rem",
-                background: isPlaying ? "rgba(239, 68, 68, 0.2)" : "var(--accent-cyan)",
-                border: isPlaying ? "1px solid var(--accent-red)" : "none",
-                color: isPlaying ? "var(--accent-red)" : "#000",
-                padding: "0.4rem 0.85rem",
-                borderRadius: "20px",
+                gap: "0.4rem",
+                background: isPlaying ? "linear-gradient(180deg, #ef4444 0%, #b91c1c 100%)" : "var(--sk-surface-primary-btn)",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
+                color: "#ffffff",
+                padding: "0.45rem 1rem",
+                borderRadius: "var(--radius-pill)",
                 fontWeight: 700,
                 fontSize: "0.8rem",
                 cursor: "pointer",
-                transition: "all 0.2s"
+                boxShadow: isPlaying ? "0 4px 12px rgba(239, 68, 68, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
+                transition: "all 0.16s cubic-bezier(0.2, 0, 0, 1)"
               }}
             >
               {isPlaying ? <Pause size={14} /> : <Play size={14} />}
@@ -157,8 +156,8 @@ export default function HistoricalTimeMachine({
                 setIsPlaying(false);
                 setSelectedYear(1950);
               }}
-              className="locate-btn"
-              style={{ padding: "0.4rem 0.65rem" }}
+              className="m3-icon-btn"
+              style={{ width: "36px", height: "36px" }}
               title="Reset to 1950"
             >
               <RotateCcw size={14} />
@@ -169,8 +168,8 @@ export default function HistoricalTimeMachine({
                 setIsPlaying(false);
                 setSelectedYear(2026);
               }}
-              className="locate-btn"
-              style={{ padding: "0.4rem 0.65rem" }}
+              className="m3-icon-btn"
+              style={{ width: "36px", height: "36px" }}
               title="Jump to 2026 Present"
             >
               <FastForward size={14} />
@@ -193,114 +192,110 @@ export default function HistoricalTimeMachine({
             setIsPlaying(false);
             setSelectedYear(years[parseInt(e.target.value, 10)]);
           }}
-          style={{
-            width: "100%",
-            accentColor: "var(--accent-cyan)",
-            cursor: "pointer",
-            height: "6px"
-          }}
         />
 
-        {/* Decade Step Buttons */}
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "0.2rem", overflowX: "auto" }}>
-          {years.map((yr) => (
-            <button
-              key={yr}
-              onClick={() => {
-                setIsPlaying(false);
-                setSelectedYear(yr);
-              }}
-              style={{
-                background: selectedYear === yr ? "var(--accent-cyan)" : "transparent",
-                color: selectedYear === yr ? "#000" : "var(--text-muted)",
-                border: selectedYear === yr ? "1px solid var(--accent-cyan)" : "1px solid transparent",
-                borderRadius: "10px",
-                padding: "0.25rem 0.45rem",
-                fontSize: "0.72rem",
-                fontWeight: selectedYear === yr ? 700 : 500,
-                cursor: "pointer",
-                transition: "all 0.15s"
-              }}
-            >
-              {yr}
-            </button>
-          ))}
+        {/* Decade Step Buttons (Tactile Push Keys) */}
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "0.3rem", overflowX: "auto", width: "100%", padding: "2px 0" }}>
+          {years.map((yr) => {
+            const isSelected = selectedYear === yr;
+            return (
+              <button
+                key={yr}
+                onClick={() => {
+                  setIsPlaying(false);
+                  setSelectedYear(yr);
+                }}
+                style={{
+                  background: isSelected ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                  color: isSelected ? "#ffffff" : "var(--text-muted)",
+                  border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                  boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
+                  borderRadius: "10px",
+                  padding: "0.32rem 0.6rem",
+                  fontSize: "0.72rem",
+                  fontWeight: isSelected ? 800 : 600,
+                  cursor: "pointer",
+                  transition: "all 0.16s ease"
+                }}
+              >
+                {yr}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* 4-Metric Comparative Stats Grid */}
+      {/* 4-Metric Comparative Stats Grid (Skeuomorphic LCD Gauges) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
         {/* Mean Temperature */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.85rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <Thermometer size={16} style={{ color: "var(--accent-cyan)" }} />
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Estimated Mean Temp</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)" }}>
+          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {displayTemp(selectedData.temp)}°{unit}
           </div>
-          <div style={{ fontSize: "0.72rem", color: selectedData.year === 2026 ? "var(--accent-green)" : "var(--accent-amber)", marginTop: "0.2rem" }}>
+          <div style={{ fontSize: "0.72rem", color: selectedData.year === 2026 ? "var(--accent-green)" : "var(--accent-amber)", marginTop: "0.2rem", fontWeight: 600 }}>
             {selectedData.year === 2026 ? "Current baseline" : `Shift: +${insight.tempDelta}°${unit} vs 2026`}
           </div>
         </div>
 
         {/* Atmospheric CO2 */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.85rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <Wind size={16} style={{ color: "var(--accent-purple)" }} />
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Global CO₂ Level</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--accent-purple)" }}>
+          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--accent-purple)", fontFamily: "var(--font-heading)" }}>
             {selectedData.co2} ppm
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
+          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
             {selectedData.year === 2026 ? "Highest in human history" : `+${insight.co2Delta} ppm added by 2026`}
           </div>
         </div>
 
         {/* Extreme Heatwave Days */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.85rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <Flame size={16} style={{ color: "var(--accent-red)" }} />
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Annual Heatwave Days</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)" }}>
+          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {selectedData.heatwaveDays} days/yr
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
+          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
             {selectedData.year === 2026 ? "High thermal frequency" : `+${insight.heatDelta} extra heat days today`}
           </div>
         </div>
 
         {/* Precipitation Anomaly */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.85rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <CloudRain size={16} style={{ color: "#38bdf8" }} />
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Moisture / Precip Shift</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)" }}>
+          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {selectedData.precipDeltaPercent}
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
+          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
             Atmospheric moisture capacity shift
           </div>
         </div>
       </div>
 
-      {/* 75-Year Trajectory Chart */}
+      {/* 75-Year Trajectory Chart (Skeuomorphic Monitor Screen) */}
       <div
+        className="sk-lcd-panel"
         style={{
-          background: "var(--bg-inner)",
-          padding: "1rem",
-          borderRadius: "16px",
-          border: "1px solid var(--border-light)"
+          padding: "1.1rem"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
           <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>
             75-Year Thermal Trajectory (1950 – 2026)
           </span>
-          <span style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace" }}>
+          <span style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace", fontWeight: 600 }}>
             Dot = {selectedYear}
           </span>
         </div>
@@ -318,11 +313,12 @@ export default function HistoricalTimeMachine({
               <YAxis stroke="var(--text-dim)" fontSize={11} tickLine={false} domain={["auto", "auto"]} />
               <Tooltip
                 contentStyle={{
-                  background: "var(--bg-card-hover)",
-                  borderColor: "var(--border-light)",
+                  background: "var(--sk-surface-card)",
+                  border: "var(--sk-bezel-border)",
                   borderRadius: "10px",
                   fontSize: "0.75rem",
-                  color: "var(--text-main)"
+                  color: "var(--text-main)",
+                  boxShadow: "var(--sk-shadow-card)"
                 }}
               />
               <Area
@@ -349,17 +345,19 @@ export default function HistoricalTimeMachine({
 
       {/* Natural Language Diagnostic Insight Summary */}
       <div
+        className="sk-recessed-tile"
         style={{
-          padding: "0.85rem 1rem",
-          borderRadius: "14px",
-          background: "rgba(6, 182, 212, 0.12)",
-          border: "1px solid rgba(6, 182, 212, 0.3)",
+          padding: "0.95rem 1.1rem",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.35rem",
+          border: "1px solid rgba(6, 182, 212, 0.35)",
           fontSize: "0.8rem",
           color: "var(--text-main)",
           lineHeight: 1.5
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontWeight: 700, color: "var(--accent-cyan)", marginBottom: "0.25rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontWeight: 700, color: "var(--accent-cyan)" }}>
           <Sparkles size={15} />
           <span>Historical Era Diagnostic Analysis</span>
         </div>

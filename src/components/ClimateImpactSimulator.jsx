@@ -50,7 +50,7 @@ export default function ClimateImpactSimulator({
   const cityName = locationName ? locationName.split(",")[0] : "your region";
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
@@ -67,12 +67,11 @@ export default function ClimateImpactSimulator({
         <strong style={{ color: "var(--text-main)" }}>{locationName}</strong>.
       </p>
 
-      {/* Target Warming Selector Card */}
+      {/* Target Warming Selector Card (Skeuomorphic LCD Panel) */}
       <div
+        className="sk-lcd-panel"
         style={{
-          background: "var(--bg-inner)",
-          padding: "1.1rem",
-          borderRadius: "18px",
+          padding: "1.2rem",
           border: `1px solid ${activeScenario.color}44`,
           display: "flex",
           flexDirection: "column",
@@ -81,35 +80,39 @@ export default function ClimateImpactSimulator({
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
               Global Warming Trajectory
             </div>
-            <div style={{ fontSize: "2.2rem", fontWeight: 800, color: activeScenario.color }}>
+            <div style={{ fontSize: "2.2rem", fontWeight: 800, color: activeScenario.color, fontFamily: "var(--font-heading)" }}>
               +{warmingDegree.toFixed(1)}°C
             </div>
           </div>
 
-          {/* Quick Scenario Preset Pills */}
+          {/* Quick Scenario Preset Pills (Tactile Push Keys) */}
           <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
-            {scenarios.map((sc) => (
-              <button
-                key={sc.degree}
-                onClick={() => setWarmingDegree(sc.degree)}
-                style={{
-                  background: Math.abs(warmingDegree - sc.degree) < 0.2 ? sc.color : "var(--bg-card)",
-                  color: Math.abs(warmingDegree - sc.degree) < 0.2 ? "#000" : "var(--text-muted)",
-                  border: Math.abs(warmingDegree - sc.degree) < 0.2 ? `1px solid ${sc.color}` : "1px solid var(--border-light)",
-                  borderRadius: "10px",
-                  padding: "0.35rem 0.65rem",
-                  fontSize: "0.75rem",
-                  fontWeight: Math.abs(warmingDegree - sc.degree) < 0.2 ? 800 : 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s"
-                }}
-              >
-                {sc.label}
-              </button>
-            ))}
+            {scenarios.map((sc) => {
+              const isSelected = Math.abs(warmingDegree - sc.degree) < 0.2;
+              return (
+                <button
+                  key={sc.degree}
+                  onClick={() => setWarmingDegree(sc.degree)}
+                  style={{
+                    background: isSelected ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                    color: isSelected ? "#ffffff" : "var(--text-muted)",
+                    border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                    boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
+                    borderRadius: "10px",
+                    padding: "0.38rem 0.75rem",
+                    fontSize: "0.75rem",
+                    fontWeight: isSelected ? 800 : 600,
+                    cursor: "pointer",
+                    transition: "all 0.16s ease"
+                  }}
+                >
+                  {sc.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -122,33 +125,26 @@ export default function ClimateImpactSimulator({
             step="0.1"
             value={warmingDegree}
             onChange={(e) => setWarmingDegree(parseFloat(e.target.value))}
-            style={{
-              width: "100%",
-              accentColor: activeScenario.color,
-              cursor: "pointer",
-              height: "6px",
-              display: "block"
-            }}
           />
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.35rem" }}>
             <span>+1.0°C (Pre-industrial)</span>
-            <span style={{ color: "var(--accent-green)" }}>+1.5°C (Paris)</span>
-            <span style={{ color: "var(--accent-amber)" }}>+2.0°C (Limit)</span>
-            <span style={{ color: "var(--accent-red)" }}>+4.0°C (Extreme)</span>
+            <span style={{ color: "var(--accent-green)", fontWeight: 600 }}>+1.5°C (Paris)</span>
+            <span style={{ color: "var(--accent-amber)", fontWeight: 600 }}>+2.0°C (Limit)</span>
+            <span style={{ color: "var(--accent-red)", fontWeight: 600 }}>+4.0°C (Extreme)</span>
           </div>
         </div>
       </div>
 
-      {/* 4-Metric Stress Indicators Grid */}
+      {/* 4-Metric Stress Indicators Grid (Skeuomorphic LCD Panels) */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.75rem" }}>
         {/* Metric 1: Sea Level Rise */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
+        <div className="sk-lcd-panel" style={{ padding: "1.05rem", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Waves size={16} style={{ color: "#38bdf8" }} />
               <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Sea Level Inundation</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#38bdf8" }}>
+            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#38bdf8", fontFamily: "var(--font-heading)" }}>
               +{seaLevelRiseMeters} m
             </div>
           </div>
@@ -158,13 +154,13 @@ export default function ClimateImpactSimulator({
         </div>
 
         {/* Metric 2: Heatwave Days */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
+        <div className="sk-lcd-panel" style={{ padding: "1.05rem", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Flame size={16} style={{ color: "var(--accent-amber)" }} />
               <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Extra Heatwave Days</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-amber)" }}>
+            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-amber)", fontFamily: "var(--font-heading)" }}>
               +{extraHeatwaveDays} days/yr
             </div>
           </div>
@@ -174,13 +170,13 @@ export default function ClimateImpactSimulator({
         </div>
 
         {/* Metric 3: Drought Stress */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
+        <div className="sk-lcd-panel" style={{ padding: "1.05rem", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Droplets size={16} style={{ color: "var(--accent-cyan)" }} />
               <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Water & Drought Deficit</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-cyan)" }}>
+            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-cyan)", fontFamily: "var(--font-heading)" }}>
               +{droughtRiskPercent}%
             </div>
           </div>
@@ -190,13 +186,13 @@ export default function ClimateImpactSimulator({
         </div>
 
         {/* Metric 4: Crop Yield Decline */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
+        <div className="sk-lcd-panel" style={{ padding: "1.05rem", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "0.5rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Leaf size={16} style={{ color: "var(--accent-red)" }} />
               <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Agricultural Yield Drop</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-red)" }}>
+            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-red)", fontFamily: "var(--font-heading)" }}>
               -{cropLossPercent}%
             </div>
           </div>
@@ -208,11 +204,10 @@ export default function ClimateImpactSimulator({
 
       {/* AI Scenario Narrative Diagnostic */}
       <div
+        className="sk-recessed-tile"
         style={{
-          background: "var(--bg-inner)",
-          padding: "1rem",
-          borderRadius: "16px",
-          border: "1px solid var(--border-light)",
+          padding: "1.1rem",
+          border: `1px solid ${activeScenario.color}44`,
           display: "flex",
           flexDirection: "column",
           gap: "0.4rem"

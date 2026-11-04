@@ -125,7 +125,7 @@ export default function WatchlistModal({
       onClick={onClose}
     >
       <div
-        className="glass-card"
+        className="m3-card"
         style={{
           width: "100%",
           maxWidth: "840px",
@@ -134,8 +134,8 @@ export default function WatchlistModal({
           flexDirection: "column",
           borderRadius: "24px",
           overflow: "hidden",
-          border: "1px solid var(--border-light)",
-          background: "var(--bg-card-hover)"
+          border: "var(--sk-bezel-border)",
+          boxShadow: "var(--sk-shadow-card)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -143,7 +143,8 @@ export default function WatchlistModal({
         <div
           style={{
             padding: "1.1rem 1.4rem",
-            borderBottom: "1px solid var(--border-light)",
+            borderBottom: "var(--sk-bezel-border)",
+            background: "var(--sk-surface-bar)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -167,20 +168,8 @@ export default function WatchlistModal({
             {/* Quick Pin / Unpin Active Location */}
             <button
               onClick={handleToggleCurrentPin}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.45rem 0.85rem",
-                borderRadius: "14px",
-                border: isCurrentCityPinned ? "1px solid var(--accent-green)" : "1px solid var(--accent-cyan)",
-                background: isCurrentCityPinned ? "rgba(16, 185, 129, 0.15)" : "rgba(6, 182, 212, 0.15)",
-                color: isCurrentCityPinned ? "var(--accent-green)" : "var(--accent-cyan)",
-                fontSize: "0.8rem",
-                fontWeight: 700,
-                cursor: "pointer",
-                transition: "all 0.2s"
-              }}
+              className={`m3-chip ${isCurrentCityPinned ? "active" : ""}`}
+              style={{ padding: "0.42rem 0.85rem" }}
             >
               {isCurrentCityPinned ? <BookmarkCheck size={16} /> : <Plus size={16} />}
               <span>{isCurrentCityPinned ? "Pinned: " + currentLocation.cityName : "Pin " + currentLocation.cityName}</span>
@@ -188,18 +177,8 @@ export default function WatchlistModal({
 
             <button
               onClick={onClose}
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                background: "var(--bg-inner)",
-                border: "1px solid var(--border-light)",
-                color: "var(--text-main)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer"
-              }}
+              className="m3-icon-btn"
+              style={{ width: "36px", height: "36px" }}
             >
               <X size={18} />
             </button>
@@ -207,16 +186,12 @@ export default function WatchlistModal({
         </div>
 
         {/* In-Modal Search to Pin */}
-        <div style={{ padding: "0.85rem 1.4rem", borderBottom: "1px solid var(--border-light)", position: "relative" }}>
+        <div style={{ padding: "0.85rem 1.4rem", borderBottom: "var(--sk-bezel-border)", position: "relative", background: "var(--bg-inner)" }}>
           <div
+            className="m3-search-bar"
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.6rem",
-              background: "var(--bg-inner)",
-              padding: "0.45rem 1rem",
-              borderRadius: "16px",
-              border: "1px solid var(--border-light)"
+              maxWidth: "100%",
+              height: "44px"
             }}
           >
             <Search size={16} style={{ color: "var(--text-muted)" }} />
@@ -225,14 +200,7 @@ export default function WatchlistModal({
               placeholder="Search and pin new global cities..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              style={{
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "var(--text-main)",
-                fontSize: "0.85rem",
-                width: "100%"
-              }}
+              className="m3-search-input"
             />
             {isSearching && <RefreshCw size={14} className="animate-spin" style={{ color: "var(--accent-cyan)" }} />}
           </div>
@@ -240,18 +208,10 @@ export default function WatchlistModal({
           {/* Search Dropdown */}
           {searchResults.length > 0 && (
             <div
+              className="m3-search-dropdown"
               style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
                 left: "1.4rem",
-                right: "1.4rem",
-                background: "var(--bg-card-hover)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid var(--border-light)",
-                borderRadius: "14px",
-                overflow: "hidden",
-                zIndex: 100,
-                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)"
+                right: "1.4rem"
               }}
             >
               {searchResults.map((res) => (
@@ -264,7 +224,7 @@ export default function WatchlistModal({
                     justifyContent: "space-between",
                     alignItems: "center",
                     cursor: "pointer",
-                    borderBottom: "1px solid var(--border-light)"
+                    borderBottom: "var(--sk-bezel-border)"
                   }}
                   className="search-result-item"
                 >
@@ -272,18 +232,11 @@ export default function WatchlistModal({
                     <span style={{ fontWeight: 700, color: "var(--text-main)", fontSize: "0.85rem" }}>{res.name}</span>
                   </div>
                   <button
+                    className="m3-chip active"
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
-                      background: "var(--accent-cyan)",
-                      border: "none",
-                      color: "#000",
-                      padding: "0.25rem 0.55rem",
-                      borderRadius: "8px",
+                      padding: "0.25rem 0.6rem",
                       fontSize: "0.72rem",
-                      fontWeight: 700,
-                      cursor: "pointer"
+                      gap: "0.25rem"
                     }}
                   >
                     <Plus size={12} />
@@ -329,8 +282,9 @@ export default function WatchlistModal({
                     onClose();
                   }}
                   style={{
-                    background: isActive ? "rgba(6, 182, 212, 0.12)" : "var(--bg-inner)",
-                    border: isActive ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                    background: isActive ? "var(--sk-surface-elevated)" : "var(--sk-surface-btn)",
+                    border: isActive ? "1px solid var(--accent-cyan)" : "var(--sk-bezel-border)",
+                    boxShadow: isActive ? "0 4px 16px rgba(2, 132, 199, 0.3), var(--sk-shadow-btn)" : "var(--sk-shadow-btn)",
                     borderRadius: "18px",
                     padding: "1rem",
                     display: "flex",
@@ -339,7 +293,7 @@ export default function WatchlistModal({
                     gap: "0.75rem",
                     cursor: "pointer",
                     position: "relative",
-                    transition: "all 0.2s"
+                    transition: "all 0.18s cubic-bezier(0.2, 0, 0, 1)"
                   }}
                   className="glass-card-interactive"
                 >
@@ -364,24 +318,22 @@ export default function WatchlistModal({
 
                     <button
                       onClick={(e) => handleUnpinCity(e, city.id)}
+                      className="m3-icon-btn"
                       style={{
-                        background: "transparent",
-                        border: "none",
-                        color: "var(--text-dim)",
-                        padding: "0.25rem",
-                        cursor: "pointer",
-                        borderRadius: "6px"
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "8px"
                       }}
                       title="Unpin City"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={13} />
                     </button>
                   </div>
 
                   {/* Temp & AQI Row */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                     <div>
-                      <div style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--text-main)" }}>
+                      <div style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
                         {displayTemp(city.temp)}°{unit}
                       </div>
                       <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", display: "flex", gap: "0.5rem" }}>
@@ -393,14 +345,12 @@ export default function WatchlistModal({
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: "0.7rem", color: "var(--text-dim)", marginBottom: "0.2rem" }}>Air Quality</div>
                       <span
+                        className="badge"
                         style={{
                           background: `${city.aqiColor}22`,
                           color: city.aqiColor,
                           border: `1px solid ${city.aqiColor}44`,
-                          padding: "0.2rem 0.5rem",
-                          borderRadius: "10px",
-                          fontSize: "0.72rem",
-                          fontWeight: 700
+                          fontSize: "0.72rem"
                         }}
                       >
                         AQI {city.aqi} • {city.aqiLevel}
@@ -411,7 +361,7 @@ export default function WatchlistModal({
                   {/* Quick Switch Action */}
                   <div
                     style={{
-                      borderTop: "1px solid var(--border-light)",
+                      borderTop: "var(--sk-bezel-border)",
                       paddingTop: "0.5rem",
                       display: "flex",
                       justifyContent: "space-between",

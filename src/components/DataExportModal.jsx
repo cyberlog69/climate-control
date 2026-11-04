@@ -138,7 +138,7 @@ export default function DataExportModal({
       onClick={onClose}
     >
       <div
-        className="glass-card"
+        className="m3-card"
         style={{
           width: "100%",
           maxWidth: "820px",
@@ -147,8 +147,8 @@ export default function DataExportModal({
           flexDirection: "column",
           borderRadius: "24px",
           overflow: "hidden",
-          border: "1px solid var(--border-light)",
-          background: "var(--bg-card-hover)"
+          border: "var(--sk-bezel-border)",
+          boxShadow: "var(--sk-shadow-card)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -156,7 +156,8 @@ export default function DataExportModal({
         <div
           style={{
             padding: "1.1rem 1.4rem",
-            borderBottom: "1px solid var(--border-light)",
+            borderBottom: "var(--sk-bezel-border)",
+            background: "var(--sk-surface-bar)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -167,15 +168,16 @@ export default function DataExportModal({
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <div
               style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
-                background: "rgba(6, 182, 212, 0.15)",
+                width: "38px",
+                height: "38px",
+                borderRadius: "12px",
+                background: "var(--sk-surface-btn)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "var(--accent-cyan)",
-                border: "1px solid var(--accent-cyan)"
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)"
               }}
             >
               <Database size={20} />
@@ -192,18 +194,8 @@ export default function DataExportModal({
 
           <button
             onClick={onClose}
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              background: "var(--bg-inner)",
-              border: "1px solid var(--border-light)",
-              color: "var(--text-main)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer"
-            }}
+            className="m3-icon-btn"
+            style={{ width: "36px", height: "36px" }}
           >
             <X size={18} />
           </button>
@@ -214,7 +206,7 @@ export default function DataExportModal({
           style={{
             padding: "1rem 1.4rem",
             background: "var(--bg-inner)",
-            borderBottom: "1px solid var(--border-light)",
+            borderBottom: "var(--sk-bezel-border)",
             display: "flex",
             flexDirection: "column",
             gap: "0.85rem"
@@ -222,7 +214,7 @@ export default function DataExportModal({
         >
           {/* Format and Preset Selector */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
               <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", marginRight: "0.3rem" }}>
                 Export Format:
               </span>
@@ -232,14 +224,16 @@ export default function DataExportModal({
                   display: "flex",
                   alignItems: "center",
                   gap: "0.35rem",
-                  background: format === "csv" ? "var(--accent-cyan)" : "var(--bg-card)",
-                  color: format === "csv" ? "#000" : "var(--text-muted)",
-                  border: format === "csv" ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                  background: format === "csv" ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                  color: format === "csv" ? "#ffffff" : "var(--text-muted)",
+                  border: format === "csv" ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                  boxShadow: format === "csv" ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                   borderRadius: "10px",
-                  padding: "0.35rem 0.75rem",
+                  padding: "0.38rem 0.8rem",
                   fontSize: "0.78rem",
-                  fontWeight: format === "csv" ? 800 : 500,
-                  cursor: "pointer"
+                  fontWeight: format === "csv" ? 800 : 600,
+                  cursor: "pointer",
+                  transition: "all 0.16s ease"
                 }}
               >
                 <FileSpreadsheet size={15} />
@@ -252,14 +246,16 @@ export default function DataExportModal({
                   display: "flex",
                   alignItems: "center",
                   gap: "0.35rem",
-                  background: format === "json" ? "var(--accent-cyan)" : "var(--bg-card)",
-                  color: format === "json" ? "#000" : "var(--text-muted)",
-                  border: format === "json" ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                  background: format === "json" ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                  color: format === "json" ? "#ffffff" : "var(--text-muted)",
+                  border: format === "json" ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                  boxShadow: format === "json" ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                   borderRadius: "10px",
-                  padding: "0.35rem 0.75rem",
+                  padding: "0.38rem 0.8rem",
                   fontSize: "0.78rem",
-                  fontWeight: format === "json" ? 800 : 500,
-                  cursor: "pointer"
+                  fontWeight: format === "json" ? 800 : 600,
+                  cursor: "pointer",
+                  transition: "all 0.16s ease"
                 }}
               >
                 <FileCode size={15} />
@@ -287,15 +283,17 @@ export default function DataExportModal({
                     key={ds.id}
                     onClick={() => toggleDataset(ds.id)}
                     style={{
-                      background: isSelected ? "rgba(6, 182, 212, 0.1)" : "var(--bg-card)",
-                      border: isSelected ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                      background: isSelected ? "var(--sk-surface-btn-active)" : "var(--sk-surface-btn)",
+                      border: isSelected ? "1px solid var(--accent-cyan)" : "var(--sk-bezel-border)",
+                      boxShadow: isSelected ? "var(--sk-shadow-btn-pressed)" : "var(--sk-shadow-btn)",
                       borderRadius: "10px",
-                      padding: "0.4rem 0.65rem",
+                      padding: "0.42rem 0.75rem",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
                       cursor: "pointer",
-                      fontSize: "0.75rem"
+                      fontSize: "0.75rem",
+                      transition: "all 0.15s ease"
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
@@ -326,16 +324,14 @@ export default function DataExportModal({
           </div>
 
           <div
+            className="sk-lcd-panel"
             style={{
               flex: 1,
-              background: "rgba(3, 7, 18, 0.85)",
-              border: "1px solid var(--border-light)",
-              borderRadius: "14px",
-              padding: "0.85rem 1rem",
+              padding: "0.95rem 1.1rem",
               fontFamily: "monospace",
               fontSize: "0.75rem",
               lineHeight: 1.5,
-              color: "#a5f3fc",
+              color: "#67e8f9",
               overflowX: "auto",
               whiteSpace: "pre",
               maxHeight: "260px"
@@ -356,8 +352,8 @@ export default function DataExportModal({
         <div
           style={{
             padding: "1rem 1.4rem",
-            borderTop: "1px solid var(--border-light)",
-            background: "var(--bg-inner)",
+            borderTop: "var(--sk-bezel-border)",
+            background: "var(--sk-surface-bar)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -372,8 +368,8 @@ export default function DataExportModal({
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <button
               onClick={handleCopy}
-              className="locate-btn"
-              style={{ padding: "0.5rem 0.85rem", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "0.4rem" }}
+              className="m3-chip"
+              style={{ padding: "0.45rem 0.85rem", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "0.4rem" }}
             >
               {copied ? <Check size={15} style={{ color: "var(--accent-green)" }} /> : <Copy size={15} />}
               <span>{copied ? "Copied" : "Copy to Clipboard"}</span>
@@ -381,18 +377,11 @@ export default function DataExportModal({
 
             <button
               onClick={handleDownload}
+              className="m3-chip active"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                background: "var(--accent-cyan)",
-                border: "none",
-                color: "#000",
-                padding: "0.5rem 1.2rem",
-                borderRadius: "14px",
-                fontWeight: 800,
+                padding: "0.45rem 1.1rem",
                 fontSize: "0.85rem",
-                cursor: "pointer"
+                gap: "0.4rem"
               }}
             >
               <Download size={16} />

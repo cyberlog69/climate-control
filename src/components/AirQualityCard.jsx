@@ -46,32 +46,27 @@ export default function AirQualityCard({ airQualityData }) {
         </span>
       </div>
 
-      {/* AQI Score Display Container */}
+      {/* AQI Score Display Container - Skeuomorphic LCD Gauge */}
       <div
+        className="sk-lcd-panel"
         style={{
           display: "flex",
           alignItems: "center",
           gap: "1.15rem",
-          padding: "1rem 1.15rem",
-          background: "var(--bg-inner)",
-          borderRadius: "var(--radius-lg)",
-          border: `1px solid ${aqiInfo.color}35`,
-          boxShadow: `inset 0 1px 1px rgba(255, 255, 255, 0.06), 0 8px 24px -6px ${aqiInfo.color}15`,
+          padding: "1.1rem 1.25rem",
+          border: `1px solid ${aqiInfo.color}40`,
           marginBottom: "1.1rem"
         }}
       >
         <div
+          className="sk-gauge-bezel"
           style={{
-            width: "66px",
-            height: "66px",
+            width: "68px",
+            height: "68px",
             borderRadius: "50%",
-            background: `radial-gradient(circle, ${aqiInfo.color}25 0%, var(--bg-card) 75%)`,
+            background: `radial-gradient(circle, ${aqiInfo.color}25 0%, var(--sk-surface-well) 85%)`,
             border: `2.5px solid ${aqiInfo.color}`,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: `0 0 20px ${aqiInfo.color}35, inset 0 0 12px ${aqiInfo.color}20`,
+            boxShadow: `0 4px 12px rgba(0, 0, 0, 0.35), inset 0 2px 3px rgba(255, 255, 255, 0.4), 0 0 18px ${aqiInfo.color}35`,
             flexShrink: 0
           }}
         >
@@ -102,7 +97,7 @@ export default function AirQualityCard({ airQualityData }) {
         </div>
       </div>
 
-      {/* Pollutant Progress Bars */}
+      {/* Pollutant Progress Bars with Skeuomorphic Meter Tracks */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         {pollutants.map((p, idx) => {
           const pct = Math.min(100, Math.round((p.current / p.max) * 100));
@@ -113,24 +108,12 @@ export default function AirQualityCard({ airQualityData }) {
                 <span style={{ fontWeight: 500 }}>{p.label}</span>
                 <span style={{ color: "var(--text-main)", fontWeight: 700, fontFamily: "monospace" }}>{p.val}</span>
               </div>
-              <div
-                style={{
-                  height: "7px",
-                  width: "100%",
-                  background: "var(--bg-inner)",
-                  borderRadius: "var(--radius-pill)",
-                  overflow: "hidden",
-                  border: "1px solid var(--border-subtle)",
-                  boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.2)"
-                }}
-              >
+              <div className="sk-meter-track" style={{ height: "8px" }}>
                 <div
+                  className="sk-meter-fill"
                   style={{
-                    height: "100%",
                     width: `${pct}%`,
-                    background: barColor,
-                    borderRadius: "var(--radius-pill)",
-                    transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
+                    background: barColor
                   }}
                 />
               </div>

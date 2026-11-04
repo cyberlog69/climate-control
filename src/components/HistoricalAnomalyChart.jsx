@@ -14,7 +14,7 @@ export default function HistoricalAnomalyChart({ locationName, weatherData }) {
   ];
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem" }}>
         <div>
           <div className="section-title" style={{ margin: 0 }}>
@@ -28,17 +28,18 @@ export default function HistoricalAnomalyChart({ locationName, weatherData }) {
         <span className="badge badge-amber">+1.3°C Local Warming</span>
       </div>
 
-      <div style={{ height: "170px", width: "100%", marginTop: "0.5rem" }}>
+      <div className="sk-lcd-panel" style={{ height: "185px", width: "100%", marginTop: "0.5rem", padding: "0.85rem 0.6rem 0.2rem 0" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={historicalBars}>
             <XAxis dataKey="era" stroke="var(--text-dim)" tick={{ fontSize: 10 }} />
             <YAxis stroke="var(--text-dim)" unit="°C" tick={{ fontSize: 10 }} />
             <Tooltip
               contentStyle={{
-                background: "var(--bg-card-hover)",
-                border: "1px solid var(--border-light)",
+                background: "var(--sk-surface-card)",
+                border: "var(--sk-bezel-border)",
                 borderRadius: "10px",
-                color: "var(--text-main)"
+                color: "var(--text-main)",
+                boxShadow: "var(--sk-shadow-card)"
               }}
               formatter={(val) => [val != null ? `+${Number(val).toFixed(1)}°C Anomaly` : "", "Thermal Shift"]}
             />

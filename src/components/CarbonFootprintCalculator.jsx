@@ -92,7 +92,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
   }));
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
@@ -108,12 +108,11 @@ export default function CarbonFootprintCalculator({ locationName }) {
         Analyze personal greenhouse gas emissions (tCO₂e), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
       </p>
 
-      {/* Main Footprint Score & Target Benchmark Card */}
+      {/* Main Footprint Score & Target Benchmark Card (Skeuomorphic LCD Panel) */}
       <div
+        className="sk-lcd-panel"
         style={{
-          background: "var(--bg-inner)",
-          padding: "1.1rem",
-          borderRadius: "18px",
+          padding: "1.2rem",
           border: `1px solid ${footprint.color}44`,
           display: "flex",
           flexDirection: "column",
@@ -122,22 +121,22 @@ export default function CarbonFootprintCalculator({ locationName }) {
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
               Total Annual Carbon Footprint
             </div>
-            <div style={{ fontSize: "2.2rem", fontWeight: 800, color: footprint.color }}>
+            <div style={{ fontSize: "2.2rem", fontWeight: 800, color: footprint.color, fontFamily: "var(--font-heading)" }}>
               {footprint.totalTons} <span style={{ fontSize: "1rem", color: "var(--text-muted)", fontWeight: 500 }}>tons CO₂e/yr</span>
             </div>
           </div>
 
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Tree Planting Offset Needed</div>
-            <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-green)", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.3rem" }}>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Tree Planting Offset Needed</div>
+            <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-green)", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.3rem", fontFamily: "var(--font-heading)" }}>
               <TreePine size={18} />
               <span>{footprint.treesNeededToOffset} Trees/yr</span>
             </div>
             {footprint.totalSavingsTons > 0 && (
-              <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", marginTop: "0.15rem" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", marginTop: "0.15rem", fontWeight: 600 }}>
                 ✨ {footprint.totalSavingsTons} tons saved via actions
               </div>
             )}
@@ -151,16 +150,15 @@ export default function CarbonFootprintCalculator({ locationName }) {
             <span>🌍 Global Avg: 4.5 t</span>
             <span>🇺🇸 US Avg: 14.5 t</span>
           </div>
-          <div style={{ width: "100%", height: "8px", background: "rgba(255, 255, 255, 0.08)", borderRadius: "6px", position: "relative", overflow: "hidden" }}>
+          <div className="sk-meter-track" style={{ height: "10px", position: "relative" }}>
             {/* Target 2.0t Marker */}
-            <div style={{ position: "absolute", left: "13.8%", top: 0, bottom: 0, width: "2px", background: "var(--accent-green)", zIndex: 5 }} />
+            <div style={{ position: "absolute", left: "13.8%", top: 0, bottom: 0, width: "2px", background: "var(--accent-green)", zIndex: 5, boxShadow: "0 0 6px var(--accent-green)" }} />
             {/* User progress bar (scaled to 14.5t max) */}
             <div
+              className="sk-meter-fill"
               style={{
                 width: `${Math.min(100, (footprint.totalTons / 14.5) * 100)}%`,
-                height: "100%",
-                background: `linear-gradient(90deg, #10b981, #06b6d4, #f59e0b, #ef4444)`,
-                transition: "width 0.3s ease"
+                background: `linear-gradient(90deg, #10b981, #06b6d4, #f59e0b, #ef4444)`
               }}
             />
           </div>
@@ -173,16 +171,16 @@ export default function CarbonFootprintCalculator({ locationName }) {
       </div>
 
       {/* Donut Chart & Category Breakdown Row */}
-      <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <div className="sk-recessed-tile" style={{ padding: "1.1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>
           Emissions Category Breakdown
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "0.55rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "0.55rem", width: "100%" }}>
           {footprint.breakdown.map((item, idx) => (
-            <div key={idx} style={{ background: "var(--bg-card)", padding: "0.65rem 0.75rem", borderRadius: "12px", border: "1px solid var(--border-light)" }}>
-              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{item.name}</div>
-              <div style={{ fontSize: "1.2rem", fontWeight: 800, color: item.color, margin: "0.15rem 0" }}>
+            <div key={idx} style={{ background: "var(--sk-surface-btn)", padding: "0.65rem 0.75rem", borderRadius: "12px", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)" }}>
+              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 500 }}>{item.name}</div>
+              <div style={{ fontSize: "1.2rem", fontWeight: 800, color: item.color, margin: "0.15rem 0", fontFamily: "var(--font-heading)" }}>
                 {item.value} <span style={{ fontSize: "0.72rem", fontWeight: 500 }}>t</span>
               </div>
               <div style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
@@ -193,34 +191,39 @@ export default function CarbonFootprintCalculator({ locationName }) {
         </div>
       </div>
 
-      {/* 4-Pillar Interactive Configurator Grid */}
+      {/* 4-Pillar Interactive Configurator Grid (Tactile Instrument Tiles) */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.85rem" }}>
         {/* Pillar 1: Mobility */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+        <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Car size={16} style={{ color: "var(--accent-cyan)" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Daily Commute & Vehicle</span>
           </div>
 
-          <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
-            {vehicles.map((v) => (
-              <button
-                key={v.id}
-                onClick={() => setVehicleType(v.id)}
-                style={{
-                  background: vehicleType === v.id ? "var(--accent-cyan)" : "var(--bg-card)",
-                  color: vehicleType === v.id ? "#000" : "var(--text-muted)",
-                  border: vehicleType === v.id ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
-                  borderRadius: "8px",
-                  padding: "0.25rem 0.45rem",
-                  fontSize: "0.72rem",
-                  fontWeight: vehicleType === v.id ? 800 : 500,
-                  cursor: "pointer"
-                }}
-              >
-                {v.icon} {v.label}
-              </button>
-            ))}
+          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
+            {vehicles.map((v) => {
+              const isSelected = vehicleType === v.id;
+              return (
+                <button
+                  key={v.id}
+                  onClick={() => setVehicleType(v.id)}
+                  style={{
+                    background: isSelected ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                    color: isSelected ? "#ffffff" : "var(--text-muted)",
+                    border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                    boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
+                    borderRadius: "8px",
+                    padding: "0.3rem 0.5rem",
+                    fontSize: "0.72rem",
+                    fontWeight: isSelected ? 800 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.16s ease"
+                  }}
+                >
+                  {v.icon} {v.label}
+                </button>
+              );
+            })}
           </div>
 
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
@@ -234,49 +237,48 @@ export default function CarbonFootprintCalculator({ locationName }) {
             step="20"
             value={commuteKmWeek}
             onChange={(e) => setCommuteKmWeek(parseInt(e.target.value, 10))}
-            style={{ width: "100%", accentColor: "var(--accent-cyan)", cursor: "pointer", height: "4px" }}
           />
         </div>
 
         {/* Pillar 2: Flights & Aviation */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+        <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Plane size={16} style={{ color: "#38bdf8" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Annual Flights</span>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Short (&lt;3h):</span>
             <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
               <button
                 onClick={() => setShortFlights(Math.max(0, shortFlights - 1))}
-                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
               >
                 -
               </button>
-              <span style={{ fontWeight: 700, fontSize: "0.85rem", width: "18px", textAlign: "center" }}>{shortFlights}</span>
+              <span style={{ fontWeight: 800, fontSize: "0.85rem", width: "22px", textAlign: "center", fontFamily: "var(--font-heading)" }}>{shortFlights}</span>
               <button
                 onClick={() => setShortFlights(shortFlights + 1)}
-                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
               >
                 +
               </button>
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Long (&gt;3h):</span>
             <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
               <button
                 onClick={() => setLongFlights(Math.max(0, longFlights - 1))}
-                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
               >
                 -
               </button>
-              <span style={{ fontWeight: 700, fontSize: "0.85rem", width: "18px", textAlign: "center" }}>{longFlights}</span>
+              <span style={{ fontWeight: 800, fontSize: "0.85rem", width: "22px", textAlign: "center", fontFamily: "var(--font-heading)" }}>{longFlights}</span>
               <button
                 onClick={() => setLongFlights(longFlights + 1)}
-                style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", border: "1px solid var(--border-light)", color: "var(--text-main)", cursor: "pointer" }}
+                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
               >
                 +
               </button>
@@ -285,7 +287,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
         </div>
 
         {/* Pillar 3: Home Energy */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
+        <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Zap size={16} style={{ color: "var(--accent-amber)" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Home Electricity</span>
@@ -302,7 +304,6 @@ export default function CarbonFootprintCalculator({ locationName }) {
             step="25"
             value={electricityKwh}
             onChange={(e) => setElectricityKwh(parseInt(e.target.value, 10))}
-            style={{ width: "100%", accentColor: "var(--accent-amber)", cursor: "pointer", height: "4px" }}
           />
 
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
@@ -316,53 +317,57 @@ export default function CarbonFootprintCalculator({ locationName }) {
             step="5"
             value={greenPercent}
             onChange={(e) => setGreenPercent(parseInt(e.target.value, 10))}
-            style={{ width: "100%", accentColor: "var(--accent-green)", cursor: "pointer", height: "4px" }}
           />
         </div>
 
         {/* Pillar 4: Diet Profile */}
-        <div style={{ background: "var(--bg-inner)", padding: "0.9rem", borderRadius: "16px", border: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+        <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Utensils size={16} style={{ color: "#34d399" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Diet & Nutrition Profile</span>
           </div>
 
-          <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
-            {diets.map((d) => (
-              <button
-                key={d.id}
-                onClick={() => setDietType(d.id)}
-                style={{
-                  background: dietType === d.id ? "var(--accent-green)" : "var(--bg-card)",
-                  color: dietType === d.id ? "#000" : "var(--text-muted)",
-                  border: dietType === d.id ? "1px solid var(--accent-green)" : "1px solid var(--border-light)",
-                  borderRadius: "8px",
-                  padding: "0.25rem 0.45rem",
-                  fontSize: "0.72rem",
-                  fontWeight: dietType === d.id ? 800 : 500,
-                  cursor: "pointer"
-                }}
-              >
-                {d.icon} {d.label}
-              </button>
-            ))}
+          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
+            {diets.map((d) => {
+              const isSelected = dietType === d.id;
+              return (
+                <button
+                  key={d.id}
+                  onClick={() => setDietType(d.id)}
+                  style={{
+                    background: isSelected ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+                    color: isSelected ? "#ffffff" : "var(--text-muted)",
+                    border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
+                    boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
+                    borderRadius: "8px",
+                    padding: "0.3rem 0.5rem",
+                    fontSize: "0.72rem",
+                    fontWeight: isSelected ? 800 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.16s ease"
+                  }}
+                >
+                  {d.icon} {d.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Actionable Net-Zero Reduction Checklist */}
-      <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+      <div className="sk-recessed-tile" style={{ padding: "1.1rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem", width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Target size={16} style={{ color: "var(--accent-cyan)" }} />
             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>
               Actionable Net-Zero Reduction Milestones
             </span>
           </div>
-          <span style={{ fontSize: "0.72rem", color: "var(--accent-cyan)" }}>Click to toggle impact</span>
+          <span style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontWeight: 600 }}>Click to toggle impact</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem", width: "100%" }}>
           {MITIGATION_ACTIONS.map((action) => {
             const isActive = activeMitigations.includes(action.id);
             return (
@@ -370,15 +375,16 @@ export default function CarbonFootprintCalculator({ locationName }) {
                 key={action.id}
                 onClick={() => toggleMitigation(action.id)}
                 style={{
-                  background: isActive ? "rgba(16, 185, 129, 0.12)" : "var(--bg-card)",
-                  border: isActive ? "1px solid rgba(16, 185, 129, 0.4)" : "1px solid var(--border-light)",
-                  padding: "0.6rem 0.85rem",
+                  background: isActive ? "linear-gradient(180deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.08) 100%)" : "var(--sk-surface-btn)",
+                  border: isActive ? "1px solid rgba(16, 185, 129, 0.45)" : "var(--sk-bezel-border)",
+                  boxShadow: isActive ? "0 3px 8px rgba(16, 185, 129, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.3)" : "var(--sk-shadow-btn)",
+                  padding: "0.65rem 0.95rem",
                   borderRadius: "12px",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   cursor: "pointer",
-                  transition: "all 0.2s"
+                  transition: "all 0.18s cubic-bezier(0.2, 0, 0, 1)"
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>

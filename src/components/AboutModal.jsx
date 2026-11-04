@@ -43,7 +43,7 @@ export default function AboutModal({ onClose }) {
       onClick={onClose}
     >
       <div
-        className="glass-card"
+        className="m3-card"
         style={{
           width: "100%",
           maxWidth: "620px",
@@ -52,8 +52,8 @@ export default function AboutModal({ onClose }) {
           flexDirection: "column",
           borderRadius: "24px",
           overflow: "hidden",
-          border: "1px solid var(--border-light)",
-          background: "var(--bg-card-hover)"
+          border: "var(--sk-bezel-border)",
+          boxShadow: "var(--sk-shadow-card)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -61,7 +61,8 @@ export default function AboutModal({ onClose }) {
         <div
           style={{
             padding: "1.25rem 1.5rem",
-            borderBottom: "1px solid var(--border-light)",
+            borderBottom: "var(--sk-bezel-border)",
+            background: "var(--sk-surface-bar)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center"
@@ -88,16 +89,10 @@ export default function AboutModal({ onClose }) {
 
           <button
             onClick={onClose}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "var(--text-muted)",
-              cursor: "pointer",
-              padding: "0.3rem",
-              borderRadius: "8px"
-            }}
+            className="m3-icon-btn"
+            style={{ width: 36, height: 36 }}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
@@ -125,10 +120,12 @@ export default function AboutModal({ onClose }) {
                 gap: "0.85rem",
                 textDecoration: "none",
                 borderRadius: "16px",
-                background: "var(--bg-inner)"
+                background: "var(--sk-surface-btn)",
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)"
               }}
             >
-              <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(6, 182, 212, 0.15)", color: "var(--accent-cyan)" }}>
+              <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(6, 182, 212, 0.15)", color: "var(--accent-cyan)", border: "1px solid rgba(6, 182, 212, 0.3)" }}>
                 <Globe size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -153,10 +150,12 @@ export default function AboutModal({ onClose }) {
                 gap: "0.85rem",
                 textDecoration: "none",
                 borderRadius: "16px",
-                background: "var(--bg-inner)"
+                background: "var(--sk-surface-btn)",
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)"
               }}
             >
-              <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(255, 255, 255, 0.1)", color: "var(--text-main)" }}>
+              <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(255, 255, 255, 0.1)", color: "var(--text-main)", border: "var(--sk-bezel-border)" }}>
                 <GithubIcon size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -181,11 +180,13 @@ export default function AboutModal({ onClose }) {
                 gap: "0.85rem",
                 textDecoration: "none",
                 borderRadius: "16px",
-                background: "var(--bg-inner)",
+                background: "var(--sk-surface-btn)",
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)",
                 gridColumn: "1 / -1"
               }}
             >
-              <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(16, 185, 129, 0.15)", color: "var(--accent-green)" }}>
+              <div style={{ padding: "0.6rem", borderRadius: "12px", background: "rgba(16, 185, 129, 0.15)", color: "var(--accent-green)", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
                 <Smartphone size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -204,11 +205,11 @@ export default function AboutModal({ onClose }) {
           </div>
 
           {/* Tech Architecture Badges */}
-          <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
+          <div className="sk-recessed-tile" style={{ padding: "1.1rem", display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.65rem" }}>
               Dual Platform Architecture
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.65rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
                 <CloudSun size={16} style={{ color: "var(--accent-cyan)", marginTop: "0.15rem", flexShrink: 0 }} />
                 <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
@@ -225,7 +226,7 @@ export default function AboutModal({ onClose }) {
           </div>
 
           {/* Footer note */}
-          <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", textAlign: "center", borderTop: "1px solid var(--border-light)", paddingTop: "0.75rem" }}>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", textAlign: "center", borderTop: "var(--sk-bezel-border)", paddingTop: "0.75rem" }}>
             Open Source • MIT License • Built with Open Environmental Data
           </div>
         </div>

@@ -718,9 +718,10 @@ export default function EarthGlobe3D({
           className="globe-ctrl-btn"
           title={autoRotate ? "Pause Auto-Rotation" : "Start Auto-Rotation"}
           style={{
-            background: autoRotate ? "rgba(6, 182, 212, 0.25)" : "var(--bg-card)",
-            borderColor: autoRotate ? "var(--accent-cyan)" : "var(--border-light)",
-            color: autoRotate ? "var(--accent-cyan)" : "var(--text-main)"
+            background: autoRotate ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
+            borderColor: autoRotate ? "rgba(255, 255, 255, 0.25)" : "var(--sk-bezel-border)",
+            color: autoRotate ? "#ffffff" : "var(--text-main)",
+            boxShadow: autoRotate ? "0 4px 14px rgba(2, 132, 199, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)"
           }}
         >
           {autoRotate ? <Pause size={15} /> : <Play size={15} />}
@@ -751,34 +752,32 @@ export default function EarthGlobe3D({
         </button>
       </div>
 
-      {/* Active Location 3D Label Overlay */}
+      {/* Active Location 3D Label Overlay (Skeuomorphic Instrument HUD) */}
       {currentLocation && (
         <div
+          className="sk-lcd-panel"
           style={{
             position: "absolute",
             top: "0.85rem",
             left: "0.85rem",
-            background: "rgba(15, 23, 42, 0.82)",
-            backdropFilter: "blur(12px)",
-            padding: "0.5rem 0.85rem",
-            borderRadius: "14px",
+            padding: "0.55rem 0.95rem",
             border: "1px solid var(--accent-cyan)",
             zIndex: 10,
             pointerEvents: "none"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
             <span className="pulse-dot" style={{ background: "var(--accent-cyan)" }} />
-            <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#fff" }}>
+            <span style={{ fontWeight: 800, fontSize: "0.88rem", color: "var(--text-main)" }}>
               {currentLocation.name}
             </span>
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace", marginTop: "0.15rem" }}>
+          <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace", marginTop: "0.15rem", fontWeight: 600 }}>
             {currentLocation.lat != null && currentLocation.lon != null
               ? `${currentLocation.lat.toFixed(2)}°, ${currentLocation.lon.toFixed(2)}°`
               : "Acquiring coordinates..."}
             {weatherData?.current?.temp != null && (
-              <span style={{ marginLeft: "0.5rem", color: "#fff", fontWeight: 600 }}>
+              <span style={{ marginLeft: "0.5rem", color: "var(--text-main)", fontWeight: 700 }}>
                 • {weatherData.current.temp}°C
               </span>
             )}
@@ -789,12 +788,11 @@ export default function EarthGlobe3D({
       {/* Real-time Coordinate Raycast Inspector Tooltip */}
       {coordsTooltip && (
         <div
+          className="sk-lcd-panel"
           style={{
             position: "absolute",
             left: Math.min(coordsTooltip.x + 12, (mountRef.current?.clientWidth || 300) - 130),
             top: Math.max(coordsTooltip.y - 30, 10),
-            background: "rgba(0, 0, 0, 0.85)",
-            backdropFilter: "blur(8px)",
             padding: "0.25rem 0.6rem",
             borderRadius: "8px",
             border: "1px solid rgba(6, 182, 212, 0.4)",
@@ -811,16 +809,13 @@ export default function EarthGlobe3D({
 
       {/* Bottom Hint Banner */}
       <div
+        className="glass-pill"
         style={{
           position: "absolute",
           bottom: "0.85rem",
           left: "0.85rem",
           zIndex: 10,
-          background: "rgba(15, 23, 42, 0.75)",
-          backdropFilter: "blur(10px)",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "12px",
-          border: "1px solid var(--border-light)",
+          padding: "0.4rem 0.85rem",
           fontSize: "0.75rem",
           color: "var(--text-muted)",
           pointerEvents: "none"

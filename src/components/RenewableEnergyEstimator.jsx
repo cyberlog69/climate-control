@@ -46,7 +46,7 @@ export default function RenewableEnergyEstimator({
   const { solar, wind, impact, hourlyProfile } = yieldData;
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
@@ -62,21 +62,19 @@ export default function RenewableEnergyEstimator({
         Estimate solar photovoltaic and wind turbine power generation capacity, carbon displacement, and utility savings for <strong>{cityName}</strong>.
       </p>
 
-      {/* Interactive System Capacity Configurator */}
+      {/* Interactive System Capacity Configurator (Tactile Instrument Panel) */}
       <div
+        className="sk-recessed-tile"
         style={{
-          background: "var(--bg-inner)",
-          padding: "1rem 1.1rem",
-          borderRadius: "18px",
-          border: "1px solid var(--border-light)",
+          padding: "1.1rem 1.25rem",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "1.1rem"
+          gap: "1.25rem"
         }}
       >
         {/* Solar Size Slider */}
         <div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.4rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.5rem" }}>
             <span style={{ color: "var(--text-muted)", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.3rem" }}>
               <Sun size={15} style={{ color: "var(--accent-amber)" }} />
               Rooftop Solar PV Size:
@@ -90,9 +88,8 @@ export default function RenewableEnergyEstimator({
             step="0.5"
             value={solarSizeKw}
             onChange={(e) => setSolarSizeKw(parseFloat(e.target.value))}
-            style={{ width: "100%", accentColor: "var(--accent-amber)", cursor: "pointer", height: "5px" }}
           />
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "var(--text-dim)", marginTop: "0.3rem" }}>
             <span>1 kW (Small)</span>
             <span>5 kW (Standard)</span>
             <span>15 kW (Large)</span>
@@ -101,7 +98,7 @@ export default function RenewableEnergyEstimator({
 
         {/* Wind Size Slider */}
         <div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.4rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.5rem" }}>
             <span style={{ color: "var(--text-muted)", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.3rem" }}>
               <Wind size={15} style={{ color: "var(--accent-cyan)" }} />
               Micro Wind Turbine:
@@ -115,9 +112,8 @@ export default function RenewableEnergyEstimator({
             step="0.5"
             value={windSizeKw}
             onChange={(e) => setWindSizeKw(parseFloat(e.target.value))}
-            style={{ width: "100%", accentColor: "var(--accent-cyan)", cursor: "pointer", height: "5px" }}
           />
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "var(--text-dim)", marginTop: "0.3rem" }}>
             <span>1 kW (Micro)</span>
             <span>3 kW (Home)</span>
             <span>10 kW (Commercial)</span>
@@ -128,7 +124,7 @@ export default function RenewableEnergyEstimator({
       {/* Dual Solar & Wind Yield Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
         {/* Solar Card */}
-        <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-lcd-panel" style={{ padding: "1.1rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
               <Sun size={18} style={{ color: "var(--accent-amber)" }} />
@@ -137,14 +133,14 @@ export default function RenewableEnergyEstimator({
             <span className={`badge badge-${solar.badge}`}>{solar.rating}</span>
           </div>
 
-          <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.3rem 0" }}>
+          <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.3rem 0", fontFamily: "var(--font-heading)" }}>
             {solar.annualSolarMwh} MWh/yr
           </div>
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.65rem" }}>
             Estimated output: ~<strong>{solar.dailySolarKwh} kWh/day</strong>
           </div>
 
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", display: "flex", flexDirection: "column", gap: "0.25rem", borderTop: "1px solid var(--border-light)", paddingTop: "0.5rem" }}>
+          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", display: "flex", flexDirection: "column", gap: "0.25rem", borderTop: "var(--sk-bezel-border)", paddingTop: "0.5rem" }}>
             <div>Peak Sun Hours: <strong style={{ color: "var(--text-main)" }}>{solar.peakSunHours} hrs/day</strong></div>
             <div>Solar Irradiance: <strong style={{ color: "var(--text-main)" }}>{solar.peakIrradianceWm2} W/m²</strong></div>
             <div>Capacity Factor: <strong style={{ color: "var(--text-main)" }}>{solar.capacityFactor}%</strong></div>
@@ -152,7 +148,7 @@ export default function RenewableEnergyEstimator({
         </div>
 
         {/* Wind Card */}
-        <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-lcd-panel" style={{ padding: "1.1rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
               <Wind size={18} style={{ color: "var(--accent-cyan)" }} />
@@ -161,14 +157,14 @@ export default function RenewableEnergyEstimator({
             <span className={`badge badge-${wind.badge}`}>{wind.rating}</span>
           </div>
 
-          <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-cyan)", margin: "0.3rem 0" }}>
+          <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-cyan)", margin: "0.3rem 0", fontFamily: "var(--font-heading)" }}>
             {wind.annualWindMwh} MWh/yr
           </div>
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.65rem" }}>
             Estimated output: ~<strong>{wind.dailyWindKwh} kWh/day</strong>
           </div>
 
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", display: "flex", flexDirection: "column", gap: "0.25rem", borderTop: "1px solid var(--border-light)", paddingTop: "0.5rem" }}>
+          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", display: "flex", flexDirection: "column", gap: "0.25rem", borderTop: "var(--sk-bezel-border)", paddingTop: "0.5rem" }}>
             <div>Wind Speed (10m / 50m): <strong style={{ color: "var(--text-main)" }}>{wind.windSpeed10m} / {wind.windSpeed50m} m/s</strong></div>
             <div>Power Density: <strong style={{ color: "var(--text-main)" }}>{wind.powerDensity} W/m²</strong></div>
             <div>Wind Power Class: <strong style={{ color: "var(--text-main)" }}>Class {wind.windClass}</strong></div>
@@ -176,47 +172,47 @@ export default function RenewableEnergyEstimator({
         </div>
       </div>
 
-      {/* Combined Ecological & Financial ROI Impact Grid */}
+      {/* Combined Ecological & Financial ROI Impact Grid (Debossed Instrument Wells) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0.65rem" }}>
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.85rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginBottom: "0.25rem" }}>
             <BatteryCharging size={15} style={{ color: "var(--accent-green)" }} />
             <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 600 }}>Total Clean Energy</span>
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)" }}>
+          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {impact.totalAnnualMwh} MWh
           </div>
           <div style={{ fontSize: "0.65rem", color: "var(--text-dim)" }}>Combined annual yield</div>
         </div>
 
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.85rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginBottom: "0.25rem" }}>
             <Leaf size={15} style={{ color: "var(--accent-green)" }} />
             <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 600 }}>CO₂ Avoided</span>
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--accent-green)" }}>
+          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--accent-green)", fontFamily: "var(--font-heading)" }}>
             {impact.co2AvoidedKgYear.toLocaleString()} kg
           </div>
           <div style={{ fontSize: "0.65rem", color: "var(--text-dim)" }}>Grid displacement/yr</div>
         </div>
 
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.85rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginBottom: "0.25rem" }}>
             <TreePine size={15} style={{ color: "#34d399" }} />
             <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 600 }}>Tree Equivalent</span>
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)" }}>
+          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {impact.treesEquivalentYear} Trees
           </div>
           <div style={{ fontSize: "0.65rem", color: "var(--text-dim)" }}>Offset capacity/yr</div>
         </div>
 
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.85rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginBottom: "0.25rem" }}>
             <DollarSign size={15} style={{ color: "var(--accent-amber)" }} />
             <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 600 }}>Utility Savings</span>
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--accent-amber)" }}>
+          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--accent-amber)", fontFamily: "var(--font-heading)" }}>
             ${impact.estimatedSavingsUsdYear.toLocaleString()}
           </div>
           <div style={{ fontSize: "0.65rem", color: "var(--text-dim)" }}>Est. bill savings/yr</div>
@@ -224,7 +220,7 @@ export default function RenewableEnergyEstimator({
       </div>
 
       {/* 24-Hour Projected Clean Generation Profile Chart */}
-      <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "16px", border: "1px solid var(--border-light)" }}>
+      <div className="sk-lcd-panel" style={{ padding: "1.1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
           <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>
             24-Hour Clean Energy Generation Curve (kW)

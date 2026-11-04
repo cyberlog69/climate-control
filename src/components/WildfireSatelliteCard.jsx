@@ -42,7 +42,7 @@ export default function WildfireSatelliteCard({
   };
 
   return (
-    <div className="glass-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
@@ -61,43 +61,42 @@ export default function WildfireSatelliteCard({
         Near-realtime satellite thermal anomaly monitoring powered by NASA FIRMS orbital infrared radiometers.
       </p>
 
-      {/* Global Activity Telemetry Bar */}
+      {/* Global Activity Telemetry Bar (Debossed Sunken Instrument Wells) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.65rem" }}>
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "0.2rem" }}>
           <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 600 }}>Active Thermal Clusters</div>
-          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>
+          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-main)", margin: "0.1rem 0", fontFamily: "var(--font-heading)" }}>
             {totalClusters}
           </div>
           <div style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>Worldwide detections</div>
         </div>
 
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "0.2rem" }}>
           <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 600 }}>Severe Outbreaks</div>
-          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-red)", margin: "0.2rem 0" }}>
+          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-red)", margin: "0.1rem 0", fontFamily: "var(--font-heading)" }}>
             {severeOutbreaks} Zones
           </div>
           <div style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>FRP &gt; 500 MW</div>
         </div>
 
-        <div style={{ background: "var(--bg-inner)", padding: "0.75rem", borderRadius: "14px", border: "1px solid var(--border-light)" }}>
+        <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "0.2rem" }}>
           <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 600 }}>Peak Radiative Power</div>
-          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.2rem 0" }}>
+          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.1rem 0", fontFamily: "var(--font-heading)" }}>
             {maxFRP} MW
           </div>
           <div style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>Amazon Basin</div>
         </div>
       </div>
 
-      {/* Local Fire Danger Risk Gauge */}
+      {/* Local Fire Danger Risk Gauge (Skeuomorphic LCD Panel) */}
       <div
+        className="sk-lcd-panel"
         style={{
-          background: "var(--bg-inner)",
-          padding: "0.9rem 1.1rem",
-          borderRadius: "16px",
+          padding: "1rem 1.2rem",
           border: `1px solid ${localRisk.color}44`,
           display: "flex",
           flexDirection: "column",
-          gap: "0.5rem"
+          gap: "0.6rem"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -112,14 +111,13 @@ export default function WildfireSatelliteCard({
           </span>
         </div>
 
-        {/* Progress meter */}
-        <div style={{ width: "100%", height: "6px", background: "rgba(255,255,255,0.08)", borderRadius: "4px", overflow: "hidden" }}>
+        {/* Skeuomorphic Progress meter */}
+        <div className="sk-meter-track" style={{ height: "8px" }}>
           <div
+            className="sk-meter-fill"
             style={{
               width: `${localRisk.score}%`,
-              height: "100%",
-              background: `linear-gradient(90deg, #10b981, #f59e0b, #ef4444)`,
-              transition: "width 0.4s ease"
+              background: `linear-gradient(90deg, #10b981, #f59e0b, #ef4444)`
             }}
           />
         </div>
@@ -141,15 +139,16 @@ export default function WildfireSatelliteCard({
             <div
               key={fire.id}
               style={{
-                background: "var(--bg-inner)",
-                padding: "0.75rem 0.9rem",
-                borderRadius: "14px",
-                border: "1px solid var(--border-light)",
+                background: "var(--sk-surface-btn)",
+                padding: "0.75rem 0.95rem",
+                borderRadius: "var(--radius-md)",
+                border: "var(--sk-bezel-border)",
+                boxShadow: "var(--sk-shadow-btn)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: "0.6rem",
-                transition: "all 0.2s"
+                transition: "all 0.18s cubic-bezier(0.2, 0, 0, 1)"
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -173,19 +172,11 @@ export default function WildfireSatelliteCard({
 
               <button
                 onClick={() => handleInspectFire(fire)}
+                className="m3-chip active"
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.3rem",
-                  background: "rgba(6, 182, 212, 0.15)",
-                  border: "1px solid var(--accent-cyan)",
-                  color: "var(--accent-cyan)",
-                  padding: "0.35rem 0.65rem",
-                  borderRadius: "10px",
+                  padding: "0.32rem 0.65rem",
                   fontSize: "0.75rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
+                  gap: "0.25rem",
                   flexShrink: 0
                 }}
                 title="Fly Camera to Wildfire Coordinates"

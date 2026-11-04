@@ -97,7 +97,7 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
       onClick={onClose}
     >
       <div
-        className="glass-card"
+        className="m3-card"
         style={{
           width: "100%",
           maxWidth: "850px",
@@ -105,27 +105,21 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
           padding: "1.75rem",
           position: "relative",
           overflowY: "auto",
-          border: "1px solid var(--accent-cyan)"
+          border: "var(--sk-bezel-border)",
+          boxShadow: "var(--sk-shadow-card)"
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
+          className="m3-icon-btn"
           style={{
             position: "absolute",
             top: "1.25rem",
             right: "1.25rem",
-            background: "var(--bg-inner)",
-            border: "1px solid var(--border-light)",
-            color: "var(--text-main)",
-            borderRadius: "50%",
-            width: "34px",
-            height: "34px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
+            width: "36px",
+            height: "36px"
           }}
         >
           <X size={18} />
@@ -134,7 +128,7 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
         {/* Modal Title */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1.25rem" }}>
           <GitCompare size={22} style={{ color: "var(--accent-cyan)" }} />
-          <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)" }}>
+          <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>
             Dual-City Climate & Weather Comparison
           </h3>
         </div>
@@ -166,20 +160,19 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
           )}
         </div>
 
-        {/* Comparison Split Grid */}
+        {/* Comparison Split Grid (Dual Skeuomorphic LCD Panels) */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
           {/* Location A */}
           <div
+            className="sk-lcd-panel"
             style={{
-              background: "var(--bg-inner)",
               padding: "1.25rem",
-              borderRadius: "18px",
               border: "1px solid var(--accent-cyan)"
             }}
           >
             <div className="badge badge-cyan" style={{ marginBottom: "0.5rem" }}>Primary Location</div>
-            <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)" }}>{locationA.name}</h4>
-            <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-cyan)", margin: "0.4rem 0" }}>
+            <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>{locationA.name}</h4>
+            <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-cyan)", margin: "0.4rem 0", fontFamily: "var(--font-heading)" }}>
               {displayTemp(tempA)}°{unit}
             </div>
             <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
@@ -187,9 +180,9 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
             </div>
 
             {/* AQI Score */}
-            <div style={{ padding: "0.75rem", background: "var(--bg-card)", borderRadius: "12px", marginBottom: "0.75rem" }}>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Air Quality Index (AQI)</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: getAqiLevel(aqiA).color }}>
+            <div className="sk-recessed-tile" style={{ padding: "0.75rem", marginBottom: "0.75rem", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index (AQI)</div>
+              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: getAqiLevel(aqiA).color, fontFamily: "var(--font-heading)" }}>
                 {aqiA} ({getAqiLevel(aqiA).status})
               </div>
             </div>
@@ -204,18 +197,17 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
 
           {/* Location B */}
           <div
+            className="sk-lcd-panel"
             style={{
-              background: "var(--bg-inner)",
               padding: "1.25rem",
-              borderRadius: "18px",
-              border: "1px solid var(--border-light)"
+              border: "var(--sk-bezel-border)"
             }}
           >
             <div className="badge badge-amber" style={{ marginBottom: "0.5rem" }}>Compared Location</div>
-            <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)" }}>
+            <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>
               {locationB.name} {isLoadingB && <RefreshCw size={14} className="animate-spin" />}
             </h4>
-            <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.4rem 0" }}>
+            <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.4rem 0", fontFamily: "var(--font-heading)" }}>
               {displayTemp(tempB)}°{unit}
             </div>
             <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
@@ -223,9 +215,9 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
             </div>
 
             {/* AQI Score */}
-            <div style={{ padding: "0.75rem", background: "var(--bg-card)", borderRadius: "12px", marginBottom: "0.75rem" }}>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Air Quality Index (AQI)</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: getAqiLevel(aqiB).color }}>
+            <div className="sk-recessed-tile" style={{ padding: "0.75rem", marginBottom: "0.75rem", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index (AQI)</div>
+              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: getAqiLevel(aqiB).color, fontFamily: "var(--font-heading)" }}>
                 {aqiB} ({getAqiLevel(aqiB).status})
               </div>
             </div>
@@ -242,15 +234,15 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
         {/* Delta Highlight Banner */}
         {tempDiff != null && (
           <div
+            className="sk-recessed-tile"
             style={{
               marginTop: "1.25rem",
-              padding: "0.85rem 1.1rem",
-              background: "rgba(6, 182, 212, 0.15)",
-              borderRadius: "14px",
-              border: "1px solid rgba(6, 182, 212, 0.3)",
+              padding: "0.95rem 1.2rem",
+              border: "1px solid rgba(6, 182, 212, 0.4)",
               fontSize: "0.85rem",
               color: "var(--text-main)",
-              textAlign: "center"
+              textAlign: "center",
+              display: "block"
             }}
           >
             📊 Thermal Delta: <strong>{locationA.name.split(",")[0]}</strong> is{" "}
