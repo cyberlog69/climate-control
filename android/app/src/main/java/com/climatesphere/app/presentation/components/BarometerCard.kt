@@ -25,20 +25,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.sensor.BarometerData
 import com.climatesphere.app.core.sensor.PressureTrend
 import com.climatesphere.app.core.theme.CyanPrimary
-import com.climatesphere.app.core.theme.DarkCard
-import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.GreenAqi
 import com.climatesphere.app.core.theme.RedAlert
+import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
 import com.climatesphere.app.core.theme.YellowAqi
+import com.climatesphere.app.core.theme.skeuoBezel
+import com.climatesphere.app.core.theme.skeuoCard
+import com.climatesphere.app.core.theme.skeuoLcdPanel
+import com.climatesphere.app.core.theme.skeuoRecessedWell
 
 @Composable
 fun BarometerCard(
@@ -57,9 +61,7 @@ fun BarometerCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(DarkCard)
-            .border(1.dp, DarkCardBorder, RoundedCornerShape(24.dp))
+            .skeuoCard(RoundedCornerShape(24.dp))
             .padding(20.dp)
     ) {
         Column {
@@ -70,11 +72,13 @@ fun BarometerCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Machined metallic bezel icon box
                     Box(
                         modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(CyanPrimary.copy(alpha = 0.15f)),
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFF070B14))
+                            .skeuoBezel(RoundedCornerShape(12.dp), borderWidth = 1.5.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -93,7 +97,7 @@ fun BarometerCard(
                             color = TextWhite
                         )
                         Text(
-                            text = if (barometerData.isHardwareSensor) "Hardware Barometer Active" else "Station Telemetry Feed",
+                            text = if (barometerData.isHardwareSensor) "Hardware Piezoelectric Barometer" else "Orbital Station Telemetry",
                             style = MaterialTheme.typography.labelSmall,
                             color = if (barometerData.isHardwareSensor) GreenAqi else CyanPrimary,
                             fontSize = 11.sp
@@ -101,61 +105,85 @@ fun BarometerCard(
                     }
                 }
 
-                // Trend Badge
-                Box(
+                // Tactile Trend Badge with LED diode
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(trendColor.copy(alpha = 0.15f))
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF070B14))
+                        .border(1.dp, trendColor.copy(alpha = 0.45f), RoundedCornerShape(12.dp))
                         .padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
+                    SkeuoLedDiode(color = trendColor, size = 7.dp, isPulsing = barometerData.trend == PressureTrend.RAPID_DROP)
+                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = "${barometerData.trend.label} ${barometerData.trend.symbol}",
                         color = trendColor,
                         style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Large Pressure Display
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.fillMaxWidth()
+            // Main Skeuomorphic LCD Pressure Bay
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .skeuoLcdPanel(shape = RoundedCornerShape(18.dp), accentColor = trendColor)
+                    .padding(16.dp)
             ) {
-                Text(
-                    text = String.format(java.util.Locale.US, "%.1f", pressure),
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = TextWhite,
-                    fontSize = 40.sp,
-                    lineHeight = 44.sp
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "hPa",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = CyanPrimary,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column {
+                        Text(
+                            text = "STATION PRESSURE",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextDim,
+                            letterSpacing = 1.sp,
+                            fontSize = 10.sp
+                        )
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                text = String.format(java.util.Locale.US, "%.1f", pressure),
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 42.sp,
+                                    fontFamily = FontFamily.SansSerif
+                                ),
+                                fontWeight = FontWeight.ExtraBold,
+                                color = TextWhite
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "hPa",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = CyanPrimary,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(bottom = 6.dp)
+                            )
+                        }
+                    }
 
-                Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = "Standard Sea-Level",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TextDim,
-                        fontSize = 10.sp
-                    )
-                    Text(
-                        text = "1013.3 hPa",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "Standard Sea-Level",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextDim,
+                            fontSize = 10.sp
+                        )
+                        Text(
+                            text = "1013.3 hPa",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextMuted,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
 
@@ -166,8 +194,8 @@ fun BarometerCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(14.dp))
-                        .background(RedAlert.copy(alpha = 0.15f))
-                        .border(1.dp, RedAlert.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+                        .background(Color(0xFF140808))
+                        .border(1.dp, RedAlert.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
                         .padding(12.dp)
                 ) {
                     Row(verticalAlignment = Alignment.Top) {
@@ -201,17 +229,17 @@ fun BarometerCard(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Sub-metrics Row
+            // Sub-metrics Row (Debossed Recessed Well)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White.copy(alpha = 0.04f))
-                    .padding(10.dp),
+                    .skeuoRecessedWell(RoundedCornerShape(14.dp))
+                    .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Sensor Type", style = MaterialTheme.typography.labelSmall, color = TextDim)
+                    Text(text = "Sensor Type", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = if (barometerData.isHardwareSensor) "On-Board Piezo" else "Virtual Station",
                         style = MaterialTheme.typography.labelMedium,
@@ -220,8 +248,9 @@ fun BarometerCard(
                     )
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Atmospheric Delta", style = MaterialTheme.typography.labelSmall, color = TextDim)
+                    Text(text = "Atmospheric Delta", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
                     val deltaSign = if (barometerData.deltaHpa >= 0) "+" else ""
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "$deltaSign${String.format(java.util.Locale.US, "%.1f", barometerData.deltaHpa)} hPa",
                         style = MaterialTheme.typography.labelMedium,
@@ -230,12 +259,13 @@ fun BarometerCard(
                     )
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Baric State", style = MaterialTheme.typography.labelSmall, color = TextDim)
+                    Text(text = "Baric State", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
                     val stateLabel = when {
                         pressure > 1020 -> "High Pressure"
                         pressure < 1005 -> "Low Pressure"
                         else -> "Normal Zone"
                     }
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = stateLabel,
                         style = MaterialTheme.typography.labelMedium,

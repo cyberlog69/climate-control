@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.pager.HorizontalPager
@@ -34,9 +36,16 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.foundation.border
+import androidx.compose.ui.graphics.Brush
 import com.climatesphere.app.core.theme.AmberWarning
 import com.climatesphere.app.core.theme.GreenAqi
 import com.climatesphere.app.core.theme.PurpleAura
+import com.climatesphere.app.core.theme.SkeuoBevelLight
+import com.climatesphere.app.core.theme.SkeuoLedDiode
+import com.climatesphere.app.core.theme.SkeuoWellBorder
+import com.climatesphere.app.core.theme.SkeuoWellFill
+import com.climatesphere.app.core.theme.skeuoRecessedWell
 import com.climatesphere.app.presentation.components.BarometerCard
 import com.climatesphere.app.presentation.components.CarbonCalculatorBottomSheet
 import com.climatesphere.app.presentation.components.ClimateImpactCard
@@ -219,18 +228,28 @@ fun HomeScreen(
                             fontWeight = FontWeight.Bold,
                             color = TextWhite
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFF070B14))
+                                .border(0.5.dp, SkeuoWellBorder, RoundedCornerShape(8.dp))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            SkeuoLedDiode(color = CyanPrimary, size = 6.dp, isPulsing = true)
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = uiState.selectedLocation.cityName,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = CyanPrimary,
-                                fontSize = 12.sp
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(3.dp))
                             Text(
                                 text = "▾",
                                 color = CyanPrimary,
-                                fontSize = 10.sp
+                                fontSize = 9.sp
                             )
                         }
                     }
@@ -359,23 +378,37 @@ fun HomeScreen(
                     Column(modifier = Modifier.fillMaxSize()) {
                         // Page indicator pills if multiple tracked locations
                         if (uiState.activeLocations.size > 1) {
-                            Row(
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 4.dp, bottom = 4.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
+                                    .padding(vertical = 4.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                uiState.activeLocations.forEachIndexed { index, _ ->
-                                    val isSelected = index == pagerState.currentPage
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(horizontal = 3.dp)
-                                            .height(4.dp)
-                                            .width(if (isSelected) 20.dp else 5.dp)
-                                            .clip(CircleShape)
-                                            .background(if (isSelected) CyanPrimary else TextMuted.copy(alpha = 0.35f))
-                                    )
+                                Row(
+                                    modifier = Modifier
+                                        .skeuoRecessedWell(RoundedCornerShape(12.dp))
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    uiState.activeLocations.forEachIndexed { index, _ ->
+                                        val isSelected = index == pagerState.currentPage
+                                        Box(
+                                            modifier = Modifier
+                                                .padding(horizontal = 3.dp)
+                                                .height(5.dp)
+                                                .width(if (isSelected) 22.dp else 6.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    if (isSelected) CyanPrimary else Color(0xFF1E293B)
+                                                )
+                                                .border(
+                                                    0.5.dp,
+                                                    if (isSelected) Color.White.copy(alpha = 0.5f) else Color.Transparent,
+                                                    CircleShape
+                                                )
+                                        )
+                                    }
                                 }
                             }
                         }

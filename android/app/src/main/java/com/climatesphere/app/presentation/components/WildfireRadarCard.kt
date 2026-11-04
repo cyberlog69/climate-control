@@ -25,7 +25,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CompassCalibration
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Sensors
@@ -51,18 +50,23 @@ import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.AmberWarning
 import com.climatesphere.app.core.theme.BlueSky
 import com.climatesphere.app.core.theme.CyanPrimary
-import com.climatesphere.app.core.theme.DarkCard
 import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.EmeraldGreen
 import com.climatesphere.app.core.theme.PureBlack
 import com.climatesphere.app.core.theme.RedAlert
+import com.climatesphere.app.core.theme.SkeuoLedDiode
+import com.climatesphere.app.core.theme.SkeuoMeterTrack
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
+import com.climatesphere.app.core.theme.skeuoBezel
+import com.climatesphere.app.core.theme.skeuoCard
+import com.climatesphere.app.core.theme.skeuoLcdPanel
+import com.climatesphere.app.core.theme.skeuoPushButton
+import com.climatesphere.app.core.theme.skeuoRecessedWell
 import com.climatesphere.app.domain.model.LocationModel
 import com.climatesphere.app.domain.model.WildfireHotspot
 import com.climatesphere.app.domain.model.WildfireSentinelData
-import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.min
@@ -87,6 +91,7 @@ fun WildfireRadarCard(
         )
     }
 
+    val riskColor = Color(assessment.colorHex)
     var selectedHotspot by remember { mutableStateOf<WildfireHotspot?>(assessment.nearestCluster) }
 
     // Radar scanner animation
@@ -114,9 +119,7 @@ fun WildfireRadarCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(DarkCard)
-            .border(1.dp, DarkCardBorder, RoundedCornerShape(24.dp))
+            .skeuoCard(RoundedCornerShape(24.dp))
             .padding(20.dp)
     ) {
         Column {
@@ -131,7 +134,8 @@ fun WildfireRadarCard(
                         modifier = Modifier
                             .size(38.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(RedAlert.copy(alpha = 0.15f)),
+                            .background(Color(0xFF070B14))
+                            .skeuoBezel(RoundedCornerShape(12.dp), borderWidth = 1.5.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -150,12 +154,7 @@ fun WildfireRadarCard(
                             color = TextWhite
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .clip(CircleShape)
-                                    .background(RedAlert)
-                            )
+                            SkeuoLedDiode(color = RedAlert, size = 6.dp, isPulsing = true)
                             Spacer(modifier = Modifier.width(5.dp))
                             Text(
                                 text = "VIIRS / MODIS Orbital Feeds",
@@ -167,17 +166,21 @@ fun WildfireRadarCard(
                     }
                 }
 
-                // Risk Badge
-                Box(
+                // Tactile Risk Badge
+                val riskColor = Color(assessment.colorHex)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(assessment.colorHex).copy(alpha = 0.18f))
-                        .border(1.dp, Color(assessment.colorHex).copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                        .background(Color(0xFF070B14))
+                        .border(1.dp, riskColor.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                         .padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
+                    SkeuoLedDiode(color = riskColor, size = 6.dp, isPulsing = true)
+                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = "${assessment.badgeName.uppercase()} RISK",
-                        color = Color(assessment.colorHex),
+                        color = riskColor,
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 11.sp
                     )
@@ -186,7 +189,7 @@ fun WildfireRadarCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3-Metric Global Activity Bar
+            // 3-Metric Global Activity Bar (Debossed Instrument Wells)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -195,9 +198,7 @@ fun WildfireRadarCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(PureBlack.copy(alpha = 0.45f))
-                        .border(1.dp, DarkCardBorder, RoundedCornerShape(14.dp))
+                        .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(10.dp)
                 ) {
                     Column {
@@ -207,6 +208,7 @@ fun WildfireRadarCard(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${assessment.totalGlobalClusters}",
                             color = TextWhite,
@@ -225,9 +227,7 @@ fun WildfireRadarCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(PureBlack.copy(alpha = 0.45f))
-                        .border(1.dp, DarkCardBorder, RoundedCornerShape(14.dp))
+                        .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(10.dp)
                 ) {
                     Column {
@@ -237,6 +237,7 @@ fun WildfireRadarCard(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${assessment.severeOutbreaksCount} Zones",
                             color = RedAlert,
@@ -255,9 +256,7 @@ fun WildfireRadarCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(PureBlack.copy(alpha = 0.45f))
-                        .border(1.dp, DarkCardBorder, RoundedCornerShape(14.dp))
+                        .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(10.dp)
                 ) {
                     Column {
@@ -267,6 +266,7 @@ fun WildfireRadarCard(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${assessment.peakFrpMw.toInt()} MW",
                             color = AmberWarning,
@@ -284,13 +284,11 @@ fun WildfireRadarCard(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Local Proximity Hazard Banner
+            // Local Proximity Hazard Banner (LCD Readout)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(PureBlack.copy(alpha = 0.5f))
-                    .border(1.dp, Color(assessment.colorHex).copy(alpha = 0.35f), RoundedCornerShape(16.dp))
+                    .skeuoLcdPanel(shape = RoundedCornerShape(16.dp), accentColor = riskColor)
                     .padding(14.dp)
             ) {
                 Column {
@@ -303,7 +301,7 @@ fun WildfireRadarCard(
                             Icon(
                                 imageVector = Icons.Default.Sensors,
                                 contentDescription = null,
-                                tint = Color(assessment.colorHex),
+                                tint = riskColor,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
@@ -316,36 +314,22 @@ fun WildfireRadarCard(
                         }
                         Text(
                             text = "${assessment.score}/100",
-                            color = Color(assessment.colorHex),
-                            fontSize = 13.sp,
+                            color = riskColor,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.ExtraBold
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    // Danger score progress bar
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(6.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.1f))
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(fraction = (assessment.score / 100f).coerceIn(0.05f, 1f))
-                                .height(6.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    Brush.horizontalGradient(
-                                        listOf(EmeraldGreen, AmberWarning, RedAlert)
-                                    )
-                                )
-                        )
-                    }
+                    // Danger score debossed meter track
+                    SkeuoMeterTrack(
+                        progress = assessment.score / 100f,
+                        trackHeight = 6.dp,
+                        fillGradient = listOf(EmeraldGreen, AmberWarning, RedAlert)
+                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
                         text = "Nearest active cluster is ~${assessment.minDistanceKm} km away (${assessment.nearestCluster?.name ?: "Unknown"}).",
@@ -358,7 +342,7 @@ fun WildfireRadarCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Native Compose Radar Canvas Screen
+            // Native Compose Radar Canvas Screen (Skeuomorphic Oscilloscope Frame)
             Text(
                 text = "Orbital Thermal Radar (10,000 km Sentinel Field)",
                 color = TextWhite,
@@ -372,9 +356,7 @@ fun WildfireRadarCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(PureBlack)
-                    .border(1.dp, CyanPrimary.copy(alpha = 0.25f), RoundedCornerShape(18.dp)),
+                    .skeuoLcdPanel(shape = RoundedCornerShape(18.dp), accentColor = CyanPrimary),
                 contentAlignment = Alignment.Center
             ) {
                 val hotspots = WildfireSentinelData.GLOBAL_HOTSPOTS
@@ -382,13 +364,12 @@ fun WildfireRadarCard(
                 val userLon = currentLocation.longitude
 
                 Canvas(
-                    modifier = Modifier
-                        .size(180.dp)
+                    modifier = Modifier.size(180.dp)
                 ) {
                     val center = Offset(size.width / 2f, size.height / 2f)
                     val maxRadius = min(size.width, size.height) / 2f - 8.dp.toPx()
 
-                    // Range Rings (10,000 km, 5,000 km, 2,000 km)
+                    // Range Rings
                     val dashedStroke = Stroke(
                         width = 1.dp.toPx(),
                         pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f), 0f)
@@ -428,14 +409,13 @@ fun WildfireRadarCard(
                         strokeWidth = 2.dp.toPx()
                     )
 
-                    // Plot Wildfire Blips relative to user coordinates (max 12,000 km range)
+                    // Plot Wildfire Blips relative to user coordinates
                     val maxRangeKm = 12000.0
                     hotspots.forEach { fire ->
                         val distKm = WildfireSentinelData.calculateDistanceKm(userLat, userLon, fire.latitude, fire.longitude)
                         val normDist = (distKm / maxRangeKm).coerceIn(0.08, 0.98)
                         val radiusPx = maxRadius * normDist.toFloat()
 
-                        // Bearing angle
                         val dLon = Math.toRadians(fire.longitude - userLon)
                         val y = sin(dLon) * cos(Math.toRadians(fire.latitude))
                         val x = cos(Math.toRadians(userLat)) * sin(Math.toRadians(fire.latitude)) -
@@ -489,7 +469,7 @@ fun WildfireRadarCard(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Horizontal Cluster Selector Pills
+            // Horizontal Cluster Selector Tactile Push Keys
             Text(
                 text = "Active Orbital Thermal Clusters",
                 color = TextWhite,
@@ -516,25 +496,21 @@ fun WildfireRadarCard(
 
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(if (isSelected) RedAlert.copy(alpha = 0.2f) else PureBlack.copy(alpha = 0.45f))
-                            .border(
-                                width = 1.dp,
-                                color = if (isSelected) RedAlert else DarkCardBorder,
-                                shape = RoundedCornerShape(12.dp)
+                            .skeuoPushButton(
+                                isSelected = isSelected,
+                                shape = RoundedCornerShape(12.dp),
+                                activeAccent = RedAlert,
+                                onClick = { selectedHotspot = fire }
                             )
-                            .clickable { selectedHotspot = fire }
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.LocalFireDepartment,
-                                    contentDescription = null,
-                                    tint = if (fire.frp >= 500) RedAlert else AmberWarning,
-                                    modifier = Modifier.size(13.dp)
+                                SkeuoLedDiode(
+                                    color = if (fire.frp >= 500) RedAlert else AmberWarning,
+                                    size = 6.dp
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(5.dp))
                                 Text(
                                     text = fire.name.split(",")[0],
                                     color = TextWhite,
@@ -553,7 +529,7 @@ fun WildfireRadarCard(
                 }
             }
 
-            // Selected Hotspot Detail Card
+            // Selected Hotspot Detail Card (Debossed Well)
             selectedHotspot?.let { fire ->
                 val distKm = WildfireSentinelData.calculateDistanceKm(
                     currentLocation.latitude,
@@ -567,9 +543,7 @@ fun WildfireRadarCard(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(PureBlack.copy(alpha = 0.6f))
-                        .border(1.dp, DarkCardBorder, RoundedCornerShape(14.dp))
+                        .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(12.dp)
                 ) {
                     Column {
@@ -635,20 +609,22 @@ fun WildfireRadarCard(
                             if (onSelectHotspotLocation != null) {
                                 Box(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(CyanPrimary.copy(alpha = 0.15f))
-                                        .border(1.dp, CyanPrimary.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
-                                        .clickable {
-                                            onSelectHotspotLocation(
-                                                LocationModel(
-                                                    name = fire.name,
-                                                    cityName = fire.name.split(",")[0],
-                                                    country = fire.region,
-                                                    latitude = fire.latitude,
-                                                    longitude = fire.longitude
+                                        .skeuoPushButton(
+                                            isSelected = false,
+                                            shape = RoundedCornerShape(8.dp),
+                                            activeAccent = CyanPrimary,
+                                            onClick = {
+                                                onSelectHotspotLocation(
+                                                    LocationModel(
+                                                        name = fire.name,
+                                                        cityName = fire.name.split(",")[0],
+                                                        country = fire.region,
+                                                        latitude = fire.latitude,
+                                                        longitude = fire.longitude
+                                                    )
                                                 )
-                                            )
-                                        }
+                                            }
+                                        )
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
