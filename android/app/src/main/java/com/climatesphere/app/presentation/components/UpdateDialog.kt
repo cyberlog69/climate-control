@@ -1,7 +1,5 @@
 package com.climatesphere.app.presentation.components
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,18 +19,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -41,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,29 +50,19 @@ import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
 import com.climatesphere.app.core.update.AppUpdateInfo
-import com.climatesphere.app.core.update.DownloadState
-import java.io.File
 import java.util.Locale
 
 @Composable
 fun UpdateDialog(
     updateInfo: AppUpdateInfo,
-    downloadState: DownloadState,
-    onDownloadClick: (String) -> Unit,
-    onInstallClick: (File) -> Unit,
+    onOpenUrl: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Dialog(
-        onDismissRequest = {
-            if (downloadState !is DownloadState.Downloading) {
-                onDismiss()
-            }
-        },
+        onDismissRequest = onDismiss,
         properties = DialogProperties(
-            dismissOnBackPress = downloadState !is DownloadState.Downloading,
-            dismissOnClickOutside = downloadState !is DownloadState.Downloading
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
         )
     ) {
         Card(
@@ -125,21 +110,19 @@ fun UpdateDialog(
                                 color = TextWhite
                             )
                             Text(
-                                text = "OTA Update Engine",
+                                text = "ClimateSphere Releases",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TextDim
                             )
                         }
                     }
 
-                    if (downloadState !is DownloadState.Downloading) {
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Close",
-                                tint = TextMuted
-                            )
-                        }
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = TextMuted
+                        )
                     }
                 }
 
@@ -237,167 +220,60 @@ fun UpdateDialog(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Download Progress States
-                when (downloadState) {
-                    is DownloadState.Downloading -> {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Downloading APK update...",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = TextWhite
-                                )
-                                Text(
-                                    text = "${(downloadState.progress * 100).toInt()}%",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = CyanPrimary
-                                )
-                            }
-
-                            LinearProgressIndicator(
-                                progress = { downloadState.progress },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = CyanPrimary,
-                                trackColor = DarkCardBorder
-                            )
-
-                            if (downloadState.totalBytes > 0L) {
-                                val downloadedMb = downloadState.downloadedBytes.toFloat() / (1024 * 1024)
-                                val totalMb = downloadState.totalBytes.toFloat() / (1024 * 1024)
-                                Text(
-                                    text = String.format(Locale.US, "%.1f MB / %.1f MB", downloadedMb, totalMb),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = TextDim,
-                                    modifier = Modifier.align(Alignment.End)
-                                )
-                            }
-                        }
+                // Action Buttons
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Button(
+                        onClick = { onOpenUrl(updateInfo.downloadUrl) },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Download APK via Browser",
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
 
-                    is DownloadState.ReadyToInstall -> {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(Color(0xFF10B981).copy(alpha = 0.15f))
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = onDismiss,
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Text(
+                                text = "Later",
+                                color = TextMuted
+                            )
+                        }
+
+                        OutlinedButton(
+                            onClick = { onOpenUrl(updateInfo.htmlUrl) },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(14.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.CheckCircle,
-                                contentDescription = "Ready",
-                                tint = Color(0xFF10B981),
-                                modifier = Modifier.size(18.dp)
+                                imageVector = Icons.Default.OpenInBrowser,
+                                contentDescription = "GitHub",
+                                tint = CyanPrimary,
+                                modifier = Modifier.size(16.dp)
                             )
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Download complete! Ready to install.",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFF10B981),
-                                fontWeight = FontWeight.SemiBold
+                                text = "GitHub Release",
+                                color = TextWhite,
+                                fontSize = 12.sp
                             )
-                        }
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        Button(
-                            onClick = { onInstallClick(downloadState.apkFile) },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary)
-                        ) {
-                            Text(
-                                text = "Install Update Now",
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    is DownloadState.Error -> {
-                        Text(
-                            text = "Error: ${downloadState.message}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFEF4444),
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
-
-                        Button(
-                            onClick = { onDownloadClick(updateInfo.downloadUrl) },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary)
-                        ) {
-                            Text(
-                                text = "Retry Download",
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    DownloadState.Idle -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(
-                                onClick = { onDownloadClick(updateInfo.downloadUrl) },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(14.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary)
-                            ) {
-                                Text(
-                                    text = "Download & Install Update",
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                OutlinedButton(
-                                    onClick = onDismiss,
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(14.dp)
-                                ) {
-                                    Text(
-                                        text = "Later",
-                                        color = TextMuted
-                                    )
-                                }
-
-                                OutlinedButton(
-                                    onClick = {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateInfo.htmlUrl))
-                                        context.startActivity(intent)
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(14.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.OpenInBrowser,
-                                        contentDescription = "GitHub",
-                                        tint = CyanPrimary,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "Release Page",
-                                        color = TextWhite,
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
                         }
                     }
                 }

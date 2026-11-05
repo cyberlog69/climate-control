@@ -10,12 +10,12 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes cache to respect GitHub API r
 
 // Known baseline fallback if GitHub API is unreachable or rate-limited
 export const FALLBACK_RELEASE_INFO = {
-  version: "v1.5.1",
-  fileName: "ClimateSphere-v1.5.1.apk",
-  downloadUrl: `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/download/v1.5.1/ClimateSphere-v1.5.1.apk`,
-  sizeFormatted: "14.0 MB",
+  version: "v1.5.2",
+  fileName: "ClimateSphere-v1.5.2.apk",
+  downloadUrl: `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/download/v1.5.2/ClimateSphere-v1.5.2.apk`,
+  sizeFormatted: "13.4 MB",
   releaseUrl: `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`,
-  releaseTitle: "ClimateSphere v1.5.1 — Skeuomorphic Material 3 Theme & Tactical UI Polish",
+  releaseTitle: "ClimateSphere v1.5.2 — Play Protect Hardening & Release Keystore Signing",
   publishedAt: "2026-11-05"
 };
 

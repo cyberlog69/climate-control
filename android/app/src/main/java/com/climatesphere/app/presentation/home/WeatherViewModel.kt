@@ -360,14 +360,8 @@ class WeatherViewModel(
         _isUpdateDialogOpen.value = isOpen
     }
 
-    fun downloadUpdate(downloadUrl: String) {
-        viewModelScope.launch {
-            updateManager.downloadApk(downloadUrl)
-        }
-    }
-
-    fun installUpdate(apkFile: File) {
-        updateManager.installApk(apkFile)
+    fun openUpdateUrl(url: String) {
+        updateManager.openUpdateUrl(url = url)
     }
 
     fun dismissUpdateDialog() {
