@@ -548,9 +548,7 @@ fun HomeScreen(
             if (isUpdateDialogOpen && updateInfo != null) {
                 UpdateDialog(
                     updateInfo = updateInfo!!,
-                    downloadState = downloadState,
-                    onDownloadClick = { url -> viewModel.downloadUpdate(url) },
-                    onInstallClick = { file -> viewModel.installUpdate(file) },
+                    onOpenUrl = { url -> viewModel.openUpdateUrl(url) },
                     onDismiss = { viewModel.dismissUpdateDialog() }
                 )
             }
