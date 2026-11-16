@@ -84,22 +84,22 @@ ClimateSphere implements defense-in-depth principles across both its web client 
 
 ---
 
-## 🔑 Signing Key Rotation (Required Owner Action)
+## 🔑 Signing Key Rotation
 
-A previous release keystore (`android/app/climatesphere-release.jks`) and its password were committed to this repository's history. **Treat that key as compromised.** It has been deleted from the working tree and is now gitignored, but the blob still exists in earlier commits.
+A previous release keystore (`android/app/climatesphere-release.jks`) and its password were committed to this repository's history. **Treat that key as compromised.**
 
-To finish the rotation:
+Completed on 2026-11-16:
 
-1. Generate a new key with `scripts/generate-signing-key.ps1` (Windows) or `scripts/generate-signing-key.sh` (Linux/macOS). Back up the generated `.jks` and `keystore.properties` offline.
-2. Publish the next release signed with the new key. Android rejects in-place updates signed with a different key, so either publish under a new application ID/listing or use the platform key-rotation process for existing installs.
-3. Purge the old blob from history. This rewrites commits and requires a coordinated force-push:
-   ```bash
-   pip install git-filter-repo
-   git filter-repo --path android/app/climatesphere-release.jks --invert-paths
-   git push --force --all
-   git push --force --tags
-   ```
-4. Ask hosting providers and forks to invalidate cached builds, and rotate any other secret that appeared in the same commit.
+- The keystore was removed from the working tree, and `*.jks`, `*.keystore` and `keystore.properties` are now gitignored.
+- A fresh 4096-bit RSA release key was generated with `scripts/generate-signing-key.ps1` (Windows) or `scripts/generate-signing-key.sh` (Linux/macOS). Credentials are read from `android/keystore.properties` or the `CLIMATESPHERE_*` environment variables.
+- Git history was rewritten with `git filter-repo` to drop the keystore path and replace the leaked password string. `main` and the affected release tags were force-updated, and a fresh clone contains no `.jks` objects and no leaked password in any reachable commit.
+- GitHub may still serve unreachable objects by exact commit SHA until its garbage collection runs. If strict erasure is required, ask GitHub Support to purge the cached object for the commit that introduced the key.
+
+Still required by the maintainer:
+
+1. Publish the next release signed with the new key. Android rejects in-place updates signed with a different key, so publish under a new application ID/listing or use the platform key-rotation process.
+2. Replace the existing `v1.5.2` release asset, which was signed with the compromised key.
+3. Ask forks and build caches to resync. Any clone made before the rewrite still contains the old key and password.
 
 ---
 
