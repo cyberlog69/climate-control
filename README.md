@@ -1,7 +1,7 @@
 # 🌍 ClimateSphere | Global Realtime Climate & Weather Sentinel
 
 [![Live Demo](https://img.shields.io/badge/Live_Web_App-climate--control.loggy69.workers.dev-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://climate-control.loggy69.workers.dev/)
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.5.2-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.5.2/ClimateSphere-v1.5.2.apk)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.6.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/download/v1.6.0/ClimateSphere-v1.6.0.apk)
 [![Release](https://img.shields.io/github/v/release/cyberlog69/climate-control?label=Release&color=06B6D4)](https://github.com/cyberlog69/climate-control/releases)
 [![Android](https://img.shields.io/badge/Android-SDK_35-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > 🌐 **Live Web Application (Cloudflare)**: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)  
-> 🤖 **Native Android APK (v1.5.2)**: [Download ClimateSphere-v1.5.2.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.5.2/ClimateSphere-v1.5.2.apk)  
+> 🤖 **Native Android APK (v1.6.0)**: [Download ClimateSphere-v1.6.0.apk](https://github.com/cyberlog69/climate-control/releases/download/v1.6.0/ClimateSphere-v1.6.0.apk)  
 > 📂 **GitHub Repository**: [https://github.com/cyberlog69/climate-control](https://github.com/cyberlog69/climate-control)
 
 ---
@@ -282,7 +282,7 @@ docker compose up -d
 
 ## 🤖 Native Android App (Kotlin & Jetpack Compose)
 
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.5.2-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.6.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
 
 ClimateSphere features a 100% native Android application built with modern Android standards in [`android/`](./android):
 
@@ -307,18 +307,19 @@ ClimateSphere features a 100% native Android application built with modern Andro
 - **🔍 Debounced Global City Search & Watchlist**: Multi-city watchlist with horizontal paging between your GPS location and saved cities.
 
 ### 📦 Download Pre-Built APK:
-- **Direct Download**: Get the latest signed [ClimateSphere-v1.5.2.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
+- **Direct Download**: Get the latest signed [ClimateSphere-v1.6.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
+- **Upgrading from v1.5.2 or older**: The release signing key was rotated after a key leak. Android cannot update an app across a signing-key change, so uninstall the old version before installing v1.6.0. Local app settings and saved cities will be lost.
 
 ### 🛠️ Building the Android App from Source:
 ```bash
 cd android
 
-# Compile and package Release APK (Optimized, ~13.9 MB)
+# Compile and package Release APK (R8 + resource shrinking, ~2.5 MB)
 ./gradlew assembleRelease       # Linux / macOS
 .\gradlew.bat assembleRelease   # Windows
 
 # Output APK path:
-# android/app/build/outputs/apk/release/ClimateSphere-v1.5.2-release.apk
+# android/app/build/outputs/apk/release/ClimateSphere-v1.6.0-release.apk
 ```
 Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** and click **Run ▶**.
 

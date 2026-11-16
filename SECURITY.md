@@ -10,7 +10,8 @@ We actively provide security patches, dependency updates, and bug fixes for the 
 
 | Version Line | Status | Support Level |
 |---|---|---|
-| **v1.5.x** (Latest: `v1.5.2`) | :white_check_mark: Supported | Active security updates, patch releases, and maintenance |
+| **v1.6.x** (Latest: `v1.6.0`) | :white_check_mark: Supported | Active security updates, patch releases, and maintenance |
+| **v1.5.x** | :warning: Limited | Signing key was rotated; v1.5.2 and older APKs cannot be updated in place. Uninstall and install v1.6.0 |
 | **v1.4.x** | :warning: Limited | Critical security patches only; upgrade to latest recommended |
 | **v1.0.x – v1.3.x** | :x: End of Life | Unsupported; users should upgrade immediately |
 
@@ -95,10 +96,10 @@ Completed on 2026-11-16:
 - Git history was rewritten with `git filter-repo` to drop the keystore path and replace the leaked password string. `main` and the affected release tags were force-updated, and a fresh clone contains no `.jks` objects and no leaked password in any reachable commit.
 - GitHub may still serve unreachable objects by exact commit SHA until its garbage collection runs. If strict erasure is required, ask GitHub Support to purge the cached object for the commit that introduced the key.
 
-Still required by the maintainer:
+Release status:
 
-1. Publish the next release signed with the new key. Android rejects in-place updates signed with a different key, so publish under a new application ID/listing or use the platform key-rotation process.
-2. Replace the existing `v1.5.2` release asset, which was signed with the compromised key.
+1. `v1.6.0` is published and signed with the new key. The `v1.5.2` APK asset, which was signed with the compromised key, has been removed from the release.
+2. Existing installs must be uninstalled before installing `v1.6.0`, because Android rejects updates across a signing-key change.
 3. Ask forks and build caches to resync. Any clone made before the rewrite still contains the old key and password.
 
 ---
