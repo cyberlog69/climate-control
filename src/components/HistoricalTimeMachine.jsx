@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   getHistoricalClimateTrajectory,
-  getHistoricalComparisonInsight,
-  HISTORICAL_CO2_SERIES
+  getHistoricalComparisonInsight
 } from "../services/historicalClimateApi";
 import {
   ResponsiveContainer,
@@ -11,8 +10,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ReferenceDot,
-  ReferenceLine
+  ReferenceDot
 } from "recharts";
 import {
   History,
@@ -24,9 +22,10 @@ import {
   Flame,
   CloudRain,
   Wind,
-  TrendingUp,
   Sparkles
 } from "lucide-react";
+
+const HISTORICAL_YEARS = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2026];
 
 export default function HistoricalTimeMachine({
   locationName,
@@ -46,7 +45,7 @@ export default function HistoricalTimeMachine({
     return getHistoricalClimateTrajectory(lat || 35.6, lon || 139.6, currentTemp || 25);
   }, [lat, lon, currentTemp]);
 
-  const years = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2026];
+  const years = HISTORICAL_YEARS;
 
   // Current selected year data point & present baseline
   const selectedData = useMemo(() => {

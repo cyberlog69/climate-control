@@ -44,6 +44,21 @@ class AppContainer(private val context: Context) {
         retrofit.create(OpenMeteoApi::class.java)
     }
 
+    private val eonetRetrofit: Retrofit by lazy {
+        val contentType = "application/json".toMediaType()
+        Retrofit.Builder()
+            .baseUrl("https://eonet.gsfc.nasa.gov/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    val wildfireRepository: com.climatesphere.app.domain.repository.WildfireRepository by lazy {
+        com.climatesphere.app.data.repository.WildfireRepositoryImpl(
+            api = eonetRetrofit.create(com.climatesphere.app.data.remote.EonetApi::class.java)
+        )
+    }
+
     val database: ClimateDatabase by lazy {
         ClimateDatabase.getDatabase(context)
     }

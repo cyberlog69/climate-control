@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   generateClimateBriefingScript,
   speechController
@@ -8,14 +8,10 @@ import {
   Play,
   Pause,
   RotateCcw,
-  Volume2,
-  VolumeX,
   X,
   Copy,
   Check,
-  Sparkles,
   Radio,
-  Sliders,
   AlertCircle
 } from "lucide-react";
 
@@ -31,7 +27,6 @@ export default function VoiceBriefingModal({
   const [rate, setRate] = useState(1.0);
   const [voices, setVoices] = useState([]);
   const [selectedVoiceIndex, setSelectedVoiceIndex] = useState(0);
-  const [activeParagraphIndex, setActiveParagraphIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 

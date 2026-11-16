@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { searchLocations, fetchWeatherData, fetchAirQualityData } from "../services/weatherApi";
 import { getAqiLevel } from "../services/climateData";
-import { X, Search, GitCompare, Thermometer, Wind, Droplets, ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
+import { X, Search, GitCompare, RefreshCw } from "lucide-react";
 
 export default function ClimateComparisonModal({ locationA, weatherDataA, airQualityDataA, unit, onClose }) {
   const [queryB, setQueryB] = useState("");

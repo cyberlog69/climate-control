@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Navbar from "./components/Navbar";
-import ClimateVitals from "./components/ClimateVitals";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import Navbar from "./components/Navbar";import ClimateVitals from "./components/ClimateVitals";
 import InteractiveMap from "./components/InteractiveMap";
 import WeatherDetailCard from "./components/WeatherDetailCard";
 import AirQualityCard from "./components/AirQualityCard";
@@ -23,6 +22,8 @@ import MaterialNavRail from "./components/MaterialNavRail";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode, detectUserLocation } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
+import { fetchWildfireHotspots, SAMPLE_WILDFIRE_HOTSPOTS } from "./services/wildfireSatelliteApi";
+import { STORAGE_KEYS, getStoredLastLocation, readStorage, saveLastLocation, writeStorage } from "./services/storage";
 import {
   LayoutDashboard,
   Globe,
@@ -31,40 +32,21 @@ import {
   History,
   Activity,
   Zap,
-  Leaf,
-  Sliders,
   AlertCircle,
-  ChevronRight,
-  X
+  ChevronRight
 } from "lucide-react";
 
 export default function App() {
-  const toNonSensitiveStoredLocation = (location) => ({
-    name: location?.name ?? "",
-    cityName: location?.cityName ?? "",
-    country: location?.country ?? "",
-    lat: null,
-    lon: null
-  });
-
-  const [currentLocation, setCurrentLocation] = useState(() => {
-    try {
-      const saved = localStorage.getItem("climatesphere_last_location");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed?.lat != null && parsed?.lon != null) {
-          return parsed;
-        }
+  const [currentLocation, setCurrentLocation] = useState(
+    () =>
+      getStoredLastLocation() ?? {
+        name: "Detecting Location...",
+        cityName: "Detecting...",
+        country: "",
+        lat: null,
+        lon: null
       }
-    } catch {}
-    return {
-      name: "Detecting Location...",
-      cityName: "Detecting...",
-      country: "",
-      lat: null,
-      lon: null
-    };
-  });
+  );
 
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
@@ -72,8 +54,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
   const [viewMode, setViewMode] = useState("3d");
-  const [isHudCollapsed, setIsHudCollapsed] = useState(false);
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
@@ -87,24 +67,40 @@ export default function App() {
       return [];
     }
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
-
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem("climatesphere_theme") || "dark";
-    } catch {
-      return "dark";
-    }
+  const [wildfireData, setWildfireData] = useState({
+    hotspots: SAMPLE_WILDFIRE_HOTSPOTS,
+    source: "sample",
+    fetchedAt: null
   });
 
+  const [theme, setTheme] = useState(() => readStorage(STORAGE_KEYS.theme) || "dark");
+
+  // Guards against out-of-order weather responses when the user switches cities quickly.
+  const weatherRequestIdRef = useRef(0);
+
   useEffect(() => {
-    try {
-      document.documentElement.setAttribute("data-theme", theme);
-      localStorage.setItem("climatesphere_theme", theme);
-    } catch {}
+    document.documentElement.setAttribute("data-theme", theme);
+    writeStorage(STORAGE_KEYS.theme, theme);
   }, [theme]);
+
+  // Live NASA EONET wildfire events, with the bundled sample set as offline fallback.
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchWildfireHotspots({ signal: controller.signal })
+      .then((result) => {
+        if (!controller.signal.aborted && result.hotspots.length > 0) {
+          setWildfireData(result);
+        }
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          console.warn("Live wildfire feed unavailable, keeping sample dataset:", err);
+        }
+      });
+    return () => controller.abort();
+  }, []);
 
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
@@ -128,11 +124,11 @@ export default function App() {
   });
 
   const loadDataForLocation = useCallback(async (location, showRefreshing = false) => {
-    if (!location || location.lat == null || location.lon == null) {
+    if (!location || !Number.isFinite(location.lat) || !Number.isFinite(location.lon)) {
       return;
     }
+    const requestId = ++weatherRequestIdRef.current;
     if (showRefreshing) setIsRefreshing(true);
-    else setIsLoading(true);
     setError(null);
 
     try {
@@ -141,14 +137,17 @@ export default function App() {
         fetchAirQualityData(location.lat, location.lon)
       ]);
 
+      if (requestId !== weatherRequestIdRef.current) return;
       setWeatherData(weather);
       setAirQualityData(aqi);
     } catch (err) {
+      if (requestId !== weatherRequestIdRef.current) return;
       console.error("Failed to load location data:", err);
       setError("Unable to sync live weather feeds. Please try again.");
     } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
+      if (requestId === weatherRequestIdRef.current) {
+        setIsRefreshing(false);
+      }
     }
   }, []);
 
@@ -166,20 +165,16 @@ export default function App() {
         setCurrentLocation((prev) => {
           // Only apply fast IP if we haven't already locked onto a precise location
           if (prev.lat == null || prev.name === "Detecting Location...") {
+            saveLastLocation(fastLoc);
             return fastLoc;
           }
           return prev;
         });
-        try {
-          localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(fastLoc)));
-        } catch {}
       }
     }).then((loc) => {
       if (isMounted && loc && loc.lat != null && loc.lon != null) {
         setCurrentLocation(loc);
-        try {
-          localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(loc)));
-        } catch {}
+        saveLastLocation(loc);
       }
     });
     return () => {
@@ -200,9 +195,7 @@ export default function App() {
       };
     }
     setCurrentLocation(targetLoc);
-    try {
-      localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(targetLoc)));
-    } catch {}
+    saveLastLocation(targetLoc);
   };
 
   const handleAutoLocate = async () => {
@@ -211,15 +204,13 @@ export default function App() {
       const detected = await detectUserLocation();
       if (detected && detected.lat != null && detected.lon != null) {
         setCurrentLocation(detected);
-        try {
-          localStorage.setItem("climatesphere_last_location", JSON.stringify(toNonSensitiveStoredLocation(detected)));
-        } catch {}
+        saveLastLocation(detected);
       } else {
-        alert("Could not automatically detect your location.");
+        setError("Could not automatically detect your location.");
       }
     } catch (err) {
       console.warn("Auto-locate failed:", err);
-      alert("Could not access location.");
+      setError("Could not access your location. Check the browser permission and try again.");
     } finally {
       setIsRefreshing(false);
     }
@@ -341,6 +332,7 @@ export default function App() {
                     viewMode={viewMode}
                     onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
                     isM3Embedded={true}
+                    wildfireHotspots={wildfireData.hotspots}
                   />
                 </div>
               </div>
@@ -388,6 +380,7 @@ export default function App() {
                     viewMode={viewMode}
                     onToggleViewMode={() => setViewMode((prev) => (prev === "3d" ? "2d" : "3d"))}
                     isM3Embedded={true}
+                    wildfireHotspots={wildfireData.hotspots}
                   />
                 </div>
               </div>
@@ -427,6 +420,9 @@ export default function App() {
                 currentLocation={currentLocation}
                 weatherData={weatherData}
                 onSelectLocation={handleSelectLocation}
+                hotspots={wildfireData.hotspots}
+                source={wildfireData.source}
+                fetchedAt={wildfireData.fetchedAt}
               />
               <ExtremeEventsRadar />
             </div>
@@ -451,7 +447,7 @@ export default function App() {
             </div>
           )}
 
-          {/* Tab 8: AI Climate Impact Simulator */}
+          {/* Tab 8: Climate Impact Simulator */}
           {activeTab === "sim" && (
             <div className="m3-tab-content-container">
               <ClimateImpactSimulator
@@ -613,6 +609,7 @@ export default function App() {
           weatherData={weatherData}
           airQualityData={airQualityData}
           unit={unit}
+          wildfireHotspots={wildfireData.hotspots}
           onClose={() => setIsExportModalOpen(false)}
         />
       )}

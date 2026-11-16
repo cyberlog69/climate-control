@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
-import { GLOBAL_WILDFIRE_HOTSPOTS } from "../services/wildfireSatelliteApi";
-import { MapPin, Layers, Flame, Wind, Cloud, Globe2, Map as MapIcon, Radio } from "lucide-react";
-import EarthGlobe3D from "./EarthGlobe3D";
+import { SAMPLE_WILDFIRE_HOTSPOTS } from "../services/wildfireSatelliteApi";
+import { MapPin, Flame, Wind, Cloud, Globe2, Map as MapIcon } from "lucide-react";
+
+// Three.js is a large dependency; only download it when the globe is opened.
+const EarthGlobe3D = lazy(() => import("./EarthGlobe3D"));
 
 // Security: sanitize SVG parameters to prevent XSS via crafted map data
 const SAFE_COLOR_RE = /^[#a-zA-Z0-9(),%. ]+$/;
@@ -117,7 +119,7 @@ function detectWebGLSupport() {
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
     return !!gl;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -129,10 +131,10 @@ export default function InteractiveMap({
   onSelectLocation,
   weatherData,
   theme = "dark",
-  isSpatialCockpit = false,
   isM3Embedded = false,
   viewMode: controlledViewMode,
-  onToggleViewMode
+  onToggleViewMode,
+  wildfireHotspots = SAMPLE_WILDFIRE_HOTSPOTS
 }) {
   // Default to 2D map when WebGL is not available (common on older/low-end Android WebViews)
   const [internalViewMode, setInternalViewMode] = useState(webGLSupported ? "3d" : "2d");
@@ -191,12 +193,21 @@ export default function InteractiveMap({
     return (
       <div style={{ width: "100%", height: "100%", position: "relative" }}>
         {viewMode === "3d" ? (
-          <EarthGlobe3D
-            currentLocation={currentLocation}
-            onSelectLocation={onSelectLocation}
-            weatherData={weatherData}
-            theme={theme}
-          />
+          <Suspense
+            fallback={
+              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "0.82rem" }}>
+                Loading 3D globe…
+              </div>
+            }
+          >
+            <EarthGlobe3D
+              currentLocation={currentLocation}
+              onSelectLocation={onSelectLocation}
+              weatherData={weatherData}
+              theme={theme}
+              wildfireHotspots={wildfireHotspots}
+            />
+          </Suspense>
         ) : (
           <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
             <MapResizeHandler />
@@ -254,13 +265,16 @@ export default function InteractiveMap({
             ))}
 
             {(activeLayer === "wildfires" || activeLayer === "temp") &&
-              GLOBAL_WILDFIRE_HOTSPOTS.map((fire) => (
+              wildfireHotspots.map((fire) => (
                 <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444", "🔥")}>
                   <Popup>
                     <div style={{ padding: "0.25rem" }}>
-                      <div style={{ color: "var(--accent-red)", fontWeight: 800 }}>NASA Satellite Alert</div>
+                      <div style={{ color: "var(--accent-red)", fontWeight: 800 }}>NASA Wildfire Event</div>
                       <div style={{ fontWeight: 600 }}>{fire.region}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>FRP: {fire.frp} MW · Confidence: {fire.confidence}%</div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                        {Number.isFinite(fire.frp) ? `FRP: ${fire.frp} MW · ` : ""}
+                        {Number.isFinite(fire.confidence) ? `Confidence: ${fire.confidence}%` : fire.detectedAgo}
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
@@ -416,12 +430,21 @@ export default function InteractiveMap({
       {/* Map or 3D Globe Container */}
       <div style={{ flex: 1, minHeight: "360px", borderRadius: "16px", overflow: "hidden", position: "relative" }}>
         {viewMode === "3d" ? (
-          <EarthGlobe3D
-            currentLocation={currentLocation}
-            onSelectLocation={onSelectLocation}
-            weatherData={weatherData}
-            theme={theme}
-          />
+          <Suspense
+            fallback={
+              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "0.82rem" }}>
+                Loading 3D globe…
+              </div>
+            }
+          >
+            <EarthGlobe3D
+              currentLocation={currentLocation}
+              onSelectLocation={onSelectLocation}
+              weatherData={weatherData}
+              theme={theme}
+              wildfireHotspots={wildfireHotspots}
+            />
+          </Suspense>
         ) : (
           <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
             <MapResizeHandler />
@@ -499,24 +522,33 @@ export default function InteractiveMap({
 
             {/* NASA Active Wildfire Thermal Anomaly Markers */}
             {(activeLayer === "wildfires" || activeLayer === "temp") &&
-              GLOBAL_WILDFIRE_HOTSPOTS.map((fire) => (
+              wildfireHotspots.map((fire) => (
                 <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444", "🔥")}>
                   <Popup>
                     <div style={{ padding: "0.25rem", maxWidth: "230px" }}>
                       <div className="badge badge-red" style={{ marginBottom: "0.4rem" }}>
-                        NASA Thermal Anomaly ({fire.sensor})
+                        NASA Wildfire Event ({fire.sensor})
                       </div>
                       <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>
                         {fire.name}
                       </div>
                       <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
-                        Biome: {fire.biome}
+                        {fire.biome}
                       </div>
                       <div style={{ fontSize: "0.78rem", display: "flex", flexDirection: "column", gap: "0.2rem", margin: "0.4rem 0" }}>
-                        <div>Fire Radiative Power: <strong style={{ color: "var(--accent-amber)" }}>{fire.frp} MW</strong></div>
-                        <div>Brightness Temp: <strong>{fire.brightnessTempC}°C</strong></div>
-                        <div>Active Clusters: <strong>{fire.activeClusters}</strong> ({fire.status})</div>
-                        <div>Confidence: <strong style={{ color: "var(--accent-green)" }}>{fire.confidence}%</strong></div>
+                        {Number.isFinite(fire.frp) && (
+                          <div>Fire Radiative Power: <strong style={{ color: "var(--accent-amber)" }}>{fire.frp} MW</strong></div>
+                        )}
+                        {Number.isFinite(fire.brightnessTempC) && (
+                          <div>Brightness Temp: <strong>{fire.brightnessTempC}°C</strong></div>
+                        )}
+                        {Number.isFinite(fire.activeClusters) && fire.activeClusters > 1 && (
+                          <div>Active Clusters: <strong>{fire.activeClusters}</strong> ({fire.status})</div>
+                        )}
+                        {Number.isFinite(fire.confidence) && (
+                          <div>Confidence: <strong style={{ color: "var(--accent-green)" }}>{fire.confidence}%</strong></div>
+                        )}
+                        <div>Detected: <strong>{fire.detectedAgo}</strong></div>
                       </div>
                       <button
                         onClick={() =>

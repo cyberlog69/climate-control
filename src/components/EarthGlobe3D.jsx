@@ -1,28 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { CLIMATE_HOTSPOTS } from "../services/climateData";
-import { GLOBAL_WILDFIRE_HOTSPOTS } from "../services/wildfireSatelliteApi";
-import { Play, Pause, RotateCcw, ZoomIn, ZoomOut, Compass, Sparkles, MapPin, Flame } from "lucide-react";
-
-// Convert Latitude/Longitude to 3D Cartesian Coordinates on Sphere of radius R
-export function latLonToVector3(lat, lon, radius) {
-  const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lon + 180) * (Math.PI / 180);
-  const x = -(radius * Math.sin(phi) * Math.cos(theta));
-  const z = radius * Math.sin(phi) * Math.sin(theta);
-  const y = radius * Math.cos(phi);
-  return new THREE.Vector3(x, y, z);
-}
-
-// Convert 3D Cartesian Coordinate on Sphere of radius R to Latitude/Longitude
-export function vector3ToLatLon(vector, radius) {
-  const norm = vector.clone().normalize();
-  const lat = Math.asin(Math.max(-1, Math.min(1, norm.y))) * (180 / Math.PI);
-  let lon = (Math.atan2(norm.z, -norm.x) * (180 / Math.PI)) - 180;
-  while (lon < -180) lon += 360;
-  while (lon > 180) lon -= 360;
-  return { lat, lon };
-}
+import { SAMPLE_WILDFIRE_HOTSPOTS } from "../services/wildfireSatelliteApi";
+import { latLonToVector3, vector3ToLatLon } from "../utils/geo";
+import { Play, Pause, ZoomIn, ZoomOut, Compass } from "lucide-react";
 
 // Procedural High-Res Earth Texture Generator (Canvas-based)
 function createEarthCanvasTexture(theme = "dark") {
@@ -47,14 +28,6 @@ function createEarthCanvasTexture(theme = "dark") {
   oceanGrad.addColorStop(1, isDark ? "#081d38" : "#10395c");
   ctx.fillStyle = oceanGrad;
   ctx.fillRect(0, 0, width, height);
-
-  // Draw simplified world continents layout onto canvas
-  const drawContinent = (pathData, color) => {
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    const p = new Path2D(pathData);
-    ctx.fill(p);
-  };
 
   // Approximate major continent shapes
   // Eurasia / Africa / Americas / Australia / Antarctica
@@ -180,12 +153,21 @@ export default function EarthGlobe3D({
   currentLocation,
   onSelectLocation,
   weatherData,
-  theme = "dark"
+  theme = "dark",
+  wildfireHotspots = SAMPLE_WILDFIRE_HOTSPOTS
 }) {
   const mountRef = useRef(null);
   const [autoRotate, setAutoRotate] = useState(true);
-  const [hoveredHotspot, setHoveredHotspot] = useState(null);
   const [coordsTooltip, setCoordsTooltip] = useState(null);
+
+  // Refs keep the animation loop and one-time scene setup reading stable values
+  // without re-creating the whole WebGL scene when a prop changes.
+  const autoRotateRef = useRef(true);
+  const initialLocationRef = useRef(currentLocation);
+
+  useEffect(() => {
+    autoRotateRef.current = autoRotate;
+  }, [autoRotate]);
 
   // References for Three.js animation and event listeners
   const sceneRef = useRef(null);
@@ -362,20 +344,18 @@ export default function EarthGlobe3D({
     markersGroupRef.current = markersGroup;
 
     // Initial position flight if currentLocation exists
-    if (currentLocation?.lat != null && currentLocation?.lon != null) {
-      const phi = (currentLocation.lat * Math.PI) / 180;
-      const theta = ((currentLocation.lon + 90) * Math.PI) / 180;
+    const initialLocation = initialLocationRef.current;
+    if (initialLocation?.lat != null && initialLocation?.lon != null) {
+      const phi = (initialLocation.lat * Math.PI) / 180;
+      const theta = ((initialLocation.lon + 90) * Math.PI) / 180;
       globeGroup.rotation.x = phi;
       globeGroup.rotation.y = -theta;
       targetRotationRef.current = { x: phi, y: -theta };
     }
 
     // 10. Animation Render Loop
-    let lastTime = performance.now();
     const animate = (time) => {
       animFrameIdRef.current = requestAnimationFrame(animate);
-      const delta = (time - lastTime) / 1000;
-      lastTime = time;
 
       // Slow cloud rotation
       if (cloudMeshRef.current) {
@@ -388,7 +368,7 @@ export default function EarthGlobe3D({
         globeGroup.rotation.y += (targetRotationRef.current.y - globeGroup.rotation.y) * 0.06;
 
         // Auto-rotation idle drift
-        if (autoRotate) {
+        if (autoRotateRef.current) {
           targetRotationRef.current.y -= 0.0018;
         }
       }
@@ -437,6 +417,12 @@ export default function EarthGlobe3D({
       container.innerHTML = "";
     };
   }, [theme]); // Re-init on theme switch
+
+  useEffect(() => {
+    if (currentLocation?.lat != null && currentLocation?.lon != null) {
+      flyTo(currentLocation.lat, currentLocation.lon);
+    }
+  }, [currentLocation?.lat, currentLocation?.lon, flyTo]);
 
   // Update Hotspot and Active Location 3D Markers
   useEffect(() => {
@@ -505,8 +491,8 @@ export default function EarthGlobe3D({
       markersGroup.add(ringMesh);
     });
 
-    // 3. Add NASA Active Wildfire Thermal Anomaly 3D Markers
-    GLOBAL_WILDFIRE_HOTSPOTS.forEach((fire, idx) => {
+    // 3. Add NASA Active Wildfire Events as 3D Markers
+    wildfireHotspots.forEach((fire, idx) => {
       const pos = latLonToVector3(fire.lat, fire.lon, GLOBE_RADIUS * 1.012);
 
       // Red/Orange fire cone
@@ -533,7 +519,7 @@ export default function EarthGlobe3D({
       fireRingMesh.userData = { isPulse: true, offset: idx * 0.9 + 2 };
       markersGroup.add(fireRingMesh);
     });
-  }, [currentLocation]);
+  }, [currentLocation, wildfireHotspots]);
 
   // Mouse & Touch Orbit Controls & Click Raycasting
   const handlePointerDown = (e) => {
@@ -581,7 +567,7 @@ export default function EarthGlobe3D({
           const localPoint = hitPoint.clone().applyEuler(
             new THREE.Euler(-globeGroupRef.current.rotation.x, -globeGroupRef.current.rotation.y, 0, "YXZ")
           );
-          const coords = vector3ToLatLon(localPoint, GLOBE_RADIUS);
+          const coords = vector3ToLatLon(localPoint);
           setCoordsTooltip({
             lat: coords.lat.toFixed(2),
             lon: coords.lon.toFixed(2),
@@ -595,7 +581,7 @@ export default function EarthGlobe3D({
     }
   };
 
-  const handlePointerUp = (e) => {
+  const handlePointerUp = () => {
     isDraggingRef.current = false;
   };
 
@@ -650,7 +636,7 @@ export default function EarthGlobe3D({
         const localPoint = hitPoint.clone().applyEuler(
           new THREE.Euler(-globeGroupRef.current.rotation.x, -globeGroupRef.current.rotation.y, 0, "YXZ")
         );
-        const { lat, lon } = vector3ToLatLon(localPoint, GLOBE_RADIUS);
+        const { lat, lon } = vector3ToLatLon(localPoint);
         onSelectLocation({
           name: `Lat: ${lat.toFixed(2)}°, Lon: ${lon.toFixed(2)}°`,
           cityName: "Custom Coordinates",

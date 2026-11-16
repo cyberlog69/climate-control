@@ -1,9 +1,9 @@
 // Raw Climate Data Exporter Engine
 // Compiles, formats, and serializes planetary telemetry into CSV (RFC 4180) and JSON formats
 
-import { getHistoricalClimateTrajectory } from "./historicalClimateApi";
-import { calculateRenewableYield } from "./renewableEnergyApi";
-import { GLOBAL_WILDFIRE_HOTSPOTS, calculateDistanceKm } from "./wildfireSatelliteApi";
+import { getHistoricalClimateTrajectory } from "./historicalClimateApi.js";
+import { calculateRenewableYield } from "./renewableEnergyApi.js";
+import { SAMPLE_WILDFIRE_HOTSPOTS, calculateDistanceKm } from "./wildfireSatelliteApi.js";
 
 /**
  * Builds a structured dataset object containing selected climate data streams
@@ -20,7 +20,8 @@ export async function buildClimateExportData({
     energy: true,
     wildfires: true
   },
-  unit = "C"
+  unit = "C",
+  wildfireHotspots = SAMPLE_WILDFIRE_HOTSPOTS
 }) {
   const meta = {
     platform: "ClimateSphere Planetary Intelligence",
@@ -107,9 +108,9 @@ export async function buildClimateExportData({
     payload.renewableEnergyPotential = energy;
   }
 
-  // 6. NASA Wildfires in Regional Perimeter
+  // 6. NASA Wildfire Events in Regional Perimeter
   if (datasets.wildfires) {
-    const nearby = GLOBAL_WILDFIRE_HOTSPOTS.map((fire) => {
+    const nearby = wildfireHotspots.map((fire) => {
       const dist = calculateDistanceKm(location.lat, location.lon, fire.lat, fire.lon);
       return {
         ...fire,

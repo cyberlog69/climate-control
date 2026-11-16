@@ -37,14 +37,14 @@ class WeatherAudioSynth {
       try {
         this.rainNodes.source.stop();
         this.rainNodes.source.disconnect();
-      } catch (e) {}
+      } catch {}
       this.rainNodes = null;
     }
     if (this.windNode) {
       try {
         this.windNode.source.stop();
         this.windNode.source.disconnect();
-      } catch (e) {}
+      } catch {}
       this.windNode = null;
     }
     this.isPlaying = false;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   fetchWatchlistSummaries,
   isCityPinned
@@ -10,9 +10,6 @@ import {
   X,
   Plus,
   Trash2,
-  Navigation,
-  Wind,
-  Droplets,
   Search,
   RefreshCw,
   MapPin,
@@ -34,20 +31,21 @@ export default function WatchlistModal({
   const [isSearching, setIsSearching] = useState(false);
 
   // Fetch summaries for all pinned locations
-  const loadSummaries = async () => {
+  const loadSummaries = useCallback(async () => {
     setIsLoading(true);
     const data = await fetchWatchlistSummaries(watchlist);
     setSummaries(data);
     setIsLoading(false);
-  };
+  }, [watchlist]);
 
   useEffect(() => {
     loadSummaries();
-  }, [watchlist]);
+  }, [loadSummaries]);
 
   const isCurrentCityPinned = isCityPinned(currentLocation, watchlist);
 
   const handleToggleCurrentPin = () => {
+    if (!currentLocation?.cityName) return;
     if (isCurrentCityPinned) {
       const updated = watchlist.filter(
         (c) => c.cityName?.toLowerCase() !== currentLocation?.cityName?.toLowerCase()

@@ -1,18 +1,35 @@
 // Multi-City Watchlist & Pinboard Storage & Sync Engine
 // Persists pinned locations in localStorage and provides batch weather telemetry
 
-import { fetchWeatherData, fetchAirQualityData } from "./weatherApi";
+import { fetchWeatherData, fetchAirQualityData } from "./weatherApi.js";
+import { STORAGE_KEYS, isFiniteCoordinate, readJson, roundCoordinate, writeJson } from "./storage.js";
 
-const WATCHLIST_STORAGE_KEY = "climatesphere_pinned_watchlist";
+const WATCHLIST_PRECISION = 4; // ~11 m, enough to identify a city
 
-const toNonSensitiveStoredCity = (city) => ({
-  id: city?.id ?? "",
-  name: city?.name ?? "",
-  cityName: city?.cityName ?? "",
-  country: city?.country ?? "",
-  lat: null,
-  lon: null
-});
+function normaliseCity(city) {
+  if (!city || !isFiniteCoordinate(city.lat, city.lon)) return null;
+  const cityName = String(city.cityName || city.name || "").trim();
+  if (!cityName) return null;
+  return {
+    id: String(city.id || `loc-${cityName.toLowerCase()}-${roundCoordinate(city.lat, 2)}-${roundCoordinate(city.lon, 2)}`),
+    name: String(city.name || cityName),
+    cityName,
+    country: String(city.country || ""),
+    lat: roundCoordinate(city.lat, WATCHLIST_PRECISION),
+    lon: roundCoordinate(city.lon, WATCHLIST_PRECISION)
+  };
+}
+
+function sameCity(a, b) {
+  if (!a || !b) return false;
+  if (a.id && b.id && a.id === b.id) return true;
+  return Boolean(
+    a.cityName &&
+      b.cityName &&
+      a.cityName.toLowerCase() === b.cityName.toLowerCase() &&
+      (a.country || "").toLowerCase() === (b.country || "").toLowerCase()
+  );
+}
 
 // Default global sentinels pinned on initial visit
 export const DEFAULT_PINNED_CITIES = [
@@ -38,7 +55,7 @@ export const DEFAULT_PINNED_CITIES = [
     cityName: "New York",
     country: "United States",
     lat: 40.7128,
-    lon: -74.0060
+    lon: -74.006
   },
   {
     id: "loc-paris",
@@ -67,83 +84,109 @@ export const DEFAULT_PINNED_CITIES = [
 ];
 
 /**
- * Loads watchlist from localStorage (with fallback to defaults)
+ * Loads the watchlist from localStorage, repairing entries written by v1.5.2
+ * (which stripped coordinates and made pinned cities unusable).
  */
 export function getStoredWatchlist() {
-  try {
-    const raw = localStorage.getItem(WATCHLIST_STORAGE_KEY);
-    if (!raw) return DEFAULT_PINNED_CITIES;
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0
-      ? parsed.map(toNonSensitiveStoredCity)
-      : DEFAULT_PINNED_CITIES;
-  } catch (e) {
-    console.warn("Failed to load watchlist from localStorage:", e);
-    return DEFAULT_PINNED_CITIES;
-  }
+  const parsed = readJson(STORAGE_KEYS.watchlist, null);
+  if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_PINNED_CITIES;
+
+  const repaired = parsed
+    .map((entry) => {
+      const normalised = normaliseCity(entry);
+      if (normalised) return normalised;
+
+      // Legacy entry with null coordinates: recover the city from the defaults.
+      const fallback = DEFAULT_PINNED_CITIES.find((city) => sameCity(city, entry));
+      return fallback ? normaliseCity(fallback) : null;
+    })
+    .filter(Boolean);
+
+  return repaired.length > 0 ? repaired : DEFAULT_PINNED_CITIES;
 }
 
 /**
- * Saves watchlist to localStorage
+ * Saves the watchlist to localStorage. Entries without usable coordinates are
+ * skipped so a broken pin can never blank out the list.
  */
 export function saveWatchlist(cities) {
-  try {
-    const safeCities = Array.isArray(cities) ? cities.map(toNonSensitiveStoredCity) : [];
-    localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(safeCities));
-  } catch (e) {
-    console.warn("Failed to save watchlist to localStorage:", e);
-  }
+  const safeCities = (Array.isArray(cities) ? cities : [])
+    .map(normaliseCity)
+    .filter(Boolean);
+
+  writeJson(STORAGE_KEYS.watchlist, safeCities);
+  return safeCities;
 }
 
 /**
  * Checks if a city is currently pinned
  */
 export function isCityPinned(city, watchlist) {
-  if (!city) return false;
-  return watchlist.some(
-    (item) =>
-      item.id === city.id ||
-      (Math.abs(item.lat - city.lat) < 0.05 && Math.abs(item.lon - city.lon) < 0.05) ||
-      (item.cityName && city.cityName && item.cityName.toLowerCase() === city.cityName.toLowerCase())
-  );
+  if (!city || !Array.isArray(watchlist)) return false;
+  return watchlist.some((item) => {
+    if (sameCity(item, city)) return true;
+    if (!isFiniteCoordinate(item.lat, item.lon) || !isFiniteCoordinate(city.lat, city.lon)) {
+      return false;
+    }
+    return Math.abs(item.lat - city.lat) < 0.05 && Math.abs(item.lon - city.lon) < 0.05;
+  });
 }
 
 /**
- * Fetches current weather and AQI for all pinned cities in parallel
+ * Fetches current weather and AQI for all pinned cities in parallel.
+ * Cities without coordinates are reported as unavailable instead of requesting
+ * `latitude=null`, which Open-Meteo rejects.
  */
 export async function fetchWatchlistSummaries(cities) {
-  const promises = cities.map(async (city) => {
-    try {
-      const [weather, aqi] = await Promise.all([
-        fetchWeatherData(city.lat, city.lon),
-        fetchAirQualityData(city.lat, city.lon)
-      ]);
-      return {
-        ...city,
-        temp: weather?.current?.temp ?? "--",
-        weatherCode: weather?.current?.weatherCode ?? 0,
-        humidity: weather?.current?.humidity ?? "--",
-        windSpeed: weather?.current?.windSpeed ?? "--",
-        aqi: aqi?.current?.aqi ?? 50,
-        aqiLevel: aqi?.current?.level ?? "Good",
-        aqiColor: aqi?.current?.color ?? "#10b981",
-        isLoaded: true
-      };
-    } catch (e) {
-      console.warn(`Failed to fetch weather for pinned city ${city.name}:`, e);
-      return {
-        ...city,
-        temp: "--",
-        weatherCode: 0,
-        humidity: "--",
-        windSpeed: "--",
-        aqi: "--",
-        aqiLevel: "Offline",
-        aqiColor: "#64748b",
-        isLoaded: false
-      };
-    }
-  });
+  const list = Array.isArray(cities) ? cities : [];
 
-  return Promise.all(promises);
+  return Promise.all(
+    list.map(async (city) => {
+      const hasCoordinates = isFiniteCoordinate(city?.lat, city?.lon);
+      if (!hasCoordinates) {
+        return {
+          ...city,
+          temp: "--",
+          weatherCode: 0,
+          humidity: "--",
+          windSpeed: "--",
+          aqi: "--",
+          aqiLevel: "Unavailable",
+          aqiColor: "#64748b",
+          isLoaded: false
+        };
+      }
+
+      try {
+        const [weather, aqi] = await Promise.all([
+          fetchWeatherData(city.lat, city.lon),
+          fetchAirQualityData(city.lat, city.lon)
+        ]);
+        return {
+          ...city,
+          temp: weather?.current?.temp ?? "--",
+          weatherCode: weather?.current?.weatherCode ?? 0,
+          humidity: weather?.current?.humidity ?? "--",
+          windSpeed: weather?.current?.windSpeed ?? "--",
+          aqi: aqi?.current?.aqi ?? 50,
+          aqiLevel: aqi?.current?.level ?? "Good",
+          aqiColor: aqi?.current?.color ?? "#10b981",
+          isLoaded: true
+        };
+      } catch (error) {
+        console.warn(`Failed to fetch weather for pinned city ${city.cityName}:`, error);
+        return {
+          ...city,
+          temp: "--",
+          weatherCode: 0,
+          humidity: "--",
+          windSpeed: "--",
+          aqi: "--",
+          aqiLevel: "Offline",
+          aqiColor: "#64748b",
+          isLoaded: false
+        };
+      }
+    })
+  );
 }

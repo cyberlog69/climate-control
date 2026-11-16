@@ -23,8 +23,8 @@
 **ClimateSphere** is a high-performance, cross-platform environmental intelligence and planetary monitoring system. It unites real-time atmospheric telemetry, satellite remote sensing, interactive 3D WebGL computer graphics, and native Android engineering into an open, telemetry-driven platform designed to monitor global weather, atmospheric carbon trends, wildfire clusters, and climate risks worldwide.
 
 - **🌐 Live Web Application**: Hosted on Cloudflare with automated continuous deployment from GitHub: [**https://climate-control.loggy69.workers.dev/**](https://climate-control.loggy69.workers.dev/)
-- **🤖 Native Android App**: Engineered from scratch with **Kotlin 2.0**, **Jetpack Compose (Material 3)**, and **Room SQLite** for instant 0ms offline sync and Material You dynamic wallpaper tinting.
-- **🛰️ Satellite & Open Science**: 100% powered by Open-Meteo and NASA FIRMS (MODIS/VIIRS) with zero commercial API keys required.
+- **🤖 Native Android App**: Engineered from scratch with **Kotlin 2.0**, **Jetpack Compose (Material 3)**, and **Room SQLite** for instant cached startup and Material You dynamic wallpaper tinting.
+- **🛰️ Satellite & Open Science**: 100% powered by Open-Meteo and NASA EONET with zero commercial API keys required.
 - **📱 Responsive & Cross-Device**: Seamlessly adapts across mobile phones, tablets, landscape orientations, and ultrawide desktop control room monitors.
 
 ---
@@ -43,10 +43,10 @@
 - **Multi-Metric Historical Shift Analysis**: Compares historical mean temperatures, atmospheric $\text{CO}_2$ concentration (311 ppm $\rightarrow$ 428 ppm), extreme heatwave days/year, and precipitation volume.
 - **75-Year Trajectory Curve**: Recharts interactive thermal trajectory curve with pinpointed active decade indicators and automated natural language diagnostic comparisons.
 
-### 3. 🛰️ Real-Time NASA Wildfire & Thermal Hotspot Satellite Feeds
-- **Orbital Infrared Telemetry**: Near-realtime tracking of global active wildfire clusters and thermal anomalies powered by NASA FIRMS (VIIRS-SNPP, MODIS-Aqua/Terra, VIIRS-NOAA20).
-- **Interactive Map & Globe Overlays**: 3D pulsating flame cones on the WebGL globe and thermal density layers on 2D Leaflet maps showing Fire Radiative Power (FRP in Megawatts), brightness temperature (°C), and detection timestamps.
-- **Local Proximity Fire Risk Index**: Evaluates regional wildfire danger levels (Low $\rightarrow$ Extreme) and measures exact distance in kilometers to the nearest active fire cluster.
+### 3. 🛰️ NASA Wildfire Event Feed (EONET) & Thermal Overlays
+- **Live Event Telemetry**: Open wildfire events from [NASA EONET](https://eonet.gsfc.nasa.gov/), a keyless public API refreshed on load. A clearly-labelled bundled sample dataset keeps the map and globe populated when the feed is unreachable.
+- **Interactive Map & Globe Overlays**: 3D flame markers on the WebGL globe and event markers on the 2D Leaflet map. EONET publishes event locations and timestamps; Fire Radiative Power (FRP) and thermal brightness are only shown for the sample dataset because that feed does not provide them.
+- **Local Proximity Fire Risk Index**: Evaluates regional wildfire danger levels (Low $\rightarrow$ Extreme) and measures exact distance in kilometers to the nearest open wildfire event.
 
 ### 4. ⚡ Renewable Energy Yield Estimator (Solar & Wind Potential)
 - **Solar PV Production Modeling**: Computes Peak Sun Hours (PSH), Global Horizontal Irradiance (GHI in $\text{W/m}^2$), daily/annual output ($\text{MWh/year}$), and capacity factors based on configurable array size ($1\text{ kWp}$ to $15\text{ kWp}$).
@@ -64,7 +64,7 @@
 - **1-Click Sentinel Quick-Switch**: Instantly fly the 3D WebGL Earth Globe or 2D Map camera to any pinned city with one click.
 - **In-Modal City Search & Pinning**: Integrated global geocoding search to discover and pin unlimited cities worldwide.
 
-### 7. 🎙️ AI Voice Climate Briefing (Browser Speech Synthesis)
+### 7. 🎙️ Voice Climate Briefing (Browser Speech Synthesis)
 - **Natural-Language Daily Intelligence Briefing**: Synthesizes executive planetary weather briefings, AQI advisories, atmospheric pressure changes, and global carbon vitals for any active city using the native **Web Speech Synthesis API** (100% free, zero external API keys).
 - **Animated Audio Waveform Visualizer**: 24-channel pulsating frequency equalizer bars synchronized with active voice playback.
 - **Dynamic Teleprompter & Playback Controls**: Live script auto-scroller, system voice accent selector (US, UK, etc.), variable playback speeds (`0.8x`, `1.0x`, `1.2x`, `1.5x`), and 1-click script clipboard export.
@@ -74,7 +74,7 @@
 - **Custom Stream Selection**: Toggle individual streams including 24-Hour Hourly Forecasts, 7-Day Synoptic Weather, Air Quality & Particulates ($\text{PM}_{2.5}, \text{PM}_{10}, \text{NO}_2, \text{O}_3$), 75-Year Historical Trajectories (1950–2026), Solar/Wind Renewable Yields, and Active NASA Wildfire Hotspots.
 - **Live Monospace Preview Terminal**: Real-time syntax preview of the output payload with dynamic byte size and row count calculations before downloading.
 
-### 9. 🔮 AI Climate Impact Scenario Simulator
+### 9. 🔮 Climate Impact Scenario Simulator
 - **Warming Scenario Slider**: Model future environmental impacts at **+1.5°C**, **+2.0°C**, **+3.0°C**, and **+4.0°C** global warming scenarios.
 - **Local Stress Projections**: Calculates coordinate-specific projections for:
   - 🌊 **Sea Level Rise Inundation**: Projected coastal surge in meters.
@@ -258,11 +258,11 @@ docker compose up -d
 ### 🌐 Web & PWA Stack
 | Component | Technology / Library |
 | :--- | :--- |
-| **Frontend Framework** | [React 18](https://react.dev) + [Vite 8](https://vite.dev) |
+| **Frontend Framework** | [React 19](https://react.dev) + [Vite 8](https://vite.dev) |
 | **PWA & Offline** | Web App Manifest + Service Worker Cache-First Engine |
 | **3D Planetary WebGL** | [Three.js](https://threejs.org) (Procedural Earth Globe, Atmosphere Shaders, Orbit Controls) |
 | **Styling** | Vanilla CSS (Design Tokens, Glassmorphism, Responsive Grid) |
-| **Interactive Mapping** | [Leaflet](https://leafletjs.com) + [React-Leaflet](https://react-leaflet.js.org) + [CartoDB Dark/Light Tiles](https://carto.com) |
+| **Interactive Mapping** | [Leaflet](https://leafletjs.com) + [React-Leaflet](https://react-leaflet.js.org) + [Esri World Canvas Tiles](https://www.esri.com) |
 | **Data Visualizations** | [Recharts](https://recharts.org) (Area & Bar Charts) |
 | **Voice & Audio** | Native Web Speech Synthesis API & Web Audio Synthesizer |
 | **Iconography** | [Lucide React](https://lucide.dev) |
@@ -282,12 +282,12 @@ docker compose up -d
 
 ## 🤖 Native Android App (Kotlin & Jetpack Compose)
 
-[![Download APK](https://img.shields.io/badge/Download_APK-v1.4.0-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download_APK-v1.5.2-06B6D4?style=for-the-badge&logo=android&logoColor=white)](https://github.com/cyberlog69/climate-control/releases/latest)
 
 ClimateSphere features a 100% native Android application built with modern Android standards in [`android/`](./android):
 
 ### 🌟 Key Highlights & Architecture:
-- **⚡ 0ms Cold Startup & Offline Cache**: Powered by a Room SQLite database acting as the Single Source of Truth. Cached weather is emitted instantly on launch, followed by silent background synchronization with Open-Meteo.
+- **⚡ Instant Cached Startup & Offline Cache**: Powered by a Room SQLite database acting as the Single Source of Truth. Cached weather is emitted immediately on launch, followed by silent background synchronization with Open-Meteo.
 - **📍 Smart Auto-Locate & Dual Reverse-Geocoding**:
   - Automatically queries Google Play Services `FusedLocationProviderClient` on startup with fast IP-based fallback.
   - Native `android.location.Geocoder` resolves coordinates into your real city, state, and country names, with an automatic fallback client to ensure location resolution always succeeds.
@@ -307,8 +307,7 @@ ClimateSphere features a 100% native Android application built with modern Andro
 - **🔍 Debounced Global City Search & Watchlist**: Multi-city watchlist with horizontal paging between your GPS location and saved cities.
 
 ### 📦 Download Pre-Built APK:
-- **Direct Download**: Get the latest signed [ClimateSphere-v1.4.0.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
-- **Local Copy**: Also packaged in `release/ClimateSphere-v1.4.0.apk`.
+- **Direct Download**: Get the latest signed [ClimateSphere-v1.5.2.apk](https://github.com/cyberlog69/climate-control/releases/latest) from the [Releases](https://github.com/cyberlog69/climate-control/releases) page.
 
 ### 🛠️ Building the Android App from Source:
 ```bash
@@ -319,7 +318,7 @@ cd android
 .\gradlew.bat assembleRelease   # Windows
 
 # Output APK path:
-# android/app/build/outputs/apk/release/ClimateSphere-v1.4.0-release.apk
+# android/app/build/outputs/apk/release/ClimateSphere-v1.5.2-release.apk
 ```
 Or open the `android/` folder directly in **Android Studio Ladybug / Meerkat** and click **Run ▶**.
 
@@ -360,6 +359,28 @@ ClimateSphere also runs as a modern, responsive **Progressive Web App (PWA)**:
    ```bash
    npm run build
    ```
+
+5. **Lint, Test & Verify**
+   ```bash
+   npm run lint     # oxlint
+   npm test         # Node built-in test runner (services + regression tests)
+   ```
+
+6. **Build a Signed Android Release**
+   ```bash
+   # One-time: create a local release keystore (writes android/keystore.properties, both gitignored)
+   powershell -ExecutionPolicy Bypass -File scripts/generate-signing-key.ps1   # Windows
+   ./scripts/generate-signing-key.sh                                          # Linux / macOS
+
+   cd android
+   ./gradlew assembleRelease
+   ```
+   Signing credentials are read from `android/keystore.properties` or the
+   `CLIMATESPHERE_STORE_FILE`, `CLIMATESPHERE_STORE_PASSWORD`, `CLIMATESPHERE_KEY_ALIAS`,
+   and `CLIMATESPHERE_KEY_PASSWORD` environment variables. See
+   [`android/keystore.properties.example`](./android/keystore.properties.example).
+   Without credentials, `assembleRelease` falls back to debug signing so the build
+   still runs locally.
 
 ---
 

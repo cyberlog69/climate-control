@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { AlertTriangle, ShieldAlert, Volume2, VolumeX, X, Bell, Flame, Wind, Droplets, CloudLightning, Info } from "lucide-react";
+import { ShieldAlert, Volume2, VolumeX, X, Bell, Flame, Wind, Droplets, CloudLightning } from "lucide-react";
 
 // Security: reuse a single AudioContext singleton to prevent audio handle exhaustion
 let _alertAudioCtx = null;

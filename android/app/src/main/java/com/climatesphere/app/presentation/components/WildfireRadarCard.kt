@@ -78,21 +78,34 @@ fun WildfireRadarCard(
     temperatureC: Double,
     humidityPercent: Int,
     windSpeedKmH: Double,
+    hotspots: List<WildfireHotspot> = WildfireSentinelData.GLOBAL_HOTSPOTS,
+    isSampleData: Boolean = true,
+    updatedAt: String? = null,
     onSelectHotspotLocation: ((LocationModel) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
-    val assessment = remember(currentLocation.latitude, currentLocation.longitude, temperatureC, humidityPercent, windSpeedKmH) {
+    val assessment = remember(
+        currentLocation.latitude,
+        currentLocation.longitude,
+        temperatureC,
+        humidityPercent,
+        windSpeedKmH,
+        hotspots
+    ) {
         WildfireSentinelData.evaluateLocalWildfireRisk(
             lat = currentLocation.latitude,
             lon = currentLocation.longitude,
             temperatureC = temperatureC,
             humidityPercent = humidityPercent,
-            windSpeedKmH = windSpeedKmH
+            windSpeedKmH = windSpeedKmH,
+            hotspots = hotspots
         )
     }
 
     val riskColor = Color(assessment.colorHex)
-    var selectedHotspot by remember { mutableStateOf<WildfireHotspot?>(assessment.nearestCluster) }
+    var selectedHotspot by remember(hotspots) {
+        mutableStateOf<WildfireHotspot?>(assessment.nearestCluster)
+    }
 
     // Radar scanner animation
     val infiniteTransition = rememberInfiniteTransition(label = "RadarSweep")
@@ -157,9 +170,13 @@ fun WildfireRadarCard(
                             SkeuoLedDiode(color = RedAlert, size = 6.dp, isPulsing = true)
                             Spacer(modifier = Modifier.width(5.dp))
                             Text(
-                                text = "VIIRS / MODIS Orbital Feeds",
+                                text = when {
+                                    isSampleData -> "Sample dataset · live feed unavailable"
+                                    updatedAt != null -> "NASA EONET · ${updatedAt.substringBefore('.').replace('T', ' ')} UTC"
+                                    else -> "NASA EONET live feed"
+                                },
                                 style = MaterialTheme.typography.labelSmall,
-                                color = RedAlert,
+                                color = if (isSampleData) AmberWarning else RedAlert,
                                 fontSize = 11.sp
                             )
                         }
@@ -203,20 +220,24 @@ fun WildfireRadarCard(
                 ) {
                     Column {
                         Text(
-                            text = "Active Clusters",
+                            text = if (isSampleData) "Active Clusters" else "Open Events",
                             color = TextDim,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "${assessment.totalGlobalClusters}",
+                            text = if (isSampleData) {
+                                "${assessment.totalGlobalClusters}"
+                            } else {
+                                "${hotspots.size}"
+                            },
                             color = TextWhite,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Orbital Scans",
+                            text = if (isSampleData) "Illustrative only" else "NASA EONET",
                             color = TextDim,
                             fontSize = 9.sp
                         )
@@ -239,13 +260,17 @@ fun WildfireRadarCard(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "${assessment.severeOutbreaksCount} Zones",
+                            text = if (isSampleData) {
+                                "${assessment.severeOutbreaksCount} Zones"
+                            } else {
+                                "—"
+                            },
                             color = RedAlert,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "FRP Outbreaks",
+                            text = if (isSampleData) "FRP Outbreaks" else "FRP not in feed",
                             color = TextDim,
                             fontSize = 9.sp
                         )
@@ -268,13 +293,13 @@ fun WildfireRadarCard(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "${assessment.peakFrpMw.toInt()} MW",
+                            text = if (isSampleData) "${assessment.peakFrpMw.toInt()} MW" else "—",
                             color = AmberWarning,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Amazon Basin",
+                            text = if (isSampleData) "Sample peak" else "Not reported",
                             color = TextDim,
                             fontSize = 9.sp
                         )
@@ -359,7 +384,7 @@ fun WildfireRadarCard(
                     .skeuoLcdPanel(shape = RoundedCornerShape(18.dp), accentColor = CyanPrimary),
                 contentAlignment = Alignment.Center
             ) {
-                val hotspots = WildfireSentinelData.GLOBAL_HOTSPOTS
+                val radarHotspots = hotspots
                 val userLat = currentLocation.latitude
                 val userLon = currentLocation.longitude
 
@@ -411,7 +436,7 @@ fun WildfireRadarCard(
 
                     // Plot Wildfire Blips relative to user coordinates
                     val maxRangeKm = 12000.0
-                    hotspots.forEach { fire ->
+                    radarHotspots.forEach { fire ->
                         val distKm = WildfireSentinelData.calculateDistanceKm(userLat, userLon, fire.latitude, fire.longitude)
                         val normDist = (distKm / maxRangeKm).coerceIn(0.08, 0.98)
                         val radiusPx = maxRadius * normDist.toFloat()
@@ -485,7 +510,7 @@ fun WildfireRadarCard(
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                WildfireSentinelData.GLOBAL_HOTSPOTS.forEach { fire ->
+                hotspots.forEach { fire ->
                     val isSelected = selectedHotspot?.id == fire.id
                     val distKm = WildfireSentinelData.calculateDistanceKm(
                         currentLocation.latitude,
@@ -520,7 +545,11 @@ fun WildfireRadarCard(
                             }
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "${distKm} km · ${fire.frp.toInt()} MW",
+                                text = if (fire.frp > 0.0) {
+                                    "$distKm km · ${fire.frp.toInt()} MW"
+                                } else {
+                                    "$distKm km · ${fire.detectedAgo}"
+                                },
                                 color = TextDim,
                                 fontSize = 10.sp
                             )
@@ -580,7 +609,11 @@ fun WildfireRadarCard(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "FRP: ${fire.frp} MW  ·  Temp: ${fire.brightnessTempC}°C",
+                                text = if (fire.frp > 0.0) {
+                                    "FRP: ${fire.frp} MW  ·  Temp: ${fire.brightnessTempC}°C"
+                                } else {
+                                    "FRP: not reported by EONET"
+                                },
                                 color = AmberWarning,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium

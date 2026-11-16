@@ -17,7 +17,8 @@ class MainActivity : ComponentActivity() {
             repository = app.container.weatherRepository,
             updateManager = app.container.appUpdateManager,
             carbonDao = app.container.carbonDao,
-            barometerManager = app.container.barometerSensorManager
+            barometerManager = app.container.barometerSensorManager,
+            wildfireRepository = app.container.wildfireRepository
         )
     }
 

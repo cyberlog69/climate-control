@@ -1,41 +1,62 @@
 // ClimateSphere Service Worker for Offline Caching & PWA Support
-const CACHE_NAME = "climatesphere-v2";
-const ASSETS_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/manifest.webmanifest"
-];
+const CACHE_NAME = "climatesphere-v3";
+const RUNTIME_CACHE = "climatesphere-runtime-v3";
+const MAX_RUNTIME_ENTRIES = 80;
+
+const ASSETS_TO_CACHE = ["/", "/index.html", "/manifest.webmanifest"];
+
+// Weather and wildfire JSON APIs only. Map tiles are left to the browser's HTTP cache.
+const API_HOSTS = new Set([
+  "api.open-meteo.com",
+  "air-quality-api.open-meteo.com",
+  "geocoding-api.open-meteo.com",
+  "nominatim.openstreetmap.org",
+  "get.geojs.io",
+  "eonet.gsfc.nasa.gov"
+]);
+
+async function trimRuntimeCache() {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const keys = await cache.keys();
+  const excess = keys.length - MAX_RUNTIME_ENTRIES;
+  if (excess > 0) {
+    await Promise.all(keys.slice(0, excess).map((key) => cache.delete(key)));
+  }
+}
 
 // Install Event: Skip waiting to activate immediately
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activate Event: Immediately purge any older caches
+// Activate Event: Immediately purge older caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME && key !== RUNTIME_CACHE)
+            .map((key) => caches.delete(key))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-// Fetch Event
 self.addEventListener("fetch", (event) => {
   const request = event.request;
+  if (request.method !== "GET") return;
+
   const requestUrl = new URL(request.url);
 
-  // 1. Navigation requests (HTML document): Always Network-First to guarantee latest deploy
+  // 1. Navigation requests (HTML document): network-first to pick up new deploys.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
@@ -46,23 +67,39 @@ self.addEventListener("fetch", (event) => {
           }
           return response;
         })
-        .catch(() => caches.match("/index.html") || caches.match("/"))
+        .catch(() => caches.match("/index.html"))
     );
     return;
   }
 
-  // 2. External API calls: Network-First with cache fallback
-  if (
-    requestUrl.origin !== location.origin ||
-    requestUrl.pathname.includes("api")
-  ) {
+  const isApiRequest = requestUrl.origin !== location.origin && API_HOSTS.has(requestUrl.hostname);
+
+  // 2. External API calls: network-first, cache successful JSON for offline fallback.
+  if (isApiRequest) {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request))
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches
+              .open(RUNTIME_CACHE)
+              .then((cache) => cache.put(request, responseClone))
+              .then(trimRuntimeCache)
+              .catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
 
-  // 3. Local static assets: Cache-First with Network fallback
+  // 3. Other cross-origin requests (map tiles, etc.): network only.
+  if (requestUrl.origin !== location.origin) {
+    return;
+  }
+
+  // 4. Local static assets: cache-first with network fallback.
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {

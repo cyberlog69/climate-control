@@ -6,7 +6,6 @@
  */
 export function calculateRenewableYield({
   lat,
-  lon,
   weatherData,
   systemSizeKw = 5.0, // Residential PV array size in kWp
   panelEfficiency = 0.20, // 20% standard monocrystalline efficiency

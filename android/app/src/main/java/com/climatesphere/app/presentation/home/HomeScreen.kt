@@ -476,6 +476,9 @@ fun HomeScreen(
                                     temperatureC = weather.current.temperature,
                                     humidityPercent = weather.current.humidity,
                                     windSpeedKmH = weather.current.windSpeed,
+                                    hotspots = uiState.wildfireHotspots,
+                                    isSampleData = uiState.isWildfireSampleData,
+                                    updatedAt = uiState.wildfireUpdatedAt,
                                     onSelectHotspotLocation = { viewModel.selectLocation(it) }
                                 )
 

@@ -47,7 +47,7 @@ data class WildfireRiskAssessment(
 
 object WildfireSentinelData {
 
-    // Authoritative NASA FIRMS VIIRS & MODIS Orbital Thermal Anomaly Dataset
+    // Bundled sample dataset used until the live NASA EONET feed responds.
     val GLOBAL_HOTSPOTS = listOf(
         WildfireHotspot(
             id = "fire-amazon-basin",
@@ -62,7 +62,7 @@ object WildfireSentinelData {
             activeClusters = 142,
             status = "Expanding",
             biome = "Tropical Rainforest",
-            detectedAgo = "18m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-boreal-canada",
@@ -77,7 +77,7 @@ object WildfireSentinelData {
             activeClusters = 88,
             status = "Active",
             biome = "Boreal Needleleaf Forest",
-            detectedAgo = "42m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-siberia-sakha",
@@ -92,7 +92,7 @@ object WildfireSentinelData {
             activeClusters = 64,
             status = "Active",
             biome = "Arctic Permafrost Forest",
-            detectedAgo = "1h 10m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-california-sierra",
@@ -107,7 +107,7 @@ object WildfireSentinelData {
             activeClusters = 52,
             status = "Contained",
             biome = "Temperate Conifer Woodland",
-            detectedAgo = "25m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-australia-bush",
@@ -122,7 +122,7 @@ object WildfireSentinelData {
             activeClusters = 37,
             status = "Active",
             biome = "Eucalyptus Scrubland",
-            detectedAgo = "55m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-mediterranean-greece",
@@ -137,7 +137,7 @@ object WildfireSentinelData {
             activeClusters = 24,
             status = "Controlled",
             biome = "Mediterranean Scrub",
-            detectedAgo = "1h 45m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-central-africa",
@@ -152,7 +152,7 @@ object WildfireSentinelData {
             activeClusters = 110,
             status = "Expanding",
             biome = "Savanna / Forest Margin",
-            detectedAgo = "30m ago"
+            detectedAgo = "sample data"
         ),
         WildfireHotspot(
             id = "fire-borneo-peat",
@@ -167,7 +167,7 @@ object WildfireSentinelData {
             activeClusters = 76,
             status = "Active",
             biome = "Tropical Peat Swamp",
-            detectedAgo = "48m ago"
+            detectedAgo = "sample data"
         )
     )
 

@@ -73,3 +73,13 @@ createRoot(document.getElementById('root')).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+
+// Register the offline cache. Kept in the module bundle so index.html needs no
+// inline script (which would force a weaker Content-Security-Policy).
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Offline support is optional; the app still works online.
+    })
+  })
+}

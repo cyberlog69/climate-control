@@ -78,7 +78,7 @@ export function playBroadcastChime() {
     setTimeout(() => {
       ctx.close().catch(() => {});
     }, 1200);
-  } catch (e) {
+  } catch {
     // Ignore audio context errors
   }
 }

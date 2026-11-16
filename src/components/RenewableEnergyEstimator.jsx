@@ -16,9 +16,6 @@ import {
   Leaf,
   DollarSign,
   TreePine,
-  Sliders,
-  Sparkles,
-  TrendingUp,
   BatteryCharging
 } from "lucide-react";
 

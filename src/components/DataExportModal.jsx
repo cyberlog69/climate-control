@@ -12,7 +12,6 @@ import {
   Check,
   X,
   RefreshCw,
-  Sliders,
   Database,
   CheckSquare,
   Square
@@ -23,6 +22,7 @@ export default function DataExportModal({
   weatherData,
   airQualityData,
   unit = "C",
+  wildfireHotspots,
   onClose
 }) {
   const [format, setFormat] = useState("csv"); // 'csv' | 'json'
@@ -51,7 +51,8 @@ export default function DataExportModal({
         weatherData,
         airQualityData,
         datasets,
-        unit
+        unit,
+        wildfireHotspots
       });
 
       if (!isCancelled) {
@@ -64,7 +65,7 @@ export default function DataExportModal({
     return () => {
       isCancelled = true;
     };
-  }, [currentLocation, weatherData, airQualityData, datasets, unit]);
+  }, [currentLocation, weatherData, airQualityData, datasets, unit, wildfireHotspots]);
 
   // Format content as CSV or JSON
   useEffect(() => {

@@ -1,22 +1,17 @@
 import React, { useState } from "react";
 import {
-  Sliders,
   Waves,
   Flame,
   Droplets,
   Leaf,
-  AlertTriangle,
   Sparkles,
-  Info,
-  ShieldAlert,
-  ArrowRight
+  Sliders
 } from "lucide-react";
 
 export default function ClimateImpactSimulator({
   locationName = "Current Location",
   lat = 0,
-  lon = 0,
-  unit = "C"
+  lon = 0
 }) {
   const [warmingDegree, setWarmingDegree] = useState(2.0); // 1.0°C to 4.5°C
 

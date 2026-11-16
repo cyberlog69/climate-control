@@ -4,6 +4,8 @@ import com.climatesphere.app.core.sensor.BarometerData
 import com.climatesphere.app.data.local.entity.CarbonProfileEntity
 import com.climatesphere.app.domain.model.LocationModel
 import com.climatesphere.app.domain.model.WeatherModel
+import com.climatesphere.app.domain.model.WildfireHotspot
+import com.climatesphere.app.domain.model.WildfireSentinelData
 
 data class HomeUiState(
     val selectedLocation: LocationModel = LocationModel(
@@ -34,5 +36,9 @@ data class HomeUiState(
     val comparisonLocation: LocationModel? = null,
     val comparisonWeather: WeatherModel? = null,
     val isComparisonLoading: Boolean = false,
-    val comparisonSearchResults: List<LocationModel> = emptyList()
+    val comparisonSearchResults: List<LocationModel> = emptyList(),
+    // Live NASA EONET events; the bundled sample list is used until the feed responds.
+    val wildfireHotspots: List<WildfireHotspot> = WildfireSentinelData.GLOBAL_HOTSPOTS,
+    val isWildfireSampleData: Boolean = true,
+    val wildfireUpdatedAt: String? = null
 )

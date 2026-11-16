@@ -51,24 +51,12 @@ export default function Navbar({
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [utcTime, setUtcTime] = useState("");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const searchTimeoutRef = useRef(null);
   const dropdownRef = useRef(null);
   const mobileSearchInputRef = useRef(null);
-
-  // UTC Live Clock
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setUtcTime(now.toUTCString().replace("GMT", "UTC"));
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleInputChange = (e) => {
     const val = e.target.value;

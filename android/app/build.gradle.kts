@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,28 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
+
+// Signing credentials are never committed. Provide them through
+// android/keystore.properties (gitignored) or CLIMATESPHERE_* environment variables.
+// See android/keystore.properties.example and scripts/generate-signing-key.ps1.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
+}
+
+fun signingValue(propertyName: String, envName: String): String? =
+    (keystoreProperties.getProperty(propertyName) ?: System.getenv(envName))?.takeIf { it.isNotBlank() }
+
+val releaseStoreFile = signingValue("storeFile", "CLIMATESPHERE_STORE_FILE")
+val releaseStorePassword = signingValue("storePassword", "CLIMATESPHERE_STORE_PASSWORD")
+val releaseKeyAlias = signingValue("keyAlias", "CLIMATESPHERE_KEY_ALIAS")
+val releaseKeyPassword = signingValue("keyPassword", "CLIMATESPHERE_KEY_PASSWORD")
+val hasReleaseSigning = releaseStoreFile != null &&
+    releaseStorePassword != null &&
+    releaseKeyAlias != null &&
+    releaseKeyPassword != null
 
 android {
     namespace = "com.climatesphere.app"
@@ -21,20 +45,30 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("climatesphere-release.jks")
-            storePassword = "***REMOVED***"
-            keyAlias = "climatesphere"
-            keyPassword = "***REMOVED***"
-            enableV1Signing = true
-            enableV2Signing = true
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseStoreFile!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+                enableV1Signing = false
+                enableV2Signing = true
+                enableV3Signing = true
+            }
         }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            // Without release credentials (for example a contributor's local build)
+            // fall back to debug signing so `assembleRelease` still works.
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

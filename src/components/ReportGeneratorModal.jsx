@@ -1,6 +1,6 @@
 import React from "react";
 import { getAqiLevel } from "../services/climateData";
-import { Printer, X, ShieldCheck, Globe, Thermometer, Wind, Droplets, Calendar } from "lucide-react";
+import { Printer, X, ShieldCheck, Globe } from "lucide-react";
 
 export default function ReportGeneratorModal({ locationName, weatherData, airQualityData, unit, onClose }) {
   if (!weatherData) return null;

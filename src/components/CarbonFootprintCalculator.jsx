@@ -1,16 +1,8 @@
 import React, { useState, useMemo } from "react";
 import {
   calculateCarbonFootprint,
-  BENCHMARKS,
   MITIGATION_ACTIONS
-} from "../services/carbonFootprintApi";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip
-} from "recharts";
+} from "../services/carbonFootprintApi.js";
 import {
   Leaf,
   Car,
@@ -20,12 +12,11 @@ import {
   TreePine,
   CheckCircle2,
   Circle,
-  Target,
-  Sparkles,
-  Info
+  Target
 } from "lucide-react";
 
 export default function CarbonFootprintCalculator({ locationName }) {
+  const cityName = locationName ? locationName.split(",")[0] : "Your Location";
   // Lifestyle state
   const [commuteKmWeek, setCommuteKmWeek] = useState(160);
   const [vehicleType, setVehicleType] = useState("petrol");
@@ -34,10 +25,8 @@ export default function CarbonFootprintCalculator({ locationName }) {
   const [electricityKwh, setElectricityKwh] = useState(320);
   const [greenPercent, setGreenPercent] = useState(15);
   const [dietType, setDietType] = useState("average");
-  const [consumptionLevel, setConsumptionLevel] = useState("medium");
+  const [consumptionLevel] = useState("medium");
   const [activeMitigations, setActiveMitigations] = useState(["act-meatless"]);
-
-  const cityName = locationName ? locationName.split(",")[0] : "Your Location";
 
   const footprint = useMemo(() => {
     return calculateCarbonFootprint({
@@ -85,12 +74,6 @@ export default function CarbonFootprintCalculator({ locationName }) {
     { id: "vegan", label: "Vegan", icon: "🌱" }
   ];
 
-  const chartData = footprint.breakdown.map((item) => ({
-    name: item.name,
-    value: item.value,
-    color: item.color
-  }));
-
   return (
     <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header */}
@@ -105,7 +88,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
       </div>
 
       <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
-        Analyze personal greenhouse gas emissions (tCO₂e), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
+        Analyze greenhouse gas emissions for {cityName} (tCO₂e), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
       </p>
 
       {/* Main Footprint Score & Target Benchmark Card (Skeuomorphic LCD Panel) */}

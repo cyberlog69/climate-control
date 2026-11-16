@@ -9,6 +9,7 @@ import com.climatesphere.app.core.update.DownloadState
 import com.climatesphere.app.core.util.Resource
 import com.climatesphere.app.domain.model.LocationModel
 import com.climatesphere.app.domain.repository.WeatherRepository
+import com.climatesphere.app.domain.repository.WildfireRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,8 @@ class WeatherViewModel(
     private val repository: WeatherRepository,
     private val updateManager: AppUpdateManager,
     private val carbonDao: CarbonDao,
-    private val barometerManager: BarometerSensorManager
+    private val barometerManager: BarometerSensorManager,
+    private val wildfireRepository: WildfireRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -44,6 +46,7 @@ class WeatherViewModel(
     private var searchJob: Job? = null
     private var comparisonWeatherJob: Job? = null
     private var comparisonSearchJob: Job? = null
+    private var wildfireJob: Job? = null
 
     init {
         barometerManager.startListening()
@@ -52,6 +55,35 @@ class WeatherViewModel(
         initStartupLocation()
         checkForUpdates()
         observeWatchlist()
+        loadWildfireHotspots()
+    }
+
+    /**
+     * Loads open wildfire events from NASA EONET. If the request fails the bundled
+     * sample dataset stays in place and the UI is told it is sample data.
+     */
+    fun loadWildfireHotspots() {
+        wildfireJob?.cancel()
+        wildfireJob = viewModelScope.launch {
+            when (val resource = wildfireRepository.getOpenWildfires()) {
+                is Resource.Success -> {
+                    val hotspots = resource.data
+                    if (!hotspots.isNullOrEmpty()) {
+                        _uiState.update {
+                            it.copy(
+                                wildfireHotspots = hotspots,
+                                isWildfireSampleData = false,
+                                wildfireUpdatedAt = java.time.Instant.now().toString()
+                            )
+                        }
+                    }
+                }
+                is Resource.Error -> {
+                    _uiState.update { it.copy(isWildfireSampleData = true) }
+                }
+                is Resource.Loading -> Unit
+            }
+        }
     }
 
     private fun observeBarometer() {
@@ -374,12 +406,19 @@ class WeatherViewModel(
             repository: WeatherRepository,
             updateManager: AppUpdateManager,
             carbonDao: CarbonDao,
-            barometerManager: BarometerSensorManager
+            barometerManager: BarometerSensorManager,
+            wildfireRepository: WildfireRepository
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return WeatherViewModel(repository, updateManager, carbonDao, barometerManager) as T
+                    return WeatherViewModel(
+                        repository,
+                        updateManager,
+                        carbonDao,
+                        barometerManager,
+                        wildfireRepository
+                    ) as T
                 }
             }
     }
