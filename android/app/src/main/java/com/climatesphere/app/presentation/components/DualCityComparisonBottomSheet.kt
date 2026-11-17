@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Thermostat
@@ -48,8 +49,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.AmberWarning
@@ -60,7 +61,7 @@ import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.DarkSurface
 import com.climatesphere.app.core.theme.EmeraldGreen
 import com.climatesphere.app.core.theme.PureBlack
-import com.climatesphere.app.core.theme.RedAlert
+import com.climatesphere.app.core.theme.RedAlertText
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
@@ -153,7 +154,7 @@ fun DualCityComparisonBottomSheet(
                             color = TextWhite
                         )
                         Text(
-                            text = "Live Environmental Delta Sentinel",
+                            text = "Compare current conditions",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextMuted
                         )
@@ -227,6 +228,7 @@ fun DualCityComparisonBottomSheet(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .heightIn(min = 44.dp)
                                 .clip(RoundedCornerShape(10.dp))
                                 .clickable {
                                     onSelectComparisonLocation(loc)
@@ -262,6 +264,7 @@ fun DualCityComparisonBottomSheet(
                     val isSelected = comparisonLocation?.cityName.equals(city.cityName, ignoreCase = true)
                     Box(
                         modifier = Modifier
+                            .heightIn(min = 44.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(if (isSelected) CyanPrimary.copy(alpha = 0.2f) else PureBlack.copy(alpha = 0.45f))
                             .border(
@@ -314,7 +317,7 @@ fun DualCityComparisonBottomSheet(
                             .padding(14.dp)
                     ) {
                         Column {
-                            Text(text = "CURRENT LOCATION", color = TextDim, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                            Text(text = "CURRENT LOCATION", color = TextDim, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                             Text(text = currentLocation.cityName, color = TextWhite, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -337,7 +340,7 @@ fun DualCityComparisonBottomSheet(
                             .padding(14.dp)
                     ) {
                         Column {
-                            Text(text = "COMPARING WITH", color = TextDim, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                            Text(text = "COMPARING WITH", color = TextDim, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                             Text(
                                 text = comparisonLocation?.cityName ?: "City B",
                                 color = TextWhite,
@@ -373,8 +376,14 @@ fun DualCityComparisonBottomSheet(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     // Delta Temp
-                    val isWarmer = deltas.deltaTempC >= 0
-                    val tempColor = if (isWarmer) AmberWarning else BlueSky
+                    val deltaTemp = deltas.deltaTempC
+                    val sameTemp = abs(deltaTemp) < 0.05
+                    val isWarmer = deltaTemp >= 0
+                    val tempColor = when {
+                        sameTemp -> TextMuted
+                        isWarmer -> AmberWarning
+                        else -> BlueSky
+                    }
 
                     Box(
                         modifier = Modifier
@@ -393,30 +402,45 @@ fun DualCityComparisonBottomSheet(
                             Spacer(modifier = Modifier.height(6.dp))
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = if (isWarmer) Icons.Default.ArrowUpward else Icons.Default.ArrowDownward,
+                                    imageVector = when {
+                                        sameTemp -> Icons.Default.Remove
+                                        isWarmer -> Icons.Default.ArrowUpward
+                                        else -> Icons.Default.ArrowDownward
+                                    },
                                     contentDescription = null,
                                     tint = tempColor,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    text = "${if (isWarmer) "+" else ""}${deltas.deltaTempC}°C",
+                                    text = if (sameTemp) "0.0°C" else "${if (isWarmer) "+" else ""}${deltaTemp}°C",
                                     color = tempColor,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                             Text(
-                                text = if (isWarmer) "Warmer in ${comparisonLocation?.cityName}" else "Cooler in ${comparisonLocation?.cityName}",
+                                text = when {
+                                    sameTemp -> "Same as ${comparisonLocation?.cityName}"
+                                    isWarmer -> "Warmer in ${comparisonLocation?.cityName}"
+                                    else -> "Cooler in ${comparisonLocation?.cityName}"
+                                },
                                 color = TextDim,
-                                fontSize = 10.sp
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
 
                     // Delta AQI
-                    val isCleaner = deltas.deltaAqi <= 0
-                    val aqiColor = if (isCleaner) EmeraldGreen else RedAlert
+                    val sameAqi = deltas.deltaAqi == 0
+                    val isCleaner = deltas.deltaAqi < 0
+                    val aqiColor = when {
+                        sameAqi -> TextMuted
+                        isCleaner -> EmeraldGreen
+                        else -> RedAlertText
+                    }
 
                     Box(
                         modifier = Modifier
@@ -435,7 +459,11 @@ fun DualCityComparisonBottomSheet(
                             Spacer(modifier = Modifier.height(6.dp))
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = if (isCleaner) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
+                                    imageVector = when {
+                                        sameAqi -> Icons.Default.Remove
+                                        isCleaner -> Icons.Default.ArrowDownward
+                                        else -> Icons.Default.ArrowUpward
+                                    },
                                     contentDescription = null,
                                     tint = aqiColor,
                                     modifier = Modifier.size(18.dp)
@@ -449,9 +477,15 @@ fun DualCityComparisonBottomSheet(
                                 )
                             }
                             Text(
-                                text = if (isCleaner) "Cleaner Air (${comparisonWeather?.airQuality?.aqi ?: "--"})" else "More Polluted (${comparisonWeather?.airQuality?.aqi ?: "--"})",
+                                text = when {
+                                    sameAqi -> "Same as ${comparisonLocation?.cityName}"
+                                    isCleaner -> "Cleaner air (${comparisonWeather?.airQuality?.aqi ?: "--"})"
+                                    else -> "More polluted (${comparisonWeather?.airQuality?.aqi ?: "--"})"
+                                },
                                 color = TextDim,
-                                fontSize = 10.sp
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
@@ -464,8 +498,10 @@ fun DualCityComparisonBottomSheet(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     // Delta Wind
-                    val isWindier = deltas.deltaWindSpeedKmH >= 0
-                    val windColor = CyanPrimary
+                    val deltaWind = deltas.deltaWindSpeedKmH
+                    val sameWind = abs(deltaWind) < 0.05
+                    val isWindier = deltaWind > 0
+                    val windColor = if (sameWind) TextMuted else CyanPrimary
 
                     Box(
                         modifier = Modifier
@@ -483,22 +519,30 @@ fun DualCityComparisonBottomSheet(
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = "${if (isWindier) "+" else ""}${deltas.deltaWindSpeedKmH} km/h",
+                                text = if (sameWind) "0.0 km/h" else "${if (isWindier) "+" else ""}${deltaWind} km/h",
                                 color = windColor,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = if (isWindier) "Higher wind velocity" else "Calmer wind speeds",
+                                text = when {
+                                    sameWind -> "Same wind speed"
+                                    isWindier -> "Higher wind velocity"
+                                    else -> "Calmer wind speeds"
+                                },
                                 color = TextDim,
-                                fontSize = 10.sp
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
 
                     // Delta Pressure
-                    val isHigherPressure = deltas.deltaPressureHpa >= 0
-                    val pressureColor = AmberWarning
+                    val deltaPressure = deltas.deltaPressureHpa
+                    val samePressure = abs(deltaPressure) < 0.05
+                    val isHigherPressure = deltaPressure > 0
+                    val pressureColor = if (samePressure) TextMuted else AmberWarning
 
                     Box(
                         modifier = Modifier
@@ -516,15 +560,21 @@ fun DualCityComparisonBottomSheet(
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = "${if (isHigherPressure) "+" else ""}${deltas.deltaPressureHpa} hPa",
+                                text = if (samePressure) "0.0 hPa" else "${if (isHigherPressure) "+" else ""}${deltaPressure} hPa",
                                 color = pressureColor,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = if (isHigherPressure) "Higher barometric pressure" else "Lower barometric pressure",
+                                text = when {
+                                    samePressure -> "Same pressure"
+                                    isHigherPressure -> "Higher barometric pressure"
+                                    else -> "Lower barometric pressure"
+                                },
                                 color = TextDim,
-                                fontSize = 10.sp
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }

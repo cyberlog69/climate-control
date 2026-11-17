@@ -9,20 +9,20 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalFireDepartment
@@ -44,16 +44,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.AmberWarning
 import com.climatesphere.app.core.theme.BlueSky
 import com.climatesphere.app.core.theme.CyanPrimary
-import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.EmeraldGreen
-import com.climatesphere.app.core.theme.PureBlack
 import com.climatesphere.app.core.theme.RedAlert
+import com.climatesphere.app.core.theme.RedAlertText
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.SkeuoMeterTrack
 import com.climatesphere.app.core.theme.TextDim
@@ -142,7 +144,10 @@ fun WildfireRadarCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(38.dp)
@@ -161,27 +166,33 @@ fun WildfireRadarCard(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            text = "NASA Wildfire Sentinel",
+                            text = "Wildfire Radar",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            SkeuoLedDiode(color = RedAlert, size = 6.dp, isPulsing = true)
+                            SkeuoLedDiode(color = RedAlert, size = 6.dp, isPulsing = !isSampleData)
                             Spacer(modifier = Modifier.width(5.dp))
                             Text(
                                 text = when {
-                                    isSampleData -> "Sample dataset · live feed unavailable"
-                                    updatedAt != null -> "NASA EONET · ${updatedAt.substringBefore('.').replace('T', ' ')} UTC"
-                                    else -> "NASA EONET live feed"
+                                    isSampleData -> "Sample data, feed offline"
+                                    updatedAt != null -> "EONET · ${eonetStamp(updatedAt)} UTC"
+                                    else -> "EONET feed"
                                 },
                                 style = MaterialTheme.typography.labelSmall,
-                                color = if (isSampleData) AmberWarning else RedAlert,
-                                fontSize = 11.sp
+                                color = if (isSampleData) AmberWarning else RedAlertText,
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Tactile Risk Badge
                 val riskColor = Color(assessment.colorHex)
@@ -193,7 +204,7 @@ fun WildfireRadarCard(
                         .border(1.dp, riskColor.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                         .padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
-                    SkeuoLedDiode(color = riskColor, size = 6.dp, isPulsing = true)
+                    SkeuoLedDiode(color = riskColor, size = 6.dp, isPulsing = !isSampleData)
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = "${assessment.badgeName.uppercase()} RISK",
@@ -208,13 +219,16 @@ fun WildfireRadarCard(
 
             // 3-Metric Global Activity Bar (Debossed Instrument Wells)
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Metric 1: Clusters
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(10.dp)
                 ) {
@@ -239,7 +253,7 @@ fun WildfireRadarCard(
                         Text(
                             text = if (isSampleData) "Illustrative only" else "NASA EONET",
                             color = TextDim,
-                            fontSize = 9.sp
+                            fontSize = 10.sp
                         )
                     }
                 }
@@ -248,22 +262,24 @@ fun WildfireRadarCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(10.dp)
                 ) {
                     Column {
                         Text(
-                            text = "Severe (>500MW)",
+                            text = "Severe (>500 MW)",
                             color = TextDim,
                             fontSize = 10.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = if (isSampleData) {
                                 "${assessment.severeOutbreaksCount} Zones"
                             } else {
-                                "—"
+                                "n/a"
                             },
                             color = RedAlert,
                             fontSize = 18.sp,
@@ -272,7 +288,7 @@ fun WildfireRadarCard(
                         Text(
                             text = if (isSampleData) "FRP Outbreaks" else "FRP not in feed",
                             color = TextDim,
-                            fontSize = 9.sp
+                            fontSize = 10.sp
                         )
                     }
                 }
@@ -281,19 +297,20 @@ fun WildfireRadarCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoRecessedWell(RoundedCornerShape(14.dp))
                         .padding(10.dp)
                 ) {
                     Column {
                         Text(
-                            text = "Peak Radiative",
+                            text = "Peak FRP",
                             color = TextDim,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = if (isSampleData) "${assessment.peakFrpMw.toInt()} MW" else "—",
+                            text = if (isSampleData) "${assessment.peakFrpMw.toInt()} MW" else "n/a",
                             color = AmberWarning,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
@@ -301,7 +318,7 @@ fun WildfireRadarCard(
                         Text(
                             text = if (isSampleData) "Sample peak" else "Not reported",
                             color = TextDim,
-                            fontSize = 9.sp
+                            fontSize = 10.sp
                         )
                     }
                 }
@@ -322,7 +339,10 @@ fun WildfireRadarCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Sensors,
                                 contentDescription = null,
@@ -331,12 +351,15 @@ fun WildfireRadarCard(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Local Hazard Index: ${currentLocation.cityName}",
+                                text = "Estimated Hazard Index",
                                 color = TextWhite,
                                 fontSize = 13.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "${assessment.score}/100",
                             color = riskColor,
@@ -357,7 +380,10 @@ fun WildfireRadarCard(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "Nearest active cluster is ~${assessment.minDistanceKm} km away (${assessment.nearestCluster?.name ?: "Unknown"}).",
+                        text = "For ${currentLocation.cityName}. Nearest active cluster is ~%,d km away (%s).".format(
+                            assessment.minDistanceKm,
+                            assessment.nearestCluster?.name ?: "unknown"
+                        ),
                         color = TextMuted,
                         fontSize = 11.sp,
                         lineHeight = 15.sp
@@ -369,10 +395,12 @@ fun WildfireRadarCard(
 
             // Native Compose Radar Canvas Screen (Skeuomorphic Oscilloscope Frame)
             Text(
-                text = "Orbital Thermal Radar (10,000 km Sentinel Field)",
+                text = "Wildfire map · 12,000 km range",
                 color = TextWhite,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -381,7 +409,11 @@ fun WildfireRadarCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    .skeuoLcdPanel(shape = RoundedCornerShape(18.dp), accentColor = CyanPrimary),
+                    .skeuoLcdPanel(shape = RoundedCornerShape(18.dp), accentColor = CyanPrimary)
+                    .semantics {
+                        contentDescription =
+                            "Wildfire radar. ${hotspots.size} active events plotted within 12,000 kilometres of ${currentLocation.cityName}."
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 val radarHotspots = hotspots
@@ -485,9 +517,9 @@ fun WildfireRadarCard(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "R1: 4,000km", color = TextDim, fontSize = 9.sp)
-                        Text(text = "R2: 8,000km", color = TextDim, fontSize = 9.sp)
-                        Text(text = "R3: 12,000km", color = TextDim, fontSize = 9.sp)
+                        Text(text = "R1: 4,000km", color = TextDim, fontSize = 10.sp)
+                        Text(text = "R2: 8,000km", color = TextDim, fontSize = 10.sp)
+                        Text(text = "R3: 12,000km", color = TextDim, fontSize = 10.sp)
                     }
                 }
             }
@@ -496,7 +528,7 @@ fun WildfireRadarCard(
 
             // Horizontal Cluster Selector Tactile Push Keys
             Text(
-                text = "Active Orbital Thermal Clusters",
+                text = if (isSampleData) "Sample thermal clusters" else "Active wildfire events",
                 color = TextWhite,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold
@@ -546,9 +578,9 @@ fun WildfireRadarCard(
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = if (fire.frp > 0.0) {
-                                    "$distKm km · ${fire.frp.toInt()} MW"
+                                    "%,d km · ${fire.frp.toInt()} MW".format(distKm)
                                 } else {
-                                    "$distKm km · ${fire.detectedAgo}"
+                                    "%,d km · ${fire.detectedAgo}".format(distKm)
                                 },
                                 color = TextDim,
                                 fontSize = 10.sp
@@ -596,7 +628,7 @@ fun WildfireRadarCard(
                                 Text(
                                     text = fire.sensor,
                                     color = RedAlert,
-                                    fontSize = 9.sp,
+                                    fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -619,7 +651,7 @@ fun WildfireRadarCard(
                                 fontWeight = FontWeight.Medium
                             )
                             Text(
-                                text = "${fire.activeClusters} Clusters (${fire.status})",
+                                text = "${fire.activeClusters} ${if (fire.activeClusters == 1) "cluster" else "clusters"} (${fire.status})",
                                 color = BlueSky,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium
@@ -658,7 +690,8 @@ fun WildfireRadarCard(
                                                 )
                                             }
                                         )
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
@@ -684,3 +717,14 @@ fun WildfireRadarCard(
         }
     }
 }
+
+/**
+ * EONET timestamps arrive as ISO 8601 UTC. The card only has room for day, month and
+ * time, so parse it and fall back to a shortened raw value if the format changes.
+ */
+private fun eonetStamp(iso: String): String =
+    runCatching {
+        java.time.Instant.parse(iso)
+            .atZone(java.time.ZoneOffset.UTC)
+            .format(java.time.format.DateTimeFormatter.ofPattern("d MMM HH:mm", java.util.Locale.US))
+    }.getOrNull() ?: iso.take(16).replace('T', ' ')

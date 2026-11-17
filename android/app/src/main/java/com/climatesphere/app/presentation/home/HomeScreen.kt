@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Bolt
@@ -37,14 +38,11 @@ import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.foundation.border
-import androidx.compose.ui.graphics.Brush
 import com.climatesphere.app.core.theme.AmberWarning
 import com.climatesphere.app.core.theme.GreenAqi
 import com.climatesphere.app.core.theme.PurpleAura
-import com.climatesphere.app.core.theme.SkeuoBevelLight
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.SkeuoWellBorder
-import com.climatesphere.app.core.theme.SkeuoWellFill
 import com.climatesphere.app.core.theme.skeuoRecessedWell
 import com.climatesphere.app.presentation.components.BarometerCard
 import com.climatesphere.app.presentation.components.CarbonCalculatorBottomSheet
@@ -56,7 +54,10 @@ import com.climatesphere.app.presentation.components.RenewableEnergyCard
 import com.climatesphere.app.presentation.components.WatchlistBottomSheet
 import com.climatesphere.app.presentation.components.WildfireRadarCard
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -67,21 +68,29 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.climatesphere.app.core.theme.CyanPrimary
 import com.climatesphere.app.presentation.components.UpdateDialog
+import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.PureBlack
 import com.climatesphere.app.core.theme.RedAlert
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
-import com.climatesphere.app.domain.model.LocationModel
+import com.climatesphere.app.core.theme.skeuoPushButton
 import com.climatesphere.app.presentation.components.AirQualityCard
 import com.climatesphere.app.presentation.components.DailyForecastList
 import com.climatesphere.app.presentation.components.HourlyForecastRow
@@ -102,6 +111,7 @@ fun HomeScreen(
     val downloadState by viewModel.downloadState.collectAsState()
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    var toolsMenuOpen by remember { mutableStateOf(false) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -220,13 +230,22 @@ fun HomeScreen(
             TopAppBar(
                 title = {
                     Column(
-                        modifier = Modifier.clickable { viewModel.setWatchlistSheetOpen(true) }
+                        modifier = Modifier
+                            .clickable(onClickLabel = "Open watchlist") {
+                                viewModel.setWatchlistSheetOpen(true)
+                            }
+                            .semantics(mergeDescendants = true) {
+                                contentDescription =
+                                    "ClimateSphere. Selected city ${uiState.selectedLocation.cityName}. Opens watchlist."
+                            }
                     ) {
                         Text(
                             text = "ClimateSphere",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -243,13 +262,15 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.labelMedium,
                                 color = CyanPrimary,
                                 fontSize = 11.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             Spacer(modifier = Modifier.width(3.dp))
                             Text(
                                 text = "▾",
                                 color = CyanPrimary,
-                                fontSize = 9.sp
+                                fontSize = 10.sp
                             )
                         }
                     }
@@ -272,55 +293,6 @@ fun HomeScreen(
                             }
                         }
                     }
-                    IconButton(onClick = { viewModel.toggleWatchlistCurrentLocation() }) {
-                        Icon(
-                            imageVector = if (uiState.isCurrentInWatchlist) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                            contentDescription = if (uiState.isCurrentInWatchlist) "Saved to Watchlist" else "Save to Watchlist",
-                            tint = if (uiState.isCurrentInWatchlist) CyanPrimary else TextMuted
-                        )
-                    }
-                    IconButton(onClick = { viewModel.setWatchlistSheetOpen(true) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
-                            contentDescription = "Watchlist",
-                            tint = TextWhite
-                        )
-                    }
-                    IconButton(onClick = { viewModel.setComparisonSheetOpen(true) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.CompareArrows,
-                            contentDescription = "Dual-City Comparison",
-                            tint = CyanPrimary
-                        )
-                    }
-                    IconButton(onClick = { viewModel.setRenewableSheetOpen(true) }) {
-                        Icon(
-                            imageVector = Icons.Default.Bolt,
-                            contentDescription = "Renewable Energy Potential",
-                            tint = AmberWarning
-                        )
-                    }
-                    IconButton(onClick = { viewModel.setImpactSheetOpen(true) }) {
-                        Icon(
-                            imageVector = Icons.Default.Tune,
-                            contentDescription = "Climate Impact Simulator",
-                            tint = PurpleAura
-                        )
-                    }
-                    IconButton(onClick = { viewModel.setCarbonSheetOpen(true) }) {
-                        Icon(
-                            imageVector = Icons.Default.Spa,
-                            contentDescription = "Carbon Footprint Calculator",
-                            tint = GreenAqi
-                        )
-                    }
-                    IconButton(onClick = onAutoLocateClick) {
-                        Icon(
-                            imageVector = Icons.Default.MyLocation,
-                            contentDescription = "Auto Locate",
-                            tint = CyanPrimary
-                        )
-                    }
                     IconButton(onClick = { viewModel.setSearchDialogOpen(true) }) {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -340,6 +312,123 @@ fun HomeScreen(
                                 imageVector = Icons.Default.Refresh,
                                 contentDescription = "Refresh",
                                 tint = TextMuted
+                            )
+                        }
+                    }
+                    Box {
+                        IconButton(onClick = { toolsMenuOpen = true }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "More tools",
+                                tint = TextWhite
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = toolsMenuOpen,
+                            onDismissRequest = { toolsMenuOpen = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        if (uiState.isCurrentInWatchlist) "Remove from watchlist" else "Save this city"
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = if (uiState.isCurrentInWatchlist) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                                        contentDescription = null,
+                                        tint = if (uiState.isCurrentInWatchlist) CyanPrimary else TextMuted
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    viewModel.toggleWatchlistCurrentLocation()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Watchlist") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
+                                        contentDescription = null,
+                                        tint = TextWhite
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    viewModel.setWatchlistSheetOpen(true)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Locate me") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.MyLocation,
+                                        contentDescription = null,
+                                        tint = CyanPrimary
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    onAutoLocateClick()
+                                }
+                            )
+                            HorizontalDivider(color = DarkCardBorder)
+                            DropdownMenuItem(
+                                text = { Text("Compare two cities") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.CompareArrows,
+                                        contentDescription = null,
+                                        tint = CyanPrimary
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    viewModel.setComparisonSheetOpen(true)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Renewable potential") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Bolt,
+                                        contentDescription = null,
+                                        tint = AmberWarning
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    viewModel.setRenewableSheetOpen(true)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Climate scenarios") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Tune,
+                                        contentDescription = null,
+                                        tint = PurpleAura
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    viewModel.setImpactSheetOpen(true)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Carbon calculator") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Spa,
+                                        contentDescription = null,
+                                        tint = GreenAqi
+                                    )
+                                },
+                                onClick = {
+                                    toolsMenuOpen = false
+                                    viewModel.setCarbonSheetOpen(true)
+                                }
                             )
                         }
                     }
@@ -367,7 +456,7 @@ fun HomeScreen(
                         CircularProgressIndicator(color = CyanPrimary)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Synchronizing planetary telemetry...",
+                            text = "Updating the weather feed",
                             color = TextMuted,
                             style = MaterialTheme.typography.bodyMedium
                         )
@@ -428,20 +517,39 @@ fun HomeScreen(
                             ) {
                                 // Error notice banner if refresh failed
                                 if (uiState.errorMessage != null) {
-                                    Box(
+                                    Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(bottom = 12.dp)
                                             .clip(MaterialTheme.shapes.medium)
-                                            .background(RedAlert.copy(alpha = 0.2f))
-                                            .padding(12.dp)
+                                            .background(RedAlert.copy(alpha = 0.15f))
+                                            .padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
                                             text = uiState.errorMessage!!,
                                             color = RedAlert,
                                             style = MaterialTheme.typography.bodyMedium,
-                                            fontWeight = FontWeight.Medium
+                                            fontWeight = FontWeight.Medium,
+                                            modifier = Modifier.weight(1f)
                                         )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .skeuoPushButton(
+                                                    activeAccent = CyanPrimary,
+                                                    onClick = { viewModel.loadWeather(forceRefresh = true) }
+                                                )
+                                                .padding(horizontal = 12.dp, vertical = 10.dp)
+                                        ) {
+                                            Text(
+                                                text = "Retry",
+                                                color = TextWhite,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
                                     }
                                 }
 
@@ -470,7 +578,7 @@ fun HomeScreen(
 
                                 Spacer(modifier = Modifier.height(18.dp))
 
-                                // 5. NASA Wildfire & Thermal Sentinel Radar
+                                // 5. Wildfire risk and nearby events
                                 WildfireRadarCard(
                                     currentLocation = weather.location,
                                     temperatureC = weather.current.temperature,
@@ -513,26 +621,25 @@ fun HomeScreen(
                 }
 
                 uiState.errorMessage != null -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Connection Notice",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = TextWhite,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = uiState.errorMessage!!,
-                            color = TextMuted,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                    HomeMessageState(
+                        title = "Weather feed offline",
+                        body = "Could not load a forecast for ${uiState.selectedLocation.cityName}. ${uiState.errorMessage}",
+                        primaryLabel = "Try again",
+                        onPrimary = { viewModel.loadWeather(forceRefresh = true) },
+                        secondaryLabel = "Search another city",
+                        onSecondary = { viewModel.setSearchDialogOpen(true) }
+                    )
+                }
+
+                else -> {
+                    HomeMessageState(
+                        title = "No station selected",
+                        body = "Pick a city to start the weather feed.",
+                        primaryLabel = "Search for a city",
+                        onPrimary = { viewModel.setSearchDialogOpen(true) },
+                        secondaryLabel = "Use my location",
+                        onSecondary = onAutoLocateClick
+                    )
                 }
             }
 
@@ -615,4 +722,70 @@ fun HomeScreen(
     }
 }
 
-private fun Double.format(digits: Int) = "%.${digits}f".format(this)
+@Composable
+private fun HomeMessageState(
+    title: String,
+    body: String,
+    primaryLabel: String,
+    onPrimary: () -> Unit,
+    secondaryLabel: String,
+    onSecondary: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            color = TextWhite,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = body,
+            color = TextMuted,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .skeuoPushButton(
+                    isSelected = true,
+                    activeAccent = CyanPrimary,
+                    onClick = onPrimary
+                )
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = primaryLabel,
+                color = CyanPrimary,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .skeuoPushButton(onClick = onSecondary)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = secondaryLabel,
+                color = TextWhite,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}

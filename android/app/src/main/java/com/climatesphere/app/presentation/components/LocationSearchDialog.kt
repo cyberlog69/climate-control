@@ -1,8 +1,6 @@
 package com.climatesphere.app.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.climatesphere.app.core.theme.CyanPrimary
-import com.climatesphere.app.core.theme.DarkCard
 import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.DarkSurface
 import com.climatesphere.app.core.theme.TextDim

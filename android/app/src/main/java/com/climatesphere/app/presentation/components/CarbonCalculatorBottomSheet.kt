@@ -22,12 +22,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ElectricCar
-import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.Forest
-import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.Button
@@ -35,7 +31,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
@@ -54,20 +49,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.CyanPrimary
 import com.climatesphere.app.core.theme.DarkCard
-import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.GreenAqi
 import com.climatesphere.app.core.theme.PureBlack
-import com.climatesphere.app.core.theme.SkeuoBevelLight
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.SkeuoMeterTrack
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
-import com.climatesphere.app.core.theme.skeuoCard
 import com.climatesphere.app.core.theme.skeuoLcdPanel
 import com.climatesphere.app.core.theme.skeuoPushButton
 import com.climatesphere.app.core.theme.skeuoRecessedWell
@@ -105,7 +98,7 @@ fun CarbonCalculatorBottomSheet(
     }
     var isSavedRecently by remember { mutableStateOf(false) }
 
-    // Realtime computation via IPCC engine
+    // Recomputes the estimate from the selected inputs
     val result = CarbonCalculator.calculate(
         commuteKmWeek = commuteKmWeek,
         vehicleType = vehicleType,
@@ -136,7 +129,10 @@ fun CarbonCalculatorBottomSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(38.dp)
@@ -157,13 +153,16 @@ fun CarbonCalculatorBottomSheet(
                             text = "Carbon Footprint Engine",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "IPCC & GHG Protocol Standard",
+                            text = "Average emission factors",
                             style = MaterialTheme.typography.labelSmall,
                             color = TextMuted,
-                            fontSize = 11.sp
+                            fontSize = 11.sp,
+                            maxLines = 1
                         )
                     }
                 }
@@ -292,7 +291,7 @@ fun CarbonCalculatorBottomSheet(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Offset Equivalent: ~${result.treesNeededToOffset} mature trees needed / yr",
+                            text = "Offset Equivalent: ~%,d mature trees needed / yr".format(result.treesNeededToOffset),
                             style = MaterialTheme.typography.bodySmall,
                             color = TextWhite,
                             fontSize = 11.sp
@@ -356,11 +355,11 @@ fun CarbonCalculatorBottomSheet(
 
             // Vehicle Selector Chips
             val vehicles = listOf(
-                "petrol" to "Petrol ⛽",
-                "hybrid" to "Hybrid 🔋",
-                "ev" to "EV ⚡",
-                "transit" to "Transit 🚆",
-                "bicycle" to "Bike 🚲"
+                "petrol" to "Petrol",
+                "hybrid" to "Hybrid",
+                "ev" to "EV",
+                "transit" to "Transit",
+                "bicycle" to "Bike"
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -384,7 +383,8 @@ fun CarbonCalculatorBottomSheet(
                             text = label,
                             fontSize = 11.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                            color = if (isSelected) CyanPrimary else TextWhite
+                            color = if (isSelected) CyanPrimary else TextWhite,
+                            maxLines = 1
                         )
                     }
                 }
@@ -420,71 +420,19 @@ fun CarbonCalculatorBottomSheet(
                 letterSpacing = 1.sp
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                // Short-haul counter
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(DarkCard)
-                        .padding(12.dp)
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "Short Flights (<3h)", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(
-                                onClick = { if (shortFlights > 0) shortFlights-- },
-                                modifier = Modifier.size(28.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus", tint = CyanPrimary, modifier = Modifier.size(16.dp))
-                            }
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "$shortFlights", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = TextWhite)
-                            Spacer(modifier = Modifier.width(6.dp))
-                            IconButton(
-                                onClick = { shortFlights++ },
-                                modifier = Modifier.size(28.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "Plus", tint = CyanPrimary, modifier = Modifier.size(16.dp))
-                            }
-                        }
-                    }
-                }
-
-                // Long-haul counter
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(DarkCard)
-                        .padding(12.dp)
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "Long Flights (>3h)", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(
-                                onClick = { if (longFlights > 0) longFlights-- },
-                                modifier = Modifier.size(28.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus", tint = CyanPrimary, modifier = Modifier.size(16.dp))
-                            }
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "$longFlights", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = TextWhite)
-                            Spacer(modifier = Modifier.width(6.dp))
-                            IconButton(
-                                onClick = { longFlights++ },
-                                modifier = Modifier.size(28.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "Plus", tint = CyanPrimary, modifier = Modifier.size(16.dp))
-                            }
-                        }
-                    }
-                }
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlightCounterRow(
+                    label = "Short flights (< 3 h)",
+                    value = shortFlights,
+                    onMinus = { if (shortFlights > 0) shortFlights-- },
+                    onPlus = { shortFlights++ }
+                )
+                FlightCounterRow(
+                    label = "Long flights (> 3 h)",
+                    value = longFlights,
+                    onMinus = { if (longFlights > 0) longFlights-- },
+                    onPlus = { longFlights++ }
+                )
             }
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -538,11 +486,11 @@ fun CarbonCalculatorBottomSheet(
             )
             Spacer(modifier = Modifier.height(8.dp))
             val diets = listOf(
-                "highMeat" to "Meat 🥩",
-                "average" to "Avg 🍗",
-                "pescatarian" to "Pesca 🐟",
-                "vegetarian" to "Veg 🥗",
-                "vegan" to "Vegan 🌱"
+                "highMeat" to "Meat",
+                "average" to "Avg",
+                "pescatarian" to "Fish",
+                "vegetarian" to "Veg",
+                "vegan" to "Vegan"
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -566,7 +514,8 @@ fun CarbonCalculatorBottomSheet(
                             text = label,
                             fontSize = 11.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                            color = if (isSelected) GreenAqi else TextWhite
+                            color = if (isSelected) GreenAqi else TextWhite,
+                            maxLines = 1
                         )
                     }
                 }
@@ -672,6 +621,54 @@ fun CarbonCalculatorBottomSheet(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun FlightCounterRow(
+    label: String,
+    value: Int,
+    onMinus: () -> Unit,
+    onPlus: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(DarkCard)
+            .padding(start = 14.dp, end = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = TextMuted
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onMinus, enabled = value > 0, modifier = Modifier.size(44.dp)) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = "Fewer $label",
+                    tint = if (value > 0) CyanPrimary else TextDim,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Text(
+                text = "$value",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = TextWhite
+            )
+            IconButton(onClick = onPlus, modifier = Modifier.size(44.dp)) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "More $label",
+                    tint = CyanPrimary,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
     }
 }

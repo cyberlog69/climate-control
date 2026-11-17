@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
 import com.climatesphere.app.core.sensor.BarometerSensorManager
 import com.climatesphere.app.data.local.CarbonDao
@@ -138,6 +137,8 @@ class WeatherViewModel(
         _uiState.update {
             it.copy(
                 comparisonLocation = location,
+                // Clear the previous city's numbers so they never appear under the new name.
+                comparisonWeather = null,
                 comparisonSearchResults = emptyList(),
                 isComparisonLoading = true
             )
@@ -284,7 +285,7 @@ class WeatherViewModel(
         }
         weatherJob?.cancel()
         weatherJob = viewModelScope.launch {
-            repository.getWeatherForLocation(currentLocation, forceRefresh)
+            repository.getWeatherForLocation(currentLocation, forceRefresh, isPrimary = true)
                 .collect { resource ->
                     when (resource) {
                         is Resource.Loading -> {

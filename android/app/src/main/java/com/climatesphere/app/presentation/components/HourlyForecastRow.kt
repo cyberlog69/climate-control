@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,7 +37,6 @@ import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
-import com.climatesphere.app.core.theme.skeuoRecessedWell
 import com.climatesphere.app.domain.model.HourlyWeatherModel
 import kotlin.math.roundToInt
 
@@ -68,7 +65,7 @@ fun HourlyForecastRow(
             }
 
             Text(
-                text = "OSCILLOSCOPE FEED",
+                text = "NEXT 24 HOURS",
                 color = TextDim,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,

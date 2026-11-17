@@ -23,9 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.SkeuoMeterTrack
 import com.climatesphere.app.core.theme.TextDim
@@ -36,6 +36,7 @@ import com.climatesphere.app.core.theme.skeuoCard
 import com.climatesphere.app.core.theme.skeuoLcdPanel
 import com.climatesphere.app.core.theme.skeuoRecessedWell
 import com.climatesphere.app.domain.model.AirQualityModel
+import kotlin.math.roundToInt
 
 @Composable
 fun AirQualityCard(
@@ -57,16 +58,23 @@ fun AirQualityCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     SkeuoLedDiode(color = levelColor, isPulsing = true, size = 10.dp)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Air Quality Index",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = TextWhite
+                        color = TextWhite,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Tactile Status Badge
                 Box(
@@ -77,11 +85,12 @@ fun AirQualityCard(
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = airQuality.level.uppercase(),
+                        text = aqiLevelLabel(airQuality.level).uppercase(),
                         color = levelColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
-                        letterSpacing = 0.5.sp
+                        letterSpacing = 0.5.sp,
+                        maxLines = 1
                     )
                 }
             }
@@ -138,11 +147,15 @@ fun AirQualityCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            SkeuoLedDiode(color = levelColor, size = 12.dp, isPulsing = true)
-                            Spacer(modifier = Modifier.height(3.dp))
                             Text(
-                                text = "RAD",
-                                fontSize = 8.sp,
+                                text = "${airQuality.uvIndex.roundToInt()}",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = levelColor
+                            )
+                            Text(
+                                text = "UV INDEX",
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TextDim
                             )
@@ -195,6 +208,11 @@ fun AirQualityCard(
     }
 }
 
+private fun aqiLevelLabel(level: String): String = when {
+    level.contains("Sensitive", ignoreCase = true) -> "Sensitive groups"
+    else -> level
+}
+
 @Composable
 private fun PollutantRecessedItem(
     label: String,
@@ -229,7 +247,7 @@ private fun PollutantRecessedItem(
                 text = unit,
                 style = MaterialTheme.typography.labelSmall,
                 color = TextMuted,
-                fontSize = 9.sp
+                fontSize = 10.sp
             )
             Spacer(modifier = Modifier.height(6.dp))
             SkeuoMeterTrack(

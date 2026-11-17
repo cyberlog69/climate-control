@@ -37,7 +37,12 @@ val BlueSky = Color(0xFF38BDF8)
 // Text Colors
 val TextWhite = Color(0xFFF8FAFC)
 val TextMuted = Color(0xFF94A3B8)
-val TextDim = Color(0xFF64748B)
+// Measured 4.7:1 on the card gradient top, 5.8:1 on the darkest well, so 9-10sp labels stay AA.
+val TextDim = Color(0xFF7C8BA1)
+
+// Lighter tints of two semantic hues, for text at 12sp or below on card surfaces.
+val VioletText = Color(0xFFA78BFA)      // 5.9:1 on the card gradient top
+val RedAlertText = Color(0xFFF87171)    // 5.8:1 on the card gradient top
 
 // AQI Color Palette
 val AqiGood = Color(0xFF10B981)

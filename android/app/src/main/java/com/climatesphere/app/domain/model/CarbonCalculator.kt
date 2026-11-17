@@ -3,8 +3,8 @@ package com.climatesphere.app.domain.model
 import androidx.compose.ui.graphics.Color
 
 /**
- * Personal Carbon Footprint Calculation Engine (IPCC / GHG Protocol Standard)
- * Matches the ClimateSphere web telemetry calculation suite.
+ * Personal carbon footprint estimate built from average emission factors.
+ * Mirrors the ClimateSphere web calculator so both clients agree.
  */
 object CarbonEmissionFactors {
     val vehicles = mapOf(

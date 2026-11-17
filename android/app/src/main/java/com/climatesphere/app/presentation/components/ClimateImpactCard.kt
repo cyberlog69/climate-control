@@ -2,18 +2,18 @@ package com.climatesphere.app.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.BlueSky
@@ -38,6 +39,7 @@ import com.climatesphere.app.core.theme.RedAlert
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextWhite
+import com.climatesphere.app.core.theme.VioletText
 import com.climatesphere.app.core.theme.skeuoBezel
 import com.climatesphere.app.core.theme.skeuoCard
 import com.climatesphere.app.core.theme.skeuoLcdPanel
@@ -72,7 +74,10 @@ fun ClimateImpactCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(38.dp)
@@ -91,19 +96,25 @@ fun ClimateImpactCard(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            text = "Climate Impact Model",
+                            text = "Climate Impact",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "IPCC AR6 Warming Projections",
+                            text = "Warming scenario estimates",
                             style = MaterialTheme.typography.labelSmall,
-                            color = PurpleAura,
-                            fontSize = 11.sp
+                            color = VioletText,
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Tactile Threshold Badge with LED
                 val badgeColor = Color(projection.activeScenario.badgeColorHex)
@@ -118,7 +129,7 @@ fun ClimateImpactCard(
                     SkeuoLedDiode(color = badgeColor, size = 6.dp)
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = "+2.0°C THRESHOLD",
+                        text = "+${projection.activeScenario.degree}°C SCENARIO",
                         color = badgeColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 10.sp
@@ -130,13 +141,16 @@ fun ClimateImpactCard(
 
             // Two Key Metrics Preview (Skeuomorphic LCD Bays)
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // Sea Level Rise LCD
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoLcdPanel(shape = RoundedCornerShape(16.dp), accentColor = BlueSky)
                         .padding(14.dp)
                 ) {
@@ -155,7 +169,7 @@ fun ClimateImpactCard(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = if (projection.isCoastal) "High Coastal Vulnerability" else "Estuary & Surge Index",
+                            text = if (projection.isCoastal) "Coastal location" else "Inland location",
                             color = TextDim,
                             fontSize = 10.sp
                         )
@@ -166,6 +180,7 @@ fun ClimateImpactCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoLcdPanel(shape = RoundedCornerShape(16.dp), accentColor = RedAlert)
                         .padding(14.dp)
                 ) {
@@ -184,7 +199,7 @@ fun ClimateImpactCard(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "Days exceeding >35°C",
+                            text = "Days above 35°C",
                             color = TextDim,
                             fontSize = 10.sp
                         )
@@ -204,26 +219,31 @@ fun ClimateImpactCard(
                         activeAccent = PurpleAura,
                         onClick = onOpenSimulator
                     )
-                    .padding(horizontal = 14.dp, vertical = 11.dp)
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
                         SkeuoLedDiode(color = PurpleAura, size = 6.dp)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Simulate Scenarios (+1.5°C to +4.0°C)",
+                            text = "Simulate scenarios (+1.5°C to +4.0°C)",
                             color = TextWhite,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
-                        contentDescription = "Open",
+                        contentDescription = null,
                         tint = PurpleAura,
                         modifier = Modifier.size(16.dp)
                     )

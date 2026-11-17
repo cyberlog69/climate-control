@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherRepository {
     fun getWeatherForLocation(
         location: LocationModel,
-        forceRefresh: Boolean = false
+        forceRefresh: Boolean = false,
+        isPrimary: Boolean = false
     ): Flow<Resource<WeatherModel>>
 
     suspend fun searchLocations(query: String): List<LocationModel>

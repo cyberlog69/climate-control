@@ -22,7 +22,15 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = TextWhite,
     surfaceVariant = DarkCard,
     onSurfaceVariant = TextMuted,
-    outline = DarkCardBorder
+    // Popups (overflow menu, dropdowns) read surfaceContainer* in Material 3, not surface.
+    surfaceContainerLowest = PureBlack,
+    surfaceContainerLow = DarkSurface,
+    surfaceContainer = DarkCard,
+    surfaceContainerHigh = SkeuoCardGradTop,
+    surfaceContainerHighest = SkeuoCardGradTop,
+    surfaceTint = androidx.compose.ui.graphics.Color.Transparent,
+    outline = DarkCardBorder,
+    outlineVariant = DarkCardBorder
 )
 
 @Composable

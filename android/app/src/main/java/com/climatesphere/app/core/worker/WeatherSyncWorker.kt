@@ -38,7 +38,7 @@ class WeatherSyncWorker(
             }
 
             // 2. Fetch fresh weather telemetry and persist to Room database
-            val weatherResource = repository.getWeatherForLocation(primaryLoc, forceRefresh = true)
+            val weatherResource = repository.getWeatherForLocation(primaryLoc, forceRefresh = true, isPrimary = true)
                 .first { it !is Resource.Loading }
             val weather = weatherResource.data ?: return Result.success()
 

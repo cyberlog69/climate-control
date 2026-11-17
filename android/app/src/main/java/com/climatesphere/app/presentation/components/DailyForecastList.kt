@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.CyanPrimary
@@ -49,24 +50,21 @@ fun DailyForecastList(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     SkeuoLedDiode(color = CyanPrimary, size = 8.dp)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "7-Day Outlook",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = TextWhite
+                        color = TextWhite,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-
-                Text(
-                    text = "SYNOPTIC TRAJECTORY",
-                    color = TextDim,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp
-                )
             }
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -89,29 +87,58 @@ private fun DailyTactileRowItem(daily: DailyWeatherModel) {
             .skeuoRecessedWell(RoundedCornerShape(14.dp))
             .padding(horizontal = 14.dp, vertical = 10.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Day Name
-            Text(
-                text = daily.dayName,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = TextWhite,
-                modifier = Modifier.width(70.dp),
-                fontSize = 14.sp
-            )
-
-            // Weather Icon + Description
+        Column {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                // Day Name
+                Text(
+                    text = daily.dayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = TextWhite,
+                    fontSize = 14.sp
+                )
+
+                // Min - Max Range in tactile pill
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color(0xFF040812))
+                        .border(0.5.dp, Color(0xFF132034), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        text = "${daily.minTemp.roundToInt()}°",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextDim,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = " / ",
+                        color = TextDim,
+                        fontSize = 11.sp
+                    )
+                    Text(
+                        text = "${daily.maxTemp.roundToInt()}°",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = TextWhite
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Weather Icon + Description gets the full row width, so it never clips.
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = getWeatherEmoji(daily.weatherCode),
-                    fontSize = 20.sp
+                    fontSize = 18.sp
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -119,36 +146,8 @@ private fun DailyTactileRowItem(daily: DailyWeatherModel) {
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextMuted,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     fontSize = 13.sp
-                )
-            }
-
-            // Min - Max Range in tactile pill
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFF040812))
-                    .border(0.5.dp, Color(0xFF132034), RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 3.dp)
-            ) {
-                Text(
-                    text = "${daily.minTemp.roundToInt()}°",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextDim,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = " / ",
-                    color = TextDim,
-                    fontSize = 11.sp
-                )
-                Text(
-                    text = "${daily.maxTemp.roundToInt()}°",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = TextWhite
                 )
             }
         }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.AmberWarning
@@ -52,6 +54,7 @@ import com.climatesphere.app.core.theme.DarkSurface
 import com.climatesphere.app.core.theme.PureBlack
 import com.climatesphere.app.core.theme.PurpleAura
 import com.climatesphere.app.core.theme.RedAlert
+import com.climatesphere.app.core.theme.RedAlertText
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
@@ -97,7 +100,10 @@ fun ClimateImpactSimulatorBottomSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(40.dp)
@@ -118,12 +124,16 @@ fun ClimateImpactSimulatorBottomSheet(
                             text = "Climate Impact Simulator",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "${location.cityName} · IPCC Scenario Engine",
+                            text = "${location.cityName} · warming scenario model",
                             style = MaterialTheme.typography.bodySmall,
-                            color = TextMuted
+                            color = TextMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -202,6 +212,7 @@ fun ClimateImpactSimulatorBottomSheet(
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
+                                    .heightIn(min = 44.dp)
                                     .clip(RoundedCornerShape(10.dp))
                                     .background(if (isSelected) pillColor else PureBlack.copy(alpha = 0.5f))
                                     .border(
@@ -242,10 +253,8 @@ fun ClimateImpactSimulatorBottomSheet(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "+1.0°C (Pre-industrial)", color = TextDim, fontSize = 10.sp)
-                        Text(text = "+1.5°C (Paris)", color = Color(0xFF10B981), fontSize = 10.sp)
-                        Text(text = "+2.0°C (Limit)", color = AmberWarning, fontSize = 10.sp)
-                        Text(text = "+4.0°C (Extreme)", color = RedAlert, fontSize = 10.sp)
+                        Text(text = "+1.0°C", color = TextDim, fontSize = 10.sp)
+                        Text(text = "+4.5°C", color = RedAlertText, fontSize = 10.sp)
                     }
                 }
             }
@@ -270,7 +279,7 @@ fun ClimateImpactSimulatorBottomSheet(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.WaterDamage, null, tint = BlueSky, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "Sea Level Inundation", color = TextWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text(text = "Sea Level Rise", color = TextWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -281,7 +290,7 @@ fun ClimateImpactSimulatorBottomSheet(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = if (projection.isCoastal) "⚠️ Coastal zone surge and high tidal flood risk." else "River basin & estuary drainage pressure.",
+                            text = if (projection.isCoastal) "Coastal city: tidal flooding is the main exposure." else "Inland city: river drainage pressure.",
                             color = TextDim,
                             fontSize = 10.sp,
                             lineHeight = 14.sp
@@ -313,7 +322,7 @@ fun ClimateImpactSimulatorBottomSheet(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Additional annual days exceeding critical >35°C threshold.",
+                            text = "Extra annual days above 35°C.",
                             color = TextDim,
                             fontSize = 10.sp,
                             lineHeight = 14.sp
@@ -377,14 +386,14 @@ fun ClimateImpactSimulatorBottomSheet(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "-${projection.cropLossPercent}%",
+                            text = "${projection.cropLossPercent}%",
                             color = Color(0xFFF97316),
                             fontSize = 22.sp,
                             fontWeight = FontWeight.ExtraBold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Staple grain & agricultural caloric yield reduction.",
+                            text = "Estimated staple grain yield reduction.",
                             color = TextDim,
                             fontSize = 10.sp,
                             lineHeight = 14.sp
@@ -395,7 +404,7 @@ fun ClimateImpactSimulatorBottomSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // IPCC AR6 Narrative Card
+            // Scenario Narrative Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -406,7 +415,7 @@ fun ClimateImpactSimulatorBottomSheet(
             ) {
                 Column {
                     Text(
-                        text = "IPCC AR6 Working Group II Guidance",
+                        text = "What this scenario implies",
                         color = TextWhite,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -417,6 +426,13 @@ fun ClimateImpactSimulatorBottomSheet(
                         color = TextMuted,
                         fontSize = 11.sp,
                         lineHeight = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Local numbers are model estimates for this latitude, not a forecast.",
+                        color = TextDim,
+                        fontSize = 10.sp,
+                        lineHeight = 14.sp
                     )
                 }
             }

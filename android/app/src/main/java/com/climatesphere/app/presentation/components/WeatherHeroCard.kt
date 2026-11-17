@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
@@ -30,13 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.CyanPrimary
-import com.climatesphere.app.core.theme.DarkCardBorder
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.SkeuoWellBorder
-import com.climatesphere.app.core.theme.SkeuoWellFill
 import com.climatesphere.app.core.theme.TextDim
 import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
@@ -63,7 +62,7 @@ fun WeatherHeroCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Top Status Bar: Cache status or live telemetry diode
+            // Top status bar: cache state or live feed diode
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -85,15 +84,16 @@ fun WeatherHeroCard(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = if (isFromCache) "OFFLINE CACHE" else "LIVE TELEMETRY",
+                        text = if (isFromCache) "OFFLINE CACHE" else "LIVE FEED",
                         color = if (isFromCache) Color(0xFFF59E0B) else Color(0xFF10B981),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.8.sp
+                        letterSpacing = 0.8.sp,
+                        maxLines = 1
                     )
                 }
 
-                // Weather Station Badge
+                // Feed source badge
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -110,10 +110,11 @@ fun WeatherHeroCard(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "SENSOR ACTIVE",
+                        text = "MODEL FEED",
                         color = TextMuted,
                         fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
                     )
                 }
             }
@@ -188,19 +189,22 @@ fun WeatherHeroCard(
                     icon = Icons.Default.WaterDrop,
                     label = "Humidity",
                     value = "${current.humidity}%",
-                    tint = Color(0xFF38BDF8)
+                    tint = Color(0xFF38BDF8),
+                    modifier = Modifier.weight(1f)
                 )
                 WeatherMetricItem(
                     icon = Icons.Default.Air,
                     label = "Wind",
                     value = "${current.windSpeed.roundToInt()} km/h",
-                    tint = CyanPrimary
+                    tint = CyanPrimary,
+                    modifier = Modifier.weight(1f)
                 )
                 WeatherMetricItem(
                     icon = Icons.Default.Compress,
                     label = "Pressure",
                     value = "${current.surfacePressure.roundToInt()} hPa",
-                    tint = Color(0xFFA78BFA)
+                    tint = Color(0xFFA78BFA),
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -212,15 +216,16 @@ private fun WeatherMetricItem(
     icon: ImageVector,
     label: String,
     value: String,
-    tint: Color
+    tint: Color,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFF04070E))
             .border(1.dp, Color(0xFF0D1524), RoundedCornerShape(12.dp))
-            .padding(horizontal = 14.dp, vertical = 8.dp)
+            .padding(horizontal = 6.dp, vertical = 8.dp)
     ) {
         Icon(
             imageVector = icon,
@@ -233,13 +238,17 @@ private fun WeatherMetricItem(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            color = TextWhite
+            color = TextWhite,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             color = TextDim,
-            fontSize = 10.sp
+            fontSize = 10.sp,
+            maxLines = 1
         )
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Speed
@@ -27,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.sensor.BarometerData
@@ -71,7 +71,10 @@ fun BarometerCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     // Machined metallic bezel icon box
                     Box(
                         modifier = Modifier
@@ -94,16 +97,22 @@ fun BarometerCard(
                             text = "Barometric Pressure",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = if (barometerData.isHardwareSensor) "Hardware Piezoelectric Barometer" else "Orbital Station Telemetry",
+                            text = if (barometerData.isHardwareSensor) "Hardware piezo sensor" else "Weather model estimate",
                             style = MaterialTheme.typography.labelSmall,
                             color = if (barometerData.isHardwareSensor) GreenAqi else CyanPrimary,
-                            fontSize = 11.sp
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Tactile Trend Badge with LED diode
                 Row(
@@ -235,31 +244,64 @@ fun BarometerCard(
                     .fillMaxWidth()
                     .skeuoRecessedWell(RoundedCornerShape(14.dp))
                     .padding(12.dp),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Sensor Type", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Sensor Type",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextDim,
+                        fontSize = 10.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = if (barometerData.isHardwareSensor) "On-Board Piezo" else "Virtual Station",
                         style = MaterialTheme.typography.labelMedium,
                         color = TextWhite,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Atmospheric Delta", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Atmospheric Delta",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextDim,
+                        fontSize = 10.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     val deltaSign = if (barometerData.deltaHpa >= 0) "+" else ""
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "$deltaSign${String.format(java.util.Locale.US, "%.1f", barometerData.deltaHpa)} hPa",
                         style = MaterialTheme.typography.labelMedium,
                         color = trendColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
                     )
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Baric State", style = MaterialTheme.typography.labelSmall, color = TextDim, fontSize = 10.sp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Baric State",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextDim,
+                        fontSize = 10.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     val stateLabel = when {
                         pressure > 1020 -> "High Pressure"
                         pressure < 1005 -> "Low Pressure"
@@ -270,7 +312,9 @@ fun BarometerCard(
                         text = stateLabel,
                         style = MaterialTheme.typography.labelMedium,
                         color = TextWhite,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

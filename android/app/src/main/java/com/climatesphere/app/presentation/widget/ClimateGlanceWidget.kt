@@ -69,7 +69,7 @@ class ClimateGlanceWidget : GlanceAppWidget() {
 private fun SmallWeatherWidget(context: Context, weather: WeatherModel?) {
     val tempText = weather?.current?.temperature?.let { "%.0f°".format(it) } ?: "--°"
     val cityName = weather?.location?.cityName ?: "ClimateSphere"
-    val aqiLevel = weather?.airQuality?.level ?: "Telemetry"
+    val aqiLevel = weather?.airQuality?.level ?: "No data"
 
     Box(
         modifier = GlanceModifier
@@ -120,10 +120,10 @@ private fun SmallWeatherWidget(context: Context, weather: WeatherModel?) {
 @androidx.compose.runtime.Composable
 private fun MediumWeatherWidget(context: Context, weather: WeatherModel?) {
     val tempText = weather?.current?.temperature?.let { "%.0f°C".format(it) } ?: "--°C"
-    val feelsLike = weather?.current?.apparentTemperature?.let { "Feels %.0f°".format(it) } ?: "Real-time"
+    val feelsLike = weather?.current?.apparentTemperature?.let { "Feels %.0f°".format(it) } ?: "--"
     val cityName = weather?.location?.cityName ?: "ClimateSphere"
-    val country = weather?.location?.country ?: "Telemetry"
-    val condition = weather?.current?.weatherDescription ?: "Live Atmosphere"
+    val country = weather?.location?.country ?: "No data"
+    val condition = weather?.current?.weatherDescription ?: "No data"
     val aqi = weather?.airQuality?.aqi?.toString() ?: "--"
     val aqiLevel = weather?.airQuality?.level ?: "AQI"
     val wind = weather?.current?.windSpeed?.let { "%.0f km/h".format(it) } ?: "--"

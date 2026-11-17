@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -138,7 +139,12 @@ fun Modifier.skeuoPushButton(
     activeAccent: Color = CyanPrimary,
     onClick: (() -> Unit)? = null
 ): Modifier {
-    val clickableModifier = if (onClick != null) this.clickable { onClick() } else this
+    // 44dp is the smallest reliable touch height; the visual padding stays with the caller.
+    val clickableModifier = if (onClick != null) {
+        this.heightIn(min = 44.dp).clickable { onClick() }
+    } else {
+        this
+    }
     return if (isSelected) {
         clickableModifier
             .clip(shape)
@@ -177,9 +183,10 @@ fun SkeuoLedDiode(
     isPulsing: Boolean = false,
     size: Dp = 9.dp
 ) {
-    val pulseTransition = rememberInfiniteTransition(label = "LedPulse")
-    val alphaAnim by if (isPulsing) {
-        pulseTransition.animateFloat(
+    // Static diodes skip the animation clock entirely; only live status pays for a transition.
+    val diodeAlpha = if (isPulsing) {
+        val pulseTransition = rememberInfiniteTransition(label = "LedPulse")
+        val alpha by pulseTransition.animateFloat(
             initialValue = 0.35f,
             targetValue = 1.0f,
             animationSpec = infiniteRepeatable(
@@ -188,13 +195,9 @@ fun SkeuoLedDiode(
             ),
             label = "LedAlpha"
         )
+        alpha
     } else {
-        pulseTransition.animateFloat(
-            initialValue = 1.0f,
-            targetValue = 1.0f,
-            animationSpec = infiniteRepeatable(animation = tween(1000)),
-            label = "LedStatic"
-        )
+        1f
     }
 
     Box(
@@ -210,7 +213,7 @@ fun SkeuoLedDiode(
             modifier = Modifier
                 .size(size * 0.72f)
                 .clip(CircleShape)
-                .background(color.copy(alpha = alphaAnim))
+                .background(color.copy(alpha = diodeAlpha))
         )
         // Specular reflection glint (top-left)
         Box(
@@ -218,7 +221,7 @@ fun SkeuoLedDiode(
                 .size(size * 0.28f)
                 .align(Alignment.TopStart)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.85f * alphaAnim))
+                .background(Color.White.copy(alpha = 0.85f * diodeAlpha))
         )
     }
 }

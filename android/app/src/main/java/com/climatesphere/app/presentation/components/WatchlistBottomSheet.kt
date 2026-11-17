@@ -28,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -103,7 +102,7 @@ fun WatchlistBottomSheet(
                             color = TextWhite
                         )
                         Text(
-                            text = "${watchlist.size} saved cities",
+                            text = "${watchlist.size} ${if (watchlist.size == 1) "saved city" else "saved cities"}",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextMuted
                         )
@@ -224,7 +223,7 @@ fun WatchlistBottomSheet(
 
                             IconButton(
                                 onClick = { onRemoveLocation(item) },
-                                modifier = Modifier.size(36.dp)
+                                modifier = Modifier.size(44.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.DeleteOutline,

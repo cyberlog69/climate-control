@@ -73,7 +73,8 @@ object ClimateImpactCalculator {
     }
 
     /**
-     * Models local environmental stress factors under future warming scenarios based on IPCC AR6 Working Group II models.
+     * Models local environmental stress factors under future warming scenarios. Figures are
+     * simplified estimates for a latitude band, not a forecast or an official projection.
      */
     fun calculateProjection(
         warmingDegree: Double,

@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.AmberWarning
@@ -115,7 +116,10 @@ fun RenewableEnergyBottomSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(40.dp)
@@ -136,12 +140,16 @@ fun RenewableEnergyBottomSheet(
                             text = "Clean Energy Estimator",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "${location.cityName} · Telemetry Model",
+                            text = "${location.cityName} · solar and wind yield model",
                             style = MaterialTheme.typography.bodySmall,
-                            color = TextMuted
+                            color = TextMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -308,7 +316,7 @@ fun RenewableEnergyBottomSheet(
                                 Text(
                                     text = yieldData.solar.rating,
                                     color = Color(yieldData.solar.badgeColorHex),
-                                    fontSize = 9.sp,
+                                    fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -367,7 +375,7 @@ fun RenewableEnergyBottomSheet(
                                 Text(
                                     text = yieldData.wind.rating,
                                     color = Color(yieldData.wind.badgeColorHex),
-                                    fontSize = 9.sp,
+                                    fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -429,7 +437,7 @@ fun RenewableEnergyBottomSheet(
                                 Text(text = "Avoided CO₂e", color = TextDim, fontSize = 10.sp)
                             }
                             Text(
-                                text = "${yieldData.impact.co2AvoidedKgYear} kg/yr",
+                                text = "%,d kg/yr".format(yieldData.impact.co2AvoidedKgYear),
                                 color = TextWhite,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold
@@ -443,7 +451,7 @@ fun RenewableEnergyBottomSheet(
                                 Text(text = "Tree Planting Equiv.", color = TextDim, fontSize = 10.sp)
                             }
                             Text(
-                                text = "${yieldData.impact.treesEquivalentYear} Trees/yr",
+                                text = "%,d trees/yr".format(yieldData.impact.treesEquivalentYear),
                                 color = TextWhite,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold
@@ -457,7 +465,7 @@ fun RenewableEnergyBottomSheet(
                                 Text(text = "Utility Savings", color = TextDim, fontSize = 10.sp)
                             }
                             Text(
-                                text = "\$${yieldData.impact.estimatedSavingsUsdYear}/yr",
+                                text = "$%,d/yr".format(yieldData.impact.estimatedSavingsUsdYear),
                                 color = AmberWarning,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold
@@ -561,11 +569,11 @@ fun RenewableEnergyBottomSheet(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "00:00", color = TextDim, fontSize = 9.sp)
-                        Text(text = "06:00", color = TextDim, fontSize = 9.sp)
-                        Text(text = "12:00 (Noon)", color = TextDim, fontSize = 9.sp)
-                        Text(text = "18:00", color = TextDim, fontSize = 9.sp)
-                        Text(text = "23:00", color = TextDim, fontSize = 9.sp)
+                        Text(text = "00:00", color = TextDim, fontSize = 10.sp)
+                        Text(text = "06:00", color = TextDim, fontSize = 10.sp)
+                        Text(text = "12:00 (Noon)", color = TextDim, fontSize = 10.sp)
+                        Text(text = "18:00", color = TextDim, fontSize = 10.sp)
+                        Text(text = "23:00", color = TextDim, fontSize = 10.sp)
                     }
                 }
             }

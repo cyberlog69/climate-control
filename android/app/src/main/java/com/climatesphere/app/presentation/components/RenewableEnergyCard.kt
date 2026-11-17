@@ -2,18 +2,18 @@ package com.climatesphere.app.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.climatesphere.app.core.theme.AmberWarning
@@ -38,7 +39,6 @@ import com.climatesphere.app.core.theme.CyanPrimary
 import com.climatesphere.app.core.theme.EmeraldGreen
 import com.climatesphere.app.core.theme.SkeuoLedDiode
 import com.climatesphere.app.core.theme.TextDim
-import com.climatesphere.app.core.theme.TextMuted
 import com.climatesphere.app.core.theme.TextWhite
 import com.climatesphere.app.core.theme.skeuoBezel
 import com.climatesphere.app.core.theme.skeuoCard
@@ -80,7 +80,10 @@ fun RenewableEnergyCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(38.dp)
@@ -99,19 +102,25 @@ fun RenewableEnergyCard(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            text = "Clean Energy Potential",
+                            text = "Clean Energy",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = TextWhite,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "Solar PV & Wind Yield Modeling",
+                            text = "Solar PV & wind yield model",
                             style = MaterialTheme.typography.labelSmall,
                             color = EmeraldGreen,
-                            fontSize = 11.sp
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Tactile Rating Badge
                 Row(
@@ -137,13 +146,16 @@ fun RenewableEnergyCard(
 
             // Dual Solar & Wind Yield Display (LCD Bays)
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // Solar LCD Box
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoLcdPanel(shape = RoundedCornerShape(16.dp), accentColor = AmberWarning)
                         .padding(14.dp)
                 ) {
@@ -172,7 +184,7 @@ fun RenewableEnergyCard(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "${yieldData.solar.peakSunHours} Peak Sun Hrs/day",
+                            text = "Peak sun ${yieldData.solar.peakSunHours} h/day",
                             color = TextDim,
                             fontSize = 10.sp
                         )
@@ -183,6 +195,7 @@ fun RenewableEnergyCard(
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .skeuoLcdPanel(shape = RoundedCornerShape(16.dp), accentColor = CyanPrimary)
                         .padding(14.dp)
                 ) {
@@ -211,7 +224,7 @@ fun RenewableEnergyCard(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "${yieldData.wind.powerDensityWm2} W/m² Density",
+                            text = "${yieldData.wind.powerDensityWm2} W/m² wind power",
                             color = TextDim,
                             fontSize = 10.sp
                         )
@@ -239,18 +252,20 @@ fun RenewableEnergyCard(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "-${yieldData.impact.co2AvoidedKgYear} kg CO₂/yr",
+                        text = "Avoids %,d kg CO₂/yr".format(yieldData.impact.co2AvoidedKgYear),
                         color = EmeraldGreen,
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
                     )
                 }
 
                 Text(
-                    text = "Save ~\$${yieldData.impact.estimatedSavingsUsdYear}/yr",
+                    text = "Est. ~$%,d/yr".format(yieldData.impact.estimatedSavingsUsdYear),
                     color = TextWhite,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
                 )
             }
 
@@ -266,26 +281,31 @@ fun RenewableEnergyCard(
                         activeAccent = AmberWarning,
                         onClick = onOpenCalculator
                     )
-                    .padding(horizontal = 14.dp, vertical = 11.dp)
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
                         SkeuoLedDiode(color = AmberWarning, size = 6.dp)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Customize Capacity & Diurnal Curves",
+                            text = "Customize capacity & diurnal curves",
                             color = TextWhite,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
-                        contentDescription = "Open",
+                        contentDescription = null,
                         tint = AmberWarning,
                         modifier = Modifier.size(16.dp)
                     )

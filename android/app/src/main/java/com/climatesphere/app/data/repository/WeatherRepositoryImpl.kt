@@ -38,14 +38,16 @@ class WeatherRepositoryImpl(
 
     override fun getWeatherForLocation(
         location: LocationModel,
-        forceRefresh: Boolean
+        forceRefresh: Boolean,
+        isPrimary: Boolean
     ): Flow<Resource<WeatherModel>> = flow {
         emit(Resource.Loading())
 
         val locationCacheId = location.toLocationId()
-        // 1. Fetch from Room cache first for instantaneous startup
+        // The "primary_weather" row belongs to the selected city only. Using it for any other
+        // request would show one city's numbers under another city's name.
         val cachedEntity = dao.getWeatherById(locationCacheId).firstOrNull()
-            ?: dao.getWeatherById("primary_weather").firstOrNull()
+            ?: if (isPrimary) dao.getWeatherById("primary_weather").firstOrNull() else null
         val cachedModel = cachedEntity?.toDomainModel()
 
         if (cachedModel != null) {
@@ -81,7 +83,9 @@ class WeatherRepositoryImpl(
 
                     // 3. Persist to Room Single Source of Truth
                     dao.insertWeather(freshWeather.toEntity(locationCacheId))
-                    dao.insertWeather(freshWeather.toEntity("primary_weather"))
+                    if (isPrimary) {
+                        dao.insertWeather(freshWeather.toEntity("primary_weather"))
+                    }
 
                     emit(Resource.Success(freshWeather))
                 }
