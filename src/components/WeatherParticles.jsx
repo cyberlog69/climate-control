@@ -26,6 +26,7 @@ export default function WeatherParticles({ weatherCode, isDay }) {
     window.addEventListener("resize", handleResize);
 
     // Reduce particle count on mobile for performance (two animation loops compete on Android)
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isMobile = window.innerWidth < 768;
     const particles = [];
     const isRain = [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(weatherCode);
@@ -81,7 +82,9 @@ export default function WeatherParticles({ weatherCode, isDay }) {
         if (p.x < 0) p.x = width;
       });
 
-      animationFrameId = requestAnimationFrame(render);
+      if (!reduceMotion) {
+        animationFrameId = requestAnimationFrame(render);
+      }
     };
 
     render();
