@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ShieldAlert, Volume2, VolumeX, X, Bell, Flame, Wind, Droplets, CloudLightning } from "lucide-react";
+import { ShieldAlert, Volume2, VolumeX, X, Bell, Flame, Wind, Droplets, CloudLightning, Check } from "lucide-react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 
 // Security: reuse a single AudioContext singleton to prevent audio handle exhaustion
 let _alertAudioCtx = null;
@@ -19,6 +20,8 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
   const [isAlertDrawerOpen, setIsAlertDrawerOpen] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [dismissedAlerts, setDismissedAlerts] = useState([]);
+
+  useEscapeKey(() => setIsAlertDrawerOpen(false), isAlertDrawerOpen);
 
   // Synthesize Web Audio API Alert Beep (Zero external asset dependency)
   const playAlertChime = () => {
@@ -143,41 +146,32 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
 
   return (
     <>
-      {/* Alert Header Trigger Pill (Tactile Skeuomorphic Button) */}
+      {/* Alert trigger: state is carried by the badge, not by a glow. */}
       <button
         onClick={() => setIsAlertDrawerOpen(true)}
-        className="glass-pill"
+        className="m3-chip"
         style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          padding: "0.42rem 0.85rem",
-          background: visibleAlerts.length > 0 ? "linear-gradient(180deg, rgba(239, 68, 68, 0.3) 0%, rgba(185, 28, 28, 0.2) 100%)" : "var(--sk-surface-btn)",
-          border: visibleAlerts.length > 0 ? "1px solid rgba(239, 68, 68, 0.6)" : "var(--sk-bezel-border)",
-          color: visibleAlerts.length > 0 ? "#fca5a5" : "var(--text-main)",
-          boxShadow: visibleAlerts.length > 0 ? "0 0 14px rgba(239, 68, 68, 0.4), var(--sk-shadow-btn)" : "var(--sk-shadow-btn)",
-          cursor: "pointer",
-          fontSize: "0.8rem",
-          fontWeight: 700,
-          transition: "all 0.18s cubic-bezier(0.2, 0, 0, 1)"
+          color: visibleAlerts.length > 0 ? "var(--accent-red)" : "var(--text-muted)",
+          borderColor: visibleAlerts.length > 0 ? "rgba(239, 68, 68, 0.45)" : undefined
         }}
+        aria-label={`Alerts (${visibleAlerts.length} active)`}
       >
-        <Bell size={15} className={visibleAlerts.length > 0 ? "animate-bounce" : ""} />
+        <Bell size={15} />
         <span>Alerts</span>
         {visibleAlerts.length > 0 && (
           <span
             style={{
-              background: "linear-gradient(180deg, #ef4444 0%, #dc2626 100%)",
-              color: "#fff",
-              borderRadius: "50%",
-              width: "19px",
-              height: "19px",
+              background: "var(--accent-red)",
+              color: "#ffffff",
+              borderRadius: "var(--radius-xs)",
+              minWidth: "18px",
+              height: "18px",
+              padding: "0 4px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "0.68rem",
-              fontWeight: 800,
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)"
+              fontSize: "11px",
+              fontWeight: 800
             }}
           >
             {visibleAlerts.length}
@@ -195,8 +189,6 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
             right: 0,
             bottom: 0,
             background: "rgba(0, 0, 0, 0.82)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
             zIndex: 1200,
             display: "flex",
             justifyContent: "flex-end"
@@ -223,7 +215,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
                 <ShieldAlert size={22} style={{ color: "var(--accent-red)" }} />
-                <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>Live Climate Emergency Hub</h3>
+                <h3 style={{ fontSize: "var(--text-md)", fontWeight: 700, color: "var(--text-main)", margin: 0 }}>Climate alerts</h3>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <button
@@ -245,7 +237,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
               </div>
             </div>
 
-            <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
               Real-time atmospheric hazard monitoring for <strong>{locationName}</strong> based on Open-Meteo live feeds.
             </p>
 
@@ -278,10 +270,10 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
                     boxShadow: "0 4px 12px rgba(16, 185, 129, 0.25)"
                   }}
                 >
-                  ✓
+                  <Check size={18} />
                 </div>
-                <h4 style={{ color: "var(--text-main)", fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>No Active Severe Warnings</h4>
-                <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.4rem" }}>
+                <h4 style={{ color: "var(--text-main)", fontSize: "18px", fontWeight: 700, margin: 0 }}>No active warnings</h4>
+                <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "0.4rem" }}>
                   Current environmental parameters for {locationName} are within normal safety baselines.
                 </p>
               </div>
@@ -317,13 +309,13 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
 
                       <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.4rem" }}>
                         <Icon size={20} style={{ color: alert.color }} />
-                        <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>{alert.title}</span>
+                        <span style={{ fontWeight: 700, fontSize: "15px", color: "var(--text-main)" }}>{alert.title}</span>
                         <span className={`badge badge-${alert.severity === "Critical" ? "red" : "amber"}`}>
                           {alert.severity}
                         </span>
                       </div>
 
-                      <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.45, margin: 0 }}>
+                      <p style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.45, margin: 0 }}>
                         {alert.message}
                       </p>
                     </div>
@@ -337,7 +329,7 @@ export default function ClimateAlertSystem({ weatherData, airQualityData, locati
                 marginTop: "auto",
                 paddingTop: "1rem",
                 borderTop: "var(--sk-bezel-border)",
-                fontSize: "0.75rem",
+                fontSize: "12px",
                 color: "var(--text-dim)",
                 textAlign: "center"
               }}

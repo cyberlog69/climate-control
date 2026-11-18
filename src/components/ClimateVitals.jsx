@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import {
   CO2_HISTORICAL_DATA,
   TEMP_ANOMALY_DATA,
@@ -10,6 +11,8 @@ import { Flame, Activity, Waves, Snowflake, TrendingUp, ChevronRight, X } from "
 
 export default function ClimateVitals() {
   const [activeModalChart, setActiveModalChart] = useState(null);
+
+  useEscapeKey(() => setActiveModalChart(null), Boolean(activeModalChart));
 
   const vitals = [
     {
@@ -38,7 +41,7 @@ export default function ClimateVitals() {
       data: TEMP_ANOMALY_DATA,
       dataKey: "anomaly",
       unit: "°C",
-      description: "Global average surface warming relative to pre-industrial temperatures (1880–1910 baseline)."
+      description: "Global average surface warming relative to pre-industrial temperatures (1880-1910 baseline)."
     },
     {
       id: "sea",
@@ -62,7 +65,7 @@ export default function ClimateVitals() {
       badge: "September Minimum",
       badgeType: "green",
       icon: Snowflake,
-      color: "#38bdf8",
+      color: "var(--accent-cyan)",
       data: ARCTIC_ICE_DATA,
       dataKey: "extent",
       unit: "M km²",
@@ -73,9 +76,12 @@ export default function ClimateVitals() {
   return (
     <section>
       <div className="section-title">
-        <TrendingUp size={20} />
-        <span>Earth's Vital Signs & Climate Indicators</span>
+        <TrendingUp size={18} />
+        <span>Earth's vital signs</span>
       </div>
+      <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: "0.35rem 0 0.85rem" }}>
+        Global indicators through 2026. Open a card for its full series.
+      </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.85rem" }}>
         {vitals.map((v) => {
@@ -83,44 +89,52 @@ export default function ClimateVitals() {
           return (
             <div
               key={v.id}
-              className="glass-card glass-card-interactive"
-              style={{ padding: "1.15rem", cursor: "pointer" }}
+              className="m3-card glass-card-interactive"
+              style={{ padding: "1rem" }}
               onClick={() => setActiveModalChart(v)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setActiveModalChart(v);
+                }
+              }}
+              aria-label={`Open ${v.title} chart`}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.6rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.6rem" }}>
                 <div
                   style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "12px",
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "var(--radius-md)",
                     background: "var(--sk-surface-btn)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     color: v.color,
-                    border: "var(--sk-bezel-border)",
-                    boxShadow: "var(--sk-shadow-btn)"
+                    border: "var(--sk-bezel-border)"
                   }}
                 >
-                  <Icon size={20} />
+                  <Icon size={18} />
                 </div>
                 <span className={`badge badge-${v.badgeType}`}>{v.badge}</span>
               </div>
 
-              <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", fontWeight: 500 }}>{v.title}</div>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-main)", margin: "0.15rem 0", fontFamily: "var(--font-heading)", letterSpacing: "-0.02em" }}>{v.value}</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", display: "flex", alignItems: "center", justifyContent: "space-between", fontWeight: 600 }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>{v.title}</div>
+              <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-main)", margin: "0.15rem 0", fontFamily: "var(--font-heading)", letterSpacing: "-0.02em", lineHeight: 1.15 }}>{v.value}</div>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem", fontWeight: 600 }}>
                 <span>{v.subtext}</span>
-                <ChevronRight size={15} />
+                <ChevronRight size={14} style={{ color: "var(--text-dim)", flexShrink: 0 }} />
               </div>
 
               {/* Sparkline chart */}
-              <div style={{ height: "38px", marginTop: "0.6rem" }}>
+              <div style={{ height: "34px", marginTop: "0.55rem", marginBottom: "0.15rem", overflow: "hidden" }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={v.data}>
                     <defs>
                       <linearGradient id={`spark-${v.id}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={v.color} stopOpacity={0.4} />
+                        <stop offset="5%" stopColor={v.color} stopOpacity={0.35} />
                         <stop offset="95%" stopColor={v.color} stopOpacity={0} />
                       </linearGradient>
                     </defs>
@@ -133,6 +147,10 @@ export default function ClimateVitals() {
         })}
       </div>
 
+      <p style={{ fontSize: "11px", color: "var(--text-dim)", margin: "0.85rem 0 0", lineHeight: 1.5 }}>
+        Sources: NOAA Mauna Loa CO₂, NASA GISTEMP temperature anomaly, NASA satellite altimetry and the NSIDC Sea Ice Index. 2026 entries are year-to-date estimates.
+      </p>
+
       {/* Expanded Chart Modal */}
       {activeModalChart && (
         <div
@@ -142,9 +160,7 @@ export default function ClimateVitals() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0, 0, 0, 0.75)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            background: "rgba(0, 0, 0, 0.78)",
             zIndex: 1100,
             display: "flex",
             alignItems: "center",
@@ -172,15 +188,16 @@ export default function ClimateVitals() {
                 right: "1rem"
               }}
               onClick={() => setActiveModalChart(null)}
+              aria-label="Close chart"
             >
               <X size={18} />
             </button>
 
             <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", marginBottom: "0.4rem" }}>
               <span className={`badge badge-${activeModalChart.badgeType}`}>{activeModalChart.badge}</span>
-              <h3 style={{ fontSize: "1.3rem", fontWeight: 700, color: "var(--text-main)", margin: 0 }}>{activeModalChart.title} Trend</h3>
+              <h3 style={{ fontSize: "20px", fontWeight: 700, color: "var(--text-main)", margin: 0 }}>{activeModalChart.title} Trend</h3>
             </div>
-            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
+            <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
               {activeModalChart.description}
             </p>
 

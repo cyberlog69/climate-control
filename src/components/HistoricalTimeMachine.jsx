@@ -104,14 +104,14 @@ export default function HistoricalTimeMachine({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
           <History size={20} style={{ color: "var(--accent-cyan)" }} />
-          <span>Historical Climate Time Machine (1950 – 2026)</span>
+          <span>Historical Climate Time Machine (1950 to 2026)</span>
         </div>
-        <span className="badge badge-cyan" style={{ fontSize: "0.8rem", padding: "0.3rem 0.75rem" }}>
+        <span className="badge badge-cyan" style={{ fontSize: "13px", padding: "0.3rem 0.75rem" }}>
           Year {selectedYear}
         </span>
       </div>
 
-      <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
+      <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: 0 }}>
         Step through 75+ years of climate shifts for <strong>{cityName}</strong> to visualize thermal anomalies, atmospheric greenhouse gas escalation, and heatwave trends.
       </p>
 
@@ -137,10 +137,11 @@ export default function HistoricalTimeMachine({
                 background: isPlaying ? "linear-gradient(180deg, #ef4444 0%, #b91c1c 100%)" : "var(--sk-surface-primary-btn)",
                 border: "1px solid rgba(255, 255, 255, 0.25)",
                 color: "#ffffff",
-                padding: "0.45rem 1rem",
-                borderRadius: "var(--radius-pill)",
+                padding: "0 1rem",
+                minHeight: "44px",
+                borderRadius: "var(--radius-md)",
                 fontWeight: 700,
-                fontSize: "0.8rem",
+                fontSize: "13px",
                 cursor: "pointer",
                 boxShadow: isPlaying ? "0 4px 12px rgba(239, 68, 68, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                 transition: "all 0.16s cubic-bezier(0.2, 0, 0, 1)"
@@ -156,8 +157,8 @@ export default function HistoricalTimeMachine({
                 setSelectedYear(1950);
               }}
               className="m3-icon-btn"
-              style={{ width: "36px", height: "36px" }}
               title="Reset to 1950"
+              aria-label="Reset to 1950"
             >
               <RotateCcw size={14} />
             </button>
@@ -168,14 +169,14 @@ export default function HistoricalTimeMachine({
                 setSelectedYear(2026);
               }}
               className="m3-icon-btn"
-              style={{ width: "36px", height: "36px" }}
               title="Jump to 2026 Present"
+              aria-label="Jump to 2026 present"
             >
               <FastForward size={14} />
             </button>
           </div>
 
-          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--accent-cyan)" }}>
+          <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--accent-cyan)" }}>
             Decade: {selectedYear}s Era
           </div>
         </div>
@@ -209,9 +210,10 @@ export default function HistoricalTimeMachine({
                   color: isSelected ? "#ffffff" : "var(--text-muted)",
                   border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
                   boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
-                  borderRadius: "10px",
-                  padding: "0.32rem 0.6rem",
-                  fontSize: "0.72rem",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "0 0.6rem",
+                  minHeight: "44px",
+                  fontSize: "11px",
                   fontWeight: isSelected ? 800 : 600,
                   cursor: "pointer",
                   transition: "all 0.16s ease"
@@ -230,12 +232,12 @@ export default function HistoricalTimeMachine({
         <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <Thermometer size={16} style={{ color: "var(--accent-cyan)" }} />
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Estimated Mean Temp</span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Estimated Mean Temp</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
+          <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {displayTemp(selectedData.temp)}°{unit}
           </div>
-          <div style={{ fontSize: "0.72rem", color: selectedData.year === 2026 ? "var(--accent-green)" : "var(--accent-amber)", marginTop: "0.2rem", fontWeight: 600 }}>
+          <div style={{ fontSize: "11px", color: selectedData.year === 2026 ? "var(--accent-green)" : "var(--accent-amber)", marginTop: "0.2rem", fontWeight: 600 }}>
             {selectedData.year === 2026 ? "Current baseline" : `Shift: +${insight.tempDelta}°${unit} vs 2026`}
           </div>
         </div>
@@ -244,12 +246,12 @@ export default function HistoricalTimeMachine({
         <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <Wind size={16} style={{ color: "var(--accent-purple)" }} />
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Global CO₂ Level</span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Global CO₂ Level</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--accent-purple)", fontFamily: "var(--font-heading)" }}>
+          <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-purple)", fontFamily: "var(--font-heading)" }}>
             {selectedData.co2} ppm
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
             {selectedData.year === 2026 ? "Highest in human history" : `+${insight.co2Delta} ppm added by 2026`}
           </div>
         </div>
@@ -258,12 +260,12 @@ export default function HistoricalTimeMachine({
         <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <Flame size={16} style={{ color: "var(--accent-red)" }} />
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Annual Heatwave Days</span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Annual Heatwave Days</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
+          <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {selectedData.heatwaveDays} days/yr
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
             {selectedData.year === 2026 ? "High thermal frequency" : `+${insight.heatDelta} extra heat days today`}
           </div>
         </div>
@@ -272,12 +274,12 @@ export default function HistoricalTimeMachine({
         <div className="sk-lcd-panel" style={{ padding: "0.95rem 1.05rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
             <CloudRain size={16} style={{ color: "#38bdf8" }} />
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Moisture / Precip Shift</span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Moisture / Precip Shift</span>
           </div>
-          <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
+          <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
             {selectedData.precipDeltaPercent}
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", marginTop: "0.2rem", fontWeight: 600 }}>
             Atmospheric moisture capacity shift
           </div>
         </div>
@@ -291,10 +293,10 @@ export default function HistoricalTimeMachine({
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>
-            75-Year Thermal Trajectory (1950 – 2026)
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>
+            75-Year Thermal Trajectory (1950 to 2026)
           </span>
-          <span style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace", fontWeight: 600 }}>
+          <span style={{ fontSize: "11px", color: "var(--accent-cyan)", fontFamily: "monospace", fontWeight: 600 }}>
             Dot = {selectedYear}
           </span>
         </div>
@@ -315,7 +317,7 @@ export default function HistoricalTimeMachine({
                   background: "var(--sk-surface-card)",
                   border: "var(--sk-bezel-border)",
                   borderRadius: "10px",
-                  fontSize: "0.75rem",
+                  fontSize: "12px",
                   color: "var(--text-main)",
                   boxShadow: "var(--sk-shadow-card)"
                 }}
@@ -351,7 +353,7 @@ export default function HistoricalTimeMachine({
           flexDirection: "column",
           gap: "0.35rem",
           border: "1px solid rgba(6, 182, 212, 0.35)",
-          fontSize: "0.8rem",
+          fontSize: "13px",
           color: "var(--text-main)",
           lineHeight: 1.5
         }}

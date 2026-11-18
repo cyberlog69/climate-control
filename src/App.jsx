@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import Navbar from "./components/Navbar";import ClimateVitals from "./components/ClimateVitals";
+import Navbar from "./components/Navbar";
+import ClimateVitals from "./components/ClimateVitals";
 import InteractiveMap from "./components/InteractiveMap";
 import WeatherDetailCard from "./components/WeatherDetailCard";
 import AirQualityCard from "./components/AirQualityCard";
 import ForecastSection from "./components/ForecastSection";
 import HistoricalAnomalyChart from "./components/HistoricalAnomalyChart";
-import ExtremeEventsRadar from "./components/ExtremeEventsRadar";
 import WildfireSatelliteCard from "./components/WildfireSatelliteCard";
 import RenewableEnergyEstimator from "./components/RenewableEnergyEstimator";
 import CarbonFootprintCalculator from "./components/CarbonFootprintCalculator";
@@ -20,6 +20,7 @@ import AboutModal from "./components/AboutModal";
 import WeatherParticles from "./components/WeatherParticles";
 import MaterialNavRail from "./components/MaterialNavRail";
 import { useTouchSwipe } from "./hooks/useTouchSwipe";
+import { useEscapeKey } from "./hooks/useEscapeKey";
 import { fetchWeatherData, fetchAirQualityData, reverseGeocode, detectUserLocation } from "./services/weatherApi";
 import { getStoredWatchlist, saveWatchlist, isCityPinned } from "./services/watchlistApi";
 import { fetchWildfireHotspots, SAMPLE_WILDFIRE_HOTSPOTS } from "./services/wildfireSatelliteApi";
@@ -32,8 +33,12 @@ import {
   History,
   Activity,
   Zap,
+  Leaf,
+  SlidersHorizontal,
+  MoreHorizontal,
   AlertCircle,
-  ChevronRight
+  ChevronRight,
+  X
 } from "lucide-react";
 
 export default function App() {
@@ -52,6 +57,7 @@ export default function App() {
   const [airQualityData, setAirQualityData] = useState(null);
   const [unit, setUnit] = useState("C"); // 'C' | 'F'
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [isNavSheetOpen, setIsNavSheetOpen] = useState(false);
 
   const [viewMode, setViewMode] = useState("3d");
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
@@ -107,6 +113,17 @@ export default function App() {
   };
 
   const tabs = ["dashboard", "map", "forecast", "history", "vitals", "energy", "footprint", "sim"];
+
+  // Mobile keeps four primary destinations plus a sheet for the rest, so every
+  // tab in the desktop rail is reachable on a phone.
+  const secondaryTabs = [
+    { id: "history", label: "History", icon: History },
+    { id: "energy", label: "Energy", icon: Zap },
+    { id: "footprint", label: "Footprint", icon: Leaf },
+    { id: "sim", label: "Simulator", icon: SlidersHorizontal }
+  ];
+
+  useEscapeKey(() => setIsNavSheetOpen(false), isNavSheetOpen);
 
   useTouchSwipe({
     onSwipeLeft: () => {
@@ -391,11 +408,7 @@ export default function App() {
           {activeTab === "forecast" && (
             <div className="m3-tab-content-container">
               <ForecastSection weatherData={weatherData} unit={unit} />
-              <HistoricalAnomalyChart
-                locationName={currentLocation.name}
-                weatherData={weatherData}
-                unit={unit}
-              />
+              <HistoricalAnomalyChart />
             </div>
           )}
 
@@ -424,7 +437,6 @@ export default function App() {
                 source={wildfireData.source}
                 fetchedAt={wildfireData.fetchedAt}
               />
-              <ExtremeEventsRadar />
             </div>
           )}
 
@@ -464,6 +476,7 @@ export default function App() {
       {/* Error Notification */}
       {error && (
         <div
+          role="alert"
           className="m3-card"
           style={{
             position: "fixed",
@@ -471,15 +484,16 @@ export default function App() {
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 130,
-            padding: "0.65rem 1.2rem",
-            background: "rgba(239, 68, 68, 0.2)",
-            borderColor: "rgba(239, 68, 68, 0.4)",
+            padding: "0.65rem 1rem",
+            background: "var(--sk-surface-elevated)",
+            borderColor: "var(--accent-red)",
             display: "flex",
             alignItems: "center",
             gap: "0.6rem",
-            color: "#fca5a5",
-            fontSize: "0.82rem",
-            borderRadius: "var(--md-shape-full)"
+            color: "var(--text-main)",
+            fontSize: "13px",
+            borderRadius: "var(--radius-md)",
+            maxWidth: "calc(100vw - 2rem)"
           }}
         >
           <AlertCircle size={16} />
@@ -488,11 +502,11 @@ export default function App() {
       )}
 
       {/* Material 3 Bottom Navigation Bar (Mobile) */}
-      <nav className="m3-bottom-nav">
+      <nav className="m3-bottom-nav" aria-label="Sections">
         <button
           className={`m3-bottom-item ${activeTab === "dashboard" ? "active" : ""}`}
           onClick={() => setActiveTab("dashboard")}
-          aria-label="Dashboard"
+          aria-current={activeTab === "dashboard" ? "page" : undefined}
         >
           <div className="m3-bottom-item-pill">
             <LayoutDashboard size={18} />
@@ -503,7 +517,7 @@ export default function App() {
         <button
           className={`m3-bottom-item ${activeTab === "map" ? "active" : ""}`}
           onClick={() => setActiveTab("map")}
-          aria-label="Map & Globe"
+          aria-current={activeTab === "map" ? "page" : undefined}
         >
           <div className="m3-bottom-item-pill">
             <Globe2 size={18} />
@@ -514,7 +528,7 @@ export default function App() {
         <button
           className={`m3-bottom-item ${activeTab === "forecast" ? "active" : ""}`}
           onClick={() => setActiveTab("forecast")}
-          aria-label="Forecast"
+          aria-current={activeTab === "forecast" ? "page" : undefined}
         >
           <div className="m3-bottom-item-pill">
             <Compass size={18} />
@@ -523,20 +537,9 @@ export default function App() {
         </button>
 
         <button
-          className={`m3-bottom-item ${activeTab === "history" ? "active" : ""}`}
-          onClick={() => setActiveTab("history")}
-          aria-label="History"
-        >
-          <div className="m3-bottom-item-pill">
-            <History size={18} />
-          </div>
-          <span className="m3-bottom-label">History</span>
-        </button>
-
-        <button
           className={`m3-bottom-item ${activeTab === "vitals" ? "active" : ""}`}
           onClick={() => setActiveTab("vitals")}
-          aria-label="Vitals"
+          aria-current={activeTab === "vitals" ? "page" : undefined}
         >
           <div className="m3-bottom-item-pill">
             <Activity size={18} />
@@ -545,16 +548,59 @@ export default function App() {
         </button>
 
         <button
-          className={`m3-bottom-item ${activeTab === "energy" ? "active" : ""}`}
-          onClick={() => setActiveTab("energy")}
-          aria-label="Energy"
+          className={`m3-bottom-item ${secondaryTabs.some((t) => t.id === activeTab) ? "active" : ""}`}
+          onClick={() => setIsNavSheetOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={isNavSheetOpen}
         >
           <div className="m3-bottom-item-pill">
-            <Zap size={18} />
+            <MoreHorizontal size={18} />
           </div>
-          <span className="m3-bottom-label">Energy</span>
+          <span className="m3-bottom-label">More</span>
         </button>
       </nav>
+
+      {isNavSheetOpen && (
+        <div className="m3-nav-sheet-scrim" onClick={() => setIsNavSheetOpen(false)}>
+          <div
+            className="m3-nav-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-label="More sections"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="m3-nav-sheet-head">
+              <span>More sections</span>
+              <button
+                className="m3-icon-btn"
+                onClick={() => setIsNavSheetOpen(false)}
+                aria-label="Close sections"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="m3-nav-sheet-grid">
+              {secondaryTabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    className={`m3-nav-sheet-btn ${activeTab === tab.id ? "active" : ""}`}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      setIsNavSheetOpen(false);
+                    }}
+                    aria-current={activeTab === tab.id ? "page" : undefined}
+                  >
+                    <Icon size={20} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
 
       {/* Dual City Comparison Modal */}

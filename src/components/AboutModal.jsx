@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import { Globe, X, ExternalLink, Download, Smartphone, CloudSun, Cpu } from "lucide-react";
 import { getLatestReleaseInfo, FALLBACK_RELEASE_INFO } from "../services/githubReleaseApi";
 
@@ -10,6 +11,7 @@ const GithubIcon = ({ size = 20 }) => (
 );
 
 export default function AboutModal({ onClose }) {
+  useEscapeKey(onClose);
   const liveAppUrl = "https://climate-control.loggy69.workers.dev/";
   const githubUrl = "https://github.com/cyberlog69/climate-control";
   const [releaseInfo, setReleaseInfo] = useState(FALLBACK_RELEASE_INFO);
@@ -32,8 +34,6 @@ export default function AboutModal({ onClose }) {
         position: "fixed",
         inset: 0,
         background: "rgba(3, 7, 18, 0.8)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
         zIndex: 2000,
         display: "flex",
         alignItems: "center",
@@ -74,15 +74,15 @@ export default function AboutModal({ onClose }) {
             </div>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
+                <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
                   ClimateSphere
                 </h3>
-                <span className="badge badge-cyan" style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem" }}>
+                <span className="badge badge-cyan" style={{ fontSize: "11px", padding: "0.15rem 0.5rem" }}>
                   {releaseInfo.version}
                 </span>
               </div>
-              <div style={{ fontSize: "0.76rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
-                Global Realtime Climate & Weather Sentinel
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "0.15rem" }}>
+                Global climate & weather dashboard
               </div>
             </div>
           </div>
@@ -99,10 +99,10 @@ export default function AboutModal({ onClose }) {
         {/* Content Body */}
         <div style={{ padding: "1.5rem", overflowY: "auto", display: "flex", flexDirection: "column", gap: "1.2rem" }}>
           {/* Mission statement */}
-          <p style={{ fontSize: "0.88rem", lineHeight: 1.6, color: "var(--text-main)", margin: 0 }}>
-            <strong>ClimateSphere</strong> is a planetary environmental intelligence system combining
-            real-time atmospheric telemetry, NASA satellite remote sensing, interactive 3D WebGL computing,
-            and native Android engineering into an open, telemetry-driven platform.
+          <p style={{ fontSize: "13px", lineHeight: 1.6, color: "var(--text-main)", margin: 0 }}>
+            <strong>ClimateSphere</strong> combines current weather, forecasts, air quality and global
+            climate indicators with NASA's open wildfire feed. It runs on the web and as a native
+            Android app from the same codebase.
           </p>
 
           {/* Quick Links Card Grid */}
@@ -129,8 +129,8 @@ export default function AboutModal({ onClose }) {
                 <Globe size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Deployed on Cloudflare</div>
-                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>Deployed on Cloudflare</div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   climate-control.loggy69.workers.dev
                 </div>
               </div>
@@ -159,8 +159,8 @@ export default function AboutModal({ onClose }) {
                 <GithubIcon size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>GitHub Repository</div>
-                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>GitHub Repository</div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   cyberlog69/climate-control
                 </div>
               </div>
@@ -190,11 +190,11 @@ export default function AboutModal({ onClose }) {
                 <Smartphone size={20} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Native Android Application (APK)</div>
-                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-main)", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>Native Android Application (APK)</div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
                   <span>Download {releaseInfo.fileName}</span>
                   {releaseInfo.sizeFormatted && (
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 500 }}>
+                    <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
                       ({releaseInfo.sizeFormatted})
                     </span>
                   )}
@@ -206,19 +206,19 @@ export default function AboutModal({ onClose }) {
 
           {/* Tech Architecture Badges */}
           <div className="sk-recessed-tile" style={{ padding: "1.1rem", display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.65rem" }}>
+            <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.65rem" }}>
               Dual Platform Architecture
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
                 <CloudSun size={16} style={{ color: "var(--accent-cyan)", marginTop: "0.15rem", flexShrink: 0 }} />
-                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
                   <strong style={{ color: "var(--text-main)" }}>Web & PWA:</strong> React 19, Three.js 3D Globe, Leaflet, Recharts, Open-Meteo & Cloudflare CI/CD.
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
                 <Cpu size={16} style={{ color: "var(--accent-purple)", marginTop: "0.15rem", flexShrink: 0 }} />
-                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
                   <strong style={{ color: "var(--text-main)" }}>Android Native:</strong> Kotlin 2.0, Jetpack Compose, Room SQLite Offline Sync, Material You Themed Icons.
                 </div>
               </div>
@@ -226,7 +226,7 @@ export default function AboutModal({ onClose }) {
           </div>
 
           {/* Footer note */}
-          <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", textAlign: "center", borderTop: "var(--sk-bezel-border)", paddingTop: "0.75rem" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-dim)", textAlign: "center", borderTop: "var(--sk-bezel-border)", paddingTop: "0.75rem" }}>
             Open Source • MIT License • Built with Open Environmental Data
           </div>
         </div>

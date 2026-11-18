@@ -56,8 +56,20 @@ test("wildfire risk reacts to heat, dryness and wind", () => {
   assert.ok(extreme.severeOutbreaksCount >= 1);
 });
 
-test("wildfire risk handles a missing location and empty hotspot list", () => {
+test("wildfire risk refuses to score without measured weather", () => {
   const result = evaluateLocalWildfireRisk(null, null, null, []);
+  assert.equal(result.available, false);
+  assert.equal(result.reason, "missing-weather");
+});
+
+test("wildfire risk handles a missing location and empty hotspot list", () => {
+  const result = evaluateLocalWildfireRisk(
+    null,
+    null,
+    { current: { temp: 20, humidity: 40, windSpeed: 10 } },
+    []
+  );
+  assert.equal(result.available, true);
   assert.equal(result.nearestCluster, null);
   assert.equal(result.minDistanceKm, null);
   assert.equal(result.totalGlobalClusters, 0);

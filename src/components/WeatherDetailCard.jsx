@@ -59,12 +59,12 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
   return (
     <div className="m3-card" style={{ padding: "1.35rem", position: "relative" }}>
       {/* Location Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem" }}>
-        <div>
-          <div style={{ fontSize: "0.72rem", color: "var(--md-sys-color-on-surface-variant)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-            Current Conditions
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem", flexWrap: "wrap", gap: "0.5rem" }}>
+        <div style={{ minWidth: 0, flex: "1 1 160px" }}>
+          <div style={{ fontSize: "11px", color: "var(--md-sys-color-on-surface-variant)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+            Current conditions
           </div>
-          <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--md-sys-color-on-background)", letterSpacing: "-0.025em", marginTop: "0.15rem" }}>
+          <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--md-sys-color-on-background)", letterSpacing: "-0.025em", marginTop: "0.15rem" }}>
             {locationName}
           </h2>
         </div>
@@ -73,13 +73,13 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
             <button
               onClick={onOpenVoiceBriefing}
               className="m3-chip active"
-              title="Listen to AI Climate Briefing"
+              title="Listen to the voice briefing"
             >
               <Mic size={13} />
-              <span>AI Briefing</span>
+              <span>Briefing</span>
             </button>
           )}
-          <span className="m3-chip" style={{ fontSize: "0.72rem" }}>
+          <span className="m3-chip" style={{ fontSize: "11px" }}>
             <span className="pulse-dot"></span>
             {current.isDay ? "Daytime" : "Nighttime"}
           </span>
@@ -115,21 +115,21 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
                 fontFeatureSettings: "'tnum' 1"
               }}
             >
-              {displayTemp(current.temp)}°<span style={{ fontSize: "1.75rem", fontWeight: 600, color: "var(--text-muted)" }}>{unit}</span>
+              {displayTemp(current.temp)}°<span style={{ fontSize: "20px", fontWeight: 600, color: "var(--text-muted)" }}>{unit}</span>
             </div>
-            <div style={{ fontSize: "0.88rem", color: "var(--accent-cyan)", fontWeight: 600, marginTop: "0.25rem", letterSpacing: "-0.01em" }}>
+            <div style={{ fontSize: "14px", color: "var(--accent-cyan)", fontWeight: 600, marginTop: "0.25rem", letterSpacing: "-0.01em" }}>
               {wmo.label}
             </div>
           </div>
         </div>
 
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
             Feels Like
           </div>
           <div
             style={{
-              fontSize: "1.3rem",
+              fontSize: "20px",
               fontWeight: 800,
               color: "var(--text-main)",
               letterSpacing: "-0.02em",
@@ -140,7 +140,7 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
             {displayTemp(current.feelsLike)}°{unit}
           </div>
           {todayForecast.maxTemp !== undefined && (
-            <div style={{ fontSize: "0.76rem", color: "var(--text-dim)", marginTop: "0.25rem", fontWeight: 500 }}>
+            <div style={{ fontSize: "12px", color: "var(--text-dim)", marginTop: "0.25rem", fontWeight: 500 }}>
               H: <span style={{ color: "var(--text-main)" }}>{displayTemp(todayForecast.maxTemp)}°</span> · L: <span style={{ color: "var(--text-main)" }}>{displayTemp(todayForecast.minTemp)}°</span>
             </div>
           )}
@@ -153,8 +153,8 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
         <div className="glass-stat-chip">
           <Droplets size={19} style={{ color: "var(--accent-cyan)", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Humidity</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.humidity}%</div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500 }}>Humidity</div>
+            <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.humidity}%</div>
           </div>
         </div>
 
@@ -162,8 +162,8 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
         <div className="glass-stat-chip">
           <Wind size={19} style={{ color: "#38bdf8", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Wind Speed</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.windSpeed} km/h</div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500 }}>Wind Speed</div>
+            <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.windSpeed} km/h</div>
           </div>
         </div>
 
@@ -171,8 +171,8 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
         <div className="glass-stat-chip">
           <Gauge size={19} style={{ color: "var(--accent-amber)", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Pressure</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.pressure} hPa</div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500 }}>Pressure</div>
+            <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.pressure} hPa</div>
           </div>
         </div>
 
@@ -180,8 +180,8 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
         <div className="glass-stat-chip">
           <Cloud size={19} style={{ color: "var(--accent-purple)", flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>Cloud Cover</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.cloudCover}%</div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500 }}>Cloud Cover</div>
+            <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.01em" }}>{current.cloudCover}%</div>
           </div>
         </div>
       </div>
@@ -195,7 +195,7 @@ export default function WeatherDetailCard({ locationName, weatherData, unit, onO
             marginTop: "0.85rem",
             paddingTop: "0.75rem",
             borderTop: "1px solid var(--border-subtle)",
-            fontSize: "0.82rem",
+            fontSize: "13px",
             color: "var(--text-muted)"
           }}
         >

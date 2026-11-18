@@ -1,13 +1,13 @@
 {
-  "name": "ClimateSphere: Planetary Intelligence",
+  "name": "ClimateSphere",
   "short_name": "ClimateSphere",
-  "description": "Next-Generation Global Climate Intelligence & Planetary Weather Sentinel System",
+  "description": "Current conditions, forecasts, air quality, global climate indicators and wildfire events for any city.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#030712",
-  "theme_color": "#06b6d4",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "categories": ["weather", "utilities", "education", "science"],
   "icons": [
     {

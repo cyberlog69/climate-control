@@ -12,9 +12,20 @@ export function calculateRenewableYield({
   windTurbineKw = 3.0 // Micro wind turbine capacity in kW
 }) {
   const current = weatherData?.current || {};
-  const hourly = weatherData?.hourly || [];
-  const cloudCover = current.cloudCover ?? 40; // 0 - 100%
-  const windSpeed10m = current.windSpeed ?? 15; // km/h
+  const cloudCover = current.cloudCover;
+  const windSpeed10m = current.windSpeed;
+
+  // Yields come from live cloud cover and wind speed. Without them there is
+  // nothing honest to show, so the panel reports that instead of a default.
+  if (
+    !Number.isFinite(lat) ||
+    typeof cloudCover !== "number" ||
+    typeof windSpeed10m !== "number"
+  ) {
+    return { available: false, reason: "missing-weather" };
+  }
+
+  const hourly = weatherData.hourly || [];
 
   // 1. Solar Physics Calculations
   const absLat = Math.abs(lat);
@@ -121,6 +132,7 @@ export function calculateRenewableYield({
   });
 
   return {
+    available: true,
     solar: {
       systemSizeKw,
       panelEfficiency,

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import {
   fetchWatchlistSummaries,
   isCityPinned
@@ -13,7 +14,9 @@ import {
   Search,
   RefreshCw,
   MapPin,
-  ExternalLink
+  ExternalLink,
+  Wind,
+  Droplets
 } from "lucide-react";
 
 export default function WatchlistModal({
@@ -24,6 +27,8 @@ export default function WatchlistModal({
   unit = "C",
   onClose
 }) {
+  useEscapeKey(onClose);
+
   const [summaries, setSummaries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -113,7 +118,6 @@ export default function WatchlistModal({
         right: 0,
         bottom: 0,
         background: "rgba(3, 7, 18, 0.78)",
-        backdropFilter: "blur(12px)",
         zIndex: 1100,
         display: "flex",
         alignItems: "center",
@@ -153,11 +157,11 @@ export default function WatchlistModal({
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <Bookmark size={22} style={{ color: "var(--accent-cyan)" }} />
             <div>
-              <h3 style={{ fontSize: "1.25rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
                 Multi-City Watchlist & Pinboard
               </h3>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
-                {watchlist.length} pinned sentinels monitored simultaneously
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "0.15rem" }}>
+                {watchlist.length} pinned cities
               </div>
             </div>
           </div>
@@ -227,13 +231,13 @@ export default function WatchlistModal({
                   className="search-result-item"
                 >
                   <div>
-                    <span style={{ fontWeight: 700, color: "var(--text-main)", fontSize: "0.85rem" }}>{res.name}</span>
+                    <span style={{ fontWeight: 700, color: "var(--text-main)", fontSize: "14px" }}>{res.name}</span>
                   </div>
                   <button
                     className="m3-chip active"
                     style={{
                       padding: "0.25rem 0.6rem",
-                      fontSize: "0.72rem",
+                      fontSize: "11px",
                       gap: "0.25rem"
                     }}
                   >
@@ -259,13 +263,13 @@ export default function WatchlistModal({
           {isLoading ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "2.5rem 0", color: "var(--text-muted)" }}>
               <RefreshCw size={24} className="animate-spin" style={{ margin: "0 auto 0.6rem auto", color: "var(--accent-cyan)" }} />
-              <div>Synchronizing live telemetry across pinned cities...</div>
+              <div>Loading current conditions for pinned cities…</div>
             </div>
           ) : summaries.length === 0 ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "2.5rem 0", color: "var(--text-muted)" }}>
               <Bookmark size={32} style={{ margin: "0 auto 0.6rem auto", color: "var(--text-dim)" }} />
               <h4>No Pinned Cities in Watchlist</h4>
-              <p style={{ fontSize: "0.82rem", marginTop: "0.3rem" }}>
+              <p style={{ fontSize: "13px", marginTop: "0.3rem" }}>
                 Use the search bar above to bookmark your favorite global cities.
               </p>
             </div>
@@ -300,16 +304,16 @@ export default function WatchlistModal({
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
                         <MapPin size={15} style={{ color: "var(--accent-cyan)", flexShrink: 0 }} />
-                        <span style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--text-main)" }}>
+                        <span style={{ fontWeight: 800, fontSize: "15px", color: "var(--text-main)" }}>
                           {city.cityName}
                         </span>
                         {isActive && (
-                          <span className="badge badge-cyan" style={{ fontSize: "0.65rem", padding: "0.1rem 0.35rem" }}>
+                          <span className="badge badge-cyan" style={{ fontSize: "11px", padding: "0.1rem 0.35rem" }}>
                             Active
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginLeft: "1.25rem" }}>
+                      <div style={{ fontSize: "11px", color: "var(--text-dim)", marginLeft: "1.25rem" }}>
                         {city.country}
                       </div>
                     </div>
@@ -331,24 +335,28 @@ export default function WatchlistModal({
                   {/* Temp & AQI Row */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                     <div>
-                      <div style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
+                      <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>
                         {displayTemp(city.temp)}°{unit}
                       </div>
-                      <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", display: "flex", gap: "0.5rem" }}>
-                        <span>💨 {city.windSpeed} km/h</span>
-                        <span>💧 {city.humidity}%</span>
+                      <div style={{ fontSize: "11px", color: "var(--text-dim)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.15rem" }}>
+                          <Wind size={11} /> {city.windSpeed} km/h
+                        </span>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.15rem" }}>
+                          <Droplets size={11} /> {city.humidity}%
+                        </span>
                       </div>
                     </div>
 
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "0.7rem", color: "var(--text-dim)", marginBottom: "0.2rem" }}>Air Quality</div>
+                      <div style={{ fontSize: "11px", color: "var(--text-dim)", marginBottom: "0.2rem" }}>Air Quality</div>
                       <span
                         className="badge"
                         style={{
                           background: `${city.aqiColor}22`,
                           color: city.aqiColor,
                           border: `1px solid ${city.aqiColor}44`,
-                          fontSize: "0.72rem"
+                          fontSize: "11px"
                         }}
                       >
                         AQI {city.aqi} • {city.aqiLevel}
@@ -364,7 +372,7 @@ export default function WatchlistModal({
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      fontSize: "0.72rem",
+                      fontSize: "11px",
                       color: "var(--accent-cyan)",
                       fontWeight: 600
                     }}

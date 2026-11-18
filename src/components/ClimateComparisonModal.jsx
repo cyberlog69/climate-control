@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import { searchLocations, fetchWeatherData, fetchAirQualityData } from "../services/weatherApi";
 import { getAqiLevel } from "../services/climateData";
 import { X, Search, GitCompare, RefreshCw } from "lucide-react";
 
 export default function ClimateComparisonModal({ locationA, weatherDataA, airQualityDataA, unit, onClose }) {
+  useEscapeKey(onClose);
   const [queryB, setQueryB] = useState("");
   const [searchResultsB, setSearchResultsB] = useState([]);
   const [locationB, setLocationB] = useState({
@@ -87,7 +89,6 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
         right: 0,
         bottom: 0,
         background: "rgba(0, 0, 0, 0.82)",
-        backdropFilter: "blur(16px)",
         zIndex: 1200,
         display: "flex",
         alignItems: "center",
@@ -128,7 +129,7 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
         {/* Modal Title */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1.25rem" }}>
           <GitCompare size={22} style={{ color: "var(--accent-cyan)" }} />
-          <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>
+          <h3 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>
             Dual-City Climate & Weather Comparison
           </h3>
         </div>
@@ -151,7 +152,7 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
               {searchResultsB.map((item) => (
                 <div key={item.id} className="search-result-item" onClick={() => handleSelectB(item)}>
                   <span style={{ fontWeight: 600, color: "var(--text-main)" }}>{item.name}</span>
-                  <span style={{ fontSize: "0.75rem", color: "var(--accent-cyan)" }}>
+                  <span style={{ fontSize: "12px", color: "var(--accent-cyan)" }}>
                     {item.lat.toFixed(2)}°, {item.lon.toFixed(2)}°
                   </span>
                 </div>
@@ -171,24 +172,24 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
             }}
           >
             <div className="badge badge-cyan" style={{ marginBottom: "0.5rem" }}>Primary Location</div>
-            <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>{locationA.name}</h4>
-            <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-cyan)", margin: "0.4rem 0", fontFamily: "var(--font-heading)" }}>
+            <h4 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>{locationA.name}</h4>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: "var(--accent-cyan)", margin: "0.4rem 0", fontFamily: "var(--font-heading)" }}>
               {displayTemp(tempA)}°{unit}
             </div>
-            <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
+            <div style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "1rem" }}>
               Feels like {displayTemp(weatherDataA?.current?.feelsLike)}°{unit}
             </div>
 
             {/* AQI Score */}
             <div className="sk-recessed-tile" style={{ padding: "0.75rem", marginBottom: "0.75rem", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index (AQI)</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: getAqiLevel(aqiA).color, fontFamily: "var(--font-heading)" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index (AQI)</div>
+              <div style={{ fontSize: "18px", fontWeight: 700, color: getAqiLevel(aqiA).color, fontFamily: "var(--font-heading)" }}>
                 {aqiA} ({getAqiLevel(aqiA).status})
               </div>
             </div>
 
             {/* Humidity & Wind */}
-            <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+            <div style={{ fontSize: "13px", color: "var(--text-muted)", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
               <div>Wind: <strong>{weatherDataA?.current?.windSpeed} km/h</strong></div>
               <div>Humidity: <strong>{weatherDataA?.current?.humidity}%</strong></div>
               <div>Pressure: <strong>{weatherDataA?.current?.pressure} hPa</strong></div>
@@ -204,26 +205,26 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
             }}
           >
             <div className="badge badge-amber" style={{ marginBottom: "0.5rem" }}>Compared Location</div>
-            <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>
+            <h4 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0" }}>
               {locationB.name} {isLoadingB && <RefreshCw size={14} className="animate-spin" />}
             </h4>
-            <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-amber)", margin: "0.4rem 0", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: "var(--accent-amber)", margin: "0.4rem 0", fontFamily: "var(--font-heading)" }}>
               {displayTemp(tempB)}°{unit}
             </div>
-            <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
+            <div style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "1rem" }}>
               Feels like {displayTemp(weatherDataB?.current?.feelsLike)}°{unit}
             </div>
 
             {/* AQI Score */}
             <div className="sk-recessed-tile" style={{ padding: "0.75rem", marginBottom: "0.75rem", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index (AQI)</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: getAqiLevel(aqiB).color, fontFamily: "var(--font-heading)" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index (AQI)</div>
+              <div style={{ fontSize: "18px", fontWeight: 700, color: getAqiLevel(aqiB).color, fontFamily: "var(--font-heading)" }}>
                 {aqiB} ({getAqiLevel(aqiB).status})
               </div>
             </div>
 
             {/* Humidity & Wind */}
-            <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+            <div style={{ fontSize: "13px", color: "var(--text-muted)", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
               <div>Wind: <strong>{weatherDataB?.current?.windSpeed} km/h</strong></div>
               <div>Humidity: <strong>{weatherDataB?.current?.humidity}%</strong></div>
               <div>Pressure: <strong>{weatherDataB?.current?.pressure} hPa</strong></div>
@@ -239,13 +240,13 @@ export default function ClimateComparisonModal({ locationA, weatherDataA, airQua
               marginTop: "1.25rem",
               padding: "0.95rem 1.2rem",
               border: "1px solid rgba(6, 182, 212, 0.4)",
-              fontSize: "0.85rem",
+              fontSize: "14px",
               color: "var(--text-main)",
               textAlign: "center",
               display: "block"
             }}
           >
-            📊 Thermal Delta: <strong>{locationA.name.split(",")[0]}</strong> is{" "}
+            Thermal delta: <strong>{locationA.name.split(",")[0]}</strong> is{" "}
             <strong>
               {tempA > tempB ? `${tempDiff}°${unit} warmer` : `${tempDiff}°${unit} cooler`}
             </strong>{" "}

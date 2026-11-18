@@ -1,8 +1,10 @@
 import React from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import { getAqiLevel } from "../services/climateData";
 import { Printer, X, ShieldCheck, Globe } from "lucide-react";
 
 export default function ReportGeneratorModal({ locationName, weatherData, airQualityData, unit, onClose }) {
+  useEscapeKey(onClose);
   if (!weatherData) return null;
 
   const current = weatherData.current || {};
@@ -23,7 +25,6 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
         right: 0,
         bottom: 0,
         background: "rgba(0, 0, 0, 0.82)",
-        backdropFilter: "blur(16px)",
         zIndex: 1300,
         display: "flex",
         alignItems: "center",
@@ -51,10 +52,10 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <Globe size={24} style={{ color: "var(--accent-cyan)" }} />
             <div>
-              <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", margin: 0 }}>
                 Environmental Health Diagnostic Report
               </h3>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>ClimateSphere Sentinel Feed • {now}</div>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>ClimateSphere • {now}</div>
             </div>
           </div>
 
@@ -64,7 +65,7 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
               className="m3-chip active"
               style={{
                 padding: "0.45rem 1rem",
-                fontSize: "0.82rem",
+                fontSize: "13px",
                 gap: "0.4rem"
               }}
             >
@@ -90,9 +91,9 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
             marginBottom: "1.25rem"
           }}
         >
-          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 600 }}>Target Inspection Zone</div>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0", fontFamily: "var(--font-heading)" }}>{locationName}</h2>
-          <div style={{ fontSize: "0.85rem", color: "var(--accent-cyan)", fontWeight: 600 }}>
+          <div style={{ fontSize: "13px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 600 }}>Target Inspection Zone</div>
+          <h2 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-main)", margin: "0.2rem 0", fontFamily: "var(--font-heading)" }}>{locationName}</h2>
+          <div style={{ fontSize: "14px", color: "var(--accent-cyan)", fontWeight: 600 }}>
             Timezone: {weatherData.timezone || "UTC"} | Coordinates: {weatherData.raw?.latitude != null ? weatherData.raw.latitude.toFixed(2) : (weatherData.latitude != null ? weatherData.latitude.toFixed(2) : "0.00")}°, {weatherData.raw?.longitude != null ? weatherData.raw.longitude.toFixed(2) : (weatherData.longitude != null ? weatherData.longitude.toFixed(2) : "0.00")}°
           </div>
         </div>
@@ -100,21 +101,21 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
         {/* Real-time Diagnostics Specs (Debossed Instrument Tiles) */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.85rem", marginBottom: "1.25rem" }}>
           <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.95rem" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Current Temp</div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>{current.temp}°{unit}</div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-dim)" }}>Feels like {current.feelsLike}°{unit}</div>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Current Temp</div>
+            <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>{current.temp}°{unit}</div>
+            <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Feels like {current.feelsLike}°{unit}</div>
           </div>
 
           <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.95rem" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index</div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 800, color: aqiInfo.color, fontFamily: "var(--font-heading)" }}>{usAqi}</div>
-            <div style={{ fontSize: "0.72rem", color: aqiInfo.color, fontWeight: 700 }}>{aqiInfo.status}</div>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Air Quality Index</div>
+            <div style={{ fontSize: "20px", fontWeight: 800, color: aqiInfo.color, fontFamily: "var(--font-heading)" }}>{usAqi}</div>
+            <div style={{ fontSize: "11px", color: aqiInfo.color, fontWeight: 700 }}>{aqiInfo.status}</div>
           </div>
 
           <div className="sk-recessed-tile" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "0.95rem" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Wind & Pressure</div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>{current.windSpeed} km/h</div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-dim)" }}>{current.pressure} hPa</div>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Wind & Pressure</div>
+            <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-main)", fontFamily: "var(--font-heading)" }}>{current.windSpeed} km/h</div>
+            <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>{current.pressure} hPa</div>
           </div>
         </div>
 
@@ -134,15 +135,15 @@ export default function ReportGeneratorModal({ locationName, weatherData, airQua
             <ShieldCheck size={18} style={{ color: "var(--accent-green)" }} />
             <span>Health & Environmental Advisory</span>
           </div>
-          <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.45 }}>
+          <div style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.45 }}>
             {aqiInfo.desc} Stay hydrated during outdoor thermal spikes.
           </div>
         </div>
 
         {/* 7-Day Forecast Summary Table */}
-        <h4 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.5rem" }}>7-Day Weather Outlook</h4>
+        <h4 style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.5rem" }}>7-Day Weather Outlook</h4>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", color: "var(--text-main)" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px", color: "var(--text-main)" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-light)", color: "var(--text-muted)" }}>
                 <th style={{ textAlign: "left", padding: "0.5rem" }}>Day</th>

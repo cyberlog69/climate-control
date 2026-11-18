@@ -9,7 +9,7 @@ export default function WeatherParticles({ weatherCode, isDay }) {
     const ctx = canvas.getContext("2d");
     let animationFrameId;
 
-    // Use clientWidth/Height with fallbacks — window.innerWidth can be 0 during early Android WebView layout
+    // Use clientWidth/Height with fallbacks: window.innerWidth can be 0 during early Android WebView layout
     const getWidth = () => document.documentElement.clientWidth || window.innerWidth || 360;
     const getHeight = () => document.documentElement.clientHeight || window.innerHeight || 640;
 

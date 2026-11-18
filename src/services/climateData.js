@@ -158,49 +158,6 @@ export const CLIMATE_HOTSPOTS = [
   }
 ];
 
-export const EXTREME_EVENTS_FEED = [
-  {
-    id: 1,
-    title: "Marine Heatwave Alert",
-    region: "North Atlantic Ocean",
-    severity: "High",
-    type: "ocean",
-    icon: "waves",
-    description: "Sea surface temperatures +2.4°C above baseline, threatening coral ecosystems and marine life.",
-    timestamp: "Live - 10 mins ago"
-  },
-  {
-    id: 2,
-    title: "Arctic Permafrost Thaw Spike",
-    region: "Svalbard & Siberian Tundra",
-    severity: "Critical",
-    type: "ice",
-    icon: "snowflake",
-    description: "Accelerated methane outgassing detected as ground temperatures exceed freezing baselines.",
-    timestamp: "Live - 25 mins ago"
-  },
-  {
-    id: 3,
-    title: "Urban Air Quality Advisory",
-    region: "Indo-Gangetic Plain",
-    severity: "High",
-    type: "aqi",
-    icon: "wind",
-    description: "PM2.5 concentration index exceeding 180 µg/m³; sensitive populations advised to stay indoors.",
-    timestamp: "Live - 1 hour ago"
-  },
-  {
-    id: 4,
-    title: "Wildfire Danger Level Elevated",
-    region: "Mediterranean & Southern Europe",
-    severity: "Moderate",
-    type: "fire",
-    icon: "flame",
-    description: "Relative humidity dropping below 18% with gusty thermal winds creating high ignition potential.",
-    timestamp: "Live - 2 hours ago"
-  }
-];
-
 // WMO Weather Codes mapping to human readable condition & Lucide icon identifier
 export const WMO_WEATHER_CODES = {
   0: { label: "Clear Sky", icon: "sun", bg: "sunny" },

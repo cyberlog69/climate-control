@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import {
   buildClimateExportData,
   convertToCSV,
@@ -25,6 +26,8 @@ export default function DataExportModal({
   wildfireHotspots,
   onClose
 }) {
+  useEscapeKey(onClose);
+
   const [format, setFormat] = useState("csv"); // 'csv' | 'json'
   const [datasets, setDatasets] = useState({
     hourly: true,
@@ -99,7 +102,7 @@ export default function DataExportModal({
   const handleCopy = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(formattedContent).catch(() => {
-        console.warn("Clipboard write failed — may not be supported in this context");
+        console.warn("Clipboard write failed, may not be supported in this context");
       });
     }
     setCopied(true);
@@ -129,7 +132,6 @@ export default function DataExportModal({
         right: 0,
         bottom: 0,
         background: "rgba(3, 7, 18, 0.78)",
-        backdropFilter: "blur(12px)",
         zIndex: 1100,
         display: "flex",
         alignItems: "center",
@@ -184,11 +186,11 @@ export default function DataExportModal({
               <Database size={20} />
             </div>
             <div>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
                 Raw Climate Data Exporter
               </h3>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
-                Research-grade telemetry export for {currentLocation.name}
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "0.15rem" }}>
+                Research data export for {currentLocation.name}
               </div>
             </div>
           </div>
@@ -216,7 +218,7 @@ export default function DataExportModal({
           {/* Format and Preset Selector */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
-              <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", marginRight: "0.3rem" }}>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-muted)", marginRight: "0.3rem" }}>
                 Export Format:
               </span>
               <button
@@ -231,7 +233,7 @@ export default function DataExportModal({
                   boxShadow: format === "csv" ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                   borderRadius: "10px",
                   padding: "0.38rem 0.8rem",
-                  fontSize: "0.78rem",
+                  fontSize: "12px",
                   fontWeight: format === "csv" ? 800 : 600,
                   cursor: "pointer",
                   transition: "all 0.16s ease"
@@ -253,7 +255,7 @@ export default function DataExportModal({
                   boxShadow: format === "json" ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                   borderRadius: "10px",
                   padding: "0.38rem 0.8rem",
-                  fontSize: "0.78rem",
+                  fontSize: "12px",
                   fontWeight: format === "json" ? 800 : 600,
                   cursor: "pointer",
                   transition: "all 0.16s ease"
@@ -265,15 +267,15 @@ export default function DataExportModal({
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-              <span className="badge badge-cyan" style={{ fontSize: "0.72rem" }}>
-                📦 Payload: ~{fileSizeKb} KB
+              <span className="badge badge-cyan" style={{ fontSize: "11px" }}>
+                Payload: ~{fileSizeKb} KB
               </span>
             </div>
           </div>
 
           {/* Dataset Toggles Grid */}
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", marginBottom: "0.4rem" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: "0.4rem" }}>
               Select Data Streams to Include:
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "0.45rem" }}>
@@ -293,7 +295,7 @@ export default function DataExportModal({
                       justifyContent: "space-between",
                       alignItems: "center",
                       cursor: "pointer",
-                      fontSize: "0.75rem",
+                      fontSize: "12px",
                       transition: "all 0.15s ease"
                     }}
                   >
@@ -307,7 +309,7 @@ export default function DataExportModal({
                         {ds.label}
                       </span>
                     </div>
-                    <span style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>{ds.count}</span>
+                    <span style={{ fontSize: "11px", color: "var(--text-dim)" }}>{ds.count}</span>
                   </div>
                 );
               })}
@@ -318,10 +320,10 @@ export default function DataExportModal({
         {/* Live Monospace Data Preview Terminal */}
         <div style={{ padding: "1rem 1.4rem", flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-dim)", fontFamily: "monospace" }}>
+            <span style={{ fontSize: "12px", color: "var(--text-dim)", fontFamily: "monospace" }}>
               STREAM_PREVIEW [{format.toUpperCase()}]:
             </span>
-            <span style={{ fontSize: "0.72rem", color: "var(--text-dim)" }}>Showing first 50 lines</span>
+            <span style={{ fontSize: "11px", color: "var(--text-dim)" }}>Showing first 50 lines</span>
           </div>
 
           <div
@@ -330,7 +332,7 @@ export default function DataExportModal({
               flex: 1,
               padding: "0.95rem 1.1rem",
               fontFamily: "monospace",
-              fontSize: "0.75rem",
+              fontSize: "12px",
               lineHeight: 1.5,
               color: "#67e8f9",
               overflowX: "auto",
@@ -341,7 +343,7 @@ export default function DataExportModal({
             {isLoading ? (
               <div style={{ color: "var(--text-muted)", textAlign: "center", padding: "2rem 0" }}>
                 <RefreshCw size={20} className="animate-spin" style={{ margin: "0 auto 0.5rem auto" }} />
-                <span>Compiling telemetry matrix...</span>
+                <span>Preparing the export…</span>
               </div>
             ) : (
               formattedContent.split("\n").slice(0, 50).join("\n") + (formattedContent.split("\n").length > 50 ? "\n\n... [Remaining data truncated for preview]" : "")
@@ -362,7 +364,7 @@ export default function DataExportModal({
             gap: "0.6rem"
           }}
         >
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
             Format: <strong style={{ color: "var(--text-main)" }}>RFC 4180 / ISO 8601</strong>
           </div>
 
@@ -370,7 +372,7 @@ export default function DataExportModal({
             <button
               onClick={handleCopy}
               className="m3-chip"
-              style={{ padding: "0.45rem 0.85rem", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "0.4rem" }}
+              style={{ padding: "0.45rem 0.85rem", fontSize: "13px", display: "flex", alignItems: "center", gap: "0.4rem" }}
             >
               {copied ? <Check size={15} style={{ color: "var(--accent-green)" }} /> : <Copy size={15} />}
               <span>{copied ? "Copied" : "Copy to Clipboard"}</span>
@@ -381,7 +383,7 @@ export default function DataExportModal({
               className="m3-chip active"
               style={{
                 padding: "0.45rem 1.1rem",
-                fontSize: "0.85rem",
+                fontSize: "14px",
                 gap: "0.4rem"
               }}
             >

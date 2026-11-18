@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getWmoInfo } from "../services/climateData";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Clock } from "lucide-react";
+import { Clock, Droplets } from "lucide-react";
 
 export default function ForecastSection({ weatherData, unit }) {
   const [activeTab, setActiveTab] = useState("hourly");
@@ -26,7 +26,7 @@ export default function ForecastSection({ weatherData, unit }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.1rem", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="m3-card-title-group" style={{ margin: 0 }}>
           <Clock size={19} className="m3-card-icon" />
-          <span style={{ fontSize: "1rem", fontWeight: 700, color: "var(--md-sys-color-on-background)" }}>Forecast Trajectory</span>
+          <span style={{ fontSize: "16px", fontWeight: 700, color: "var(--md-sys-color-on-background)" }}>Forecast Trajectory</span>
         </div>
 
         {/* Material 3 Segmented Control */}
@@ -66,13 +66,11 @@ export default function ForecastSection({ weatherData, unit }) {
                     <stop offset="95%" stopColor="var(--accent-cyan)" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="time" stroke="var(--text-dim)" tick={{ fontSize: 10, fill: "var(--text-dim)" }} axisLine={false} tickLine={false} />
-                <YAxis stroke="var(--text-dim)" domain={["auto", "auto"]} unit={`°`} tick={{ fontSize: 10, fill: "var(--text-dim)" }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="time" stroke="var(--text-dim)" tick={{ fontSize: 12, fill: "var(--text-dim)" }} axisLine={false} tickLine={false} />
+                <YAxis stroke="var(--text-dim)" domain={["auto", "auto"]} unit={`°`} tick={{ fontSize: 12, fill: "var(--text-dim)" }} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{
                     background: "var(--sk-surface-card)",
-                    backdropFilter: "blur(20px)",
-                    WebkitBackdropFilter: "blur(20px)",
                     border: "var(--sk-bezel-border)",
                     borderRadius: "14px",
                     color: "var(--text-main)",
@@ -121,10 +119,10 @@ export default function ForecastSection({ weatherData, unit }) {
                   e.currentTarget.style.boxShadow = "var(--sk-shadow-btn)";
                 }}
               >
-                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>{item.time}</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500 }}>{item.time}</div>
                 <div
                   style={{
-                    fontSize: "1.15rem",
+                    fontSize: "18px",
                     fontWeight: 800,
                     color: "var(--text-main)",
                     margin: "0.3rem 0",
@@ -134,7 +132,10 @@ export default function ForecastSection({ weatherData, unit }) {
                 >
                   {item.dispTemp}°
                 </div>
-                <div style={{ fontSize: "0.7rem", color: "var(--accent-cyan)", fontWeight: 600 }}>☔ {item.pop}%</div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.2rem", fontSize: "11px", color: "var(--accent-cyan)", fontWeight: 600 }}>
+                  <Droplets size={11} />
+                  {item.pop}%
+                </div>
               </div>
             ))}
           </div>
@@ -167,7 +168,7 @@ export default function ForecastSection({ weatherData, unit }) {
                       position: "absolute",
                       top: "6px",
                       right: "6px",
-                      fontSize: "0.6rem",
+                      fontSize: "11px",
                       fontWeight: 800,
                       color: "#ffffff",
                       textTransform: "uppercase",
@@ -180,15 +181,15 @@ export default function ForecastSection({ weatherData, unit }) {
                     TODAY
                   </span>
                 )}
-                <div style={{ fontWeight: 700, fontSize: "0.85rem", color: isToday ? "#ffffff" : "var(--text-main)" }}>
+                <div style={{ fontWeight: 700, fontSize: "14px", color: isToday ? "#ffffff" : "var(--text-main)" }}>
                   {d.date}
                 </div>
-                <div style={{ fontSize: "0.74rem", color: isToday ? "rgba(255, 255, 255, 0.85)" : "var(--text-muted)", margin: "0.25rem 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontSize: "12px", color: isToday ? "rgba(255, 255, 255, 0.85)" : "var(--text-muted)", margin: "0.25rem 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {info.label}
                 </div>
                 <div
                   style={{
-                    fontSize: "1.25rem",
+                    fontSize: "20px",
                     fontWeight: 800,
                     color: isToday ? "#ffffff" : "var(--text-main)",
                     margin: "0.35rem 0",
@@ -198,12 +199,13 @@ export default function ForecastSection({ weatherData, unit }) {
                 >
                   {displayTemp(d.maxTemp)}°
                 </div>
-                <div style={{ fontSize: "0.75rem", color: isToday ? "rgba(255, 255, 255, 0.75)" : "var(--text-dim)", fontWeight: 500 }}>
+                <div style={{ fontSize: "12px", color: isToday ? "rgba(255, 255, 255, 0.75)" : "var(--text-dim)", fontWeight: 500 }}>
                   Min: <span style={{ color: isToday ? "#ffffff" : "var(--text-muted)" }}>{displayTemp(d.minTemp)}°</span>
                 </div>
                 {d.precipSum > 0 && (
-                  <div style={{ fontSize: "0.72rem", color: isToday ? "#ffffff" : "#38bdf8", marginTop: "0.35rem", fontWeight: 600 }}>
-                    🌧️ {d.precipSum.toFixed(1)} mm
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontSize: "11px", color: isToday ? "#ffffff" : "var(--accent-cyan)", marginTop: "0.35rem", fontWeight: 600 }}>
+                    <Droplets size={11} />
+                    {d.precipSum.toFixed(1)} mm
                   </div>
                 )}
               </div>

@@ -30,12 +30,8 @@ function sanitizeSvgParam(value, fallback) {
 }
 
 // Custom Leaflet Icons using SVG strings
-const createCustomMarkerIcon = (color, text = "") => {
+const createCustomMarkerIcon = (color) => {
   const safeColor = sanitizeSvgParam(color, "#06b6d4");
-  // Only allow plain emoji or short alphanumeric text (no HTML)
-  const safeText = typeof text === "string"
-    ? stripHtmlLikeTags(text).replace(/["'&`]/g, "").slice(0, 4)
-    : "";
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
       <defs>
@@ -45,11 +41,7 @@ const createCustomMarkerIcon = (color, text = "") => {
       </defs>
       <path d="M16 0C7.163 0 0 7.163 0 16c0 12 16 26 16 26s16-14 16-26C32 7.163 24.837 0 16 0z" fill="${safeColor}" filter="url(#glow)"/>
       <circle cx="16" cy="15" r="7" fill="#0f172a"/>
-      ${
-        safeText
-          ? `<text x="16" y="19" font-size="10" font-weight="bold" fill="${safeColor}" text-anchor="middle" font-family="sans-serif">${safeText}</text>`
-          : `<circle cx="16" cy="15" r="3.5" fill="${safeColor}"/>`
-      }
+      <circle cx="16" cy="15" r="3.5" fill="${safeColor}"/>
     </svg>
   `;
   return L.divIcon({
@@ -195,8 +187,8 @@ export default function InteractiveMap({
         {viewMode === "3d" ? (
           <Suspense
             fallback={
-              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "0.82rem" }}>
-                Loading 3D globe…
+              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "13px" }}>
+                Loading 3D globe...
               </div>
             }
           >
@@ -231,18 +223,18 @@ export default function InteractiveMap({
                 <Popup>
                   <div style={{ padding: "0.25rem" }}>
                     <strong style={{ color: "var(--text-main)" }}>{currentLocation.name}</strong>
-                    <div style={{ fontSize: "0.8rem", color: "var(--accent-cyan)", marginTop: "0.2rem" }}>Active Location</div>
+                    <div style={{ fontSize: "13px", color: "var(--accent-cyan)", marginTop: "0.2rem" }}>Active Location</div>
                   </div>
                 </Popup>
               </Marker>
             )}
 
             {CLIMATE_HOTSPOTS.map((h) => (
-              <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b", "🔥")}>
+              <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b")}>
                 <Popup>
                   <div style={{ padding: "0.3rem" }}>
                     <strong style={{ color: "var(--accent-amber)" }}>{h.name}</strong>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>{h.issue}</div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "0.25rem" }}>{h.issue}</div>
                     <button
                       onClick={() => handleHotspotClick(h)}
                       style={{
@@ -252,7 +244,7 @@ export default function InteractiveMap({
                         color: "#000",
                         border: "none",
                         borderRadius: "4px",
-                        fontSize: "0.7rem",
+                        fontSize: "11px",
                         cursor: "pointer",
                         fontWeight: "bold"
                       }}
@@ -266,12 +258,12 @@ export default function InteractiveMap({
 
             {(activeLayer === "wildfires" || activeLayer === "temp") &&
               wildfireHotspots.map((fire) => (
-                <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444", "🔥")}>
+                <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444")}>
                   <Popup>
                     <div style={{ padding: "0.25rem" }}>
                       <div style={{ color: "var(--accent-red)", fontWeight: 800 }}>NASA Wildfire Event</div>
                       <div style={{ fontWeight: 600 }}>{fire.region}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                      <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                         {Number.isFinite(fire.frp) ? `FRP: ${fire.frp} MW · ` : ""}
                         {Number.isFinite(fire.confidence) ? `Confidence: ${fire.confidence}%` : fire.detectedAgo}
                       </div>
@@ -283,18 +275,7 @@ export default function InteractiveMap({
         )}
 
         {/* Floating Material 3 Layer Switchers */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0.75rem",
-            left: "0.75rem",
-            zIndex: 400,
-            display: "flex",
-            gap: "0.4rem",
-            flexWrap: "wrap",
-            maxWidth: "calc(100% - 1.5rem)"
-          }}
-        >
+        <div className="map-layer-switcher">
           {layers.map((l) => {
             const Icon = l.icon;
             const isActive = activeLayer === l.id;
@@ -372,15 +353,14 @@ export default function InteractiveMap({
                   <button
                     key={l.id}
                     onClick={() => setActiveLayer(l.id)}
-                    className="glass-pill"
+                    className="m3-chip"
                     style={{
-                      padding: "0.38rem 0.75rem",
-                      borderRadius: "var(--radius-pill)",
-                      border: isActive ? `1px solid ${l.color}` : "1px solid var(--border-light)",
-                      background: isActive ? `${l.color}28` : "var(--bg-glass-pill)",
+                      padding: "0 0.7rem",
+                      minHeight: "36px",
+                      borderColor: isActive ? l.color : "var(--border-light)",
+                      background: isActive ? `${l.color}1f` : "var(--sk-surface-btn)",
                       color: isActive ? "var(--text-main)" : "var(--text-muted)",
-                      cursor: "pointer",
-                      boxShadow: isActive ? `0 0 14px ${l.color}35` : "none"
+                      boxShadow: isActive ? "none" : "var(--sk-shadow-btn)"
                     }}
                   >
                     <Icon size={14} style={{ color: isActive ? l.color : "inherit" }} />
@@ -409,19 +389,18 @@ export default function InteractiveMap({
             <button
               key={h.id}
               onClick={() => handleHotspotClick(h)}
-              className="glass-pill"
+              className="m3-chip"
               style={{
                 whiteSpace: "nowrap",
-                padding: "0.35rem 0.8rem",
-                borderRadius: "var(--radius-pill)",
-                background: isSelected ? "rgba(6, 182, 212, 0.2)" : "var(--bg-glass-pill)",
-                border: isSelected ? "1px solid var(--accent-cyan)" : "1px solid var(--border-light)",
+                padding: "0 0.75rem",
+                minHeight: "36px",
+                background: isSelected ? "rgba(6, 182, 212, 0.16)" : "var(--sk-surface-btn)",
+                borderColor: isSelected ? "var(--accent-cyan)" : "var(--border-light)",
                 color: isSelected ? "var(--accent-cyan)" : "var(--text-main)",
-                boxShadow: isSelected ? "0 0 12px rgba(6, 182, 212, 0.25)" : "none",
-                cursor: "pointer"
+                boxShadow: "none"
               }}
             >
-              🔥 {h.name.split(",")[0]}
+              {h.name.split(",")[0]}
             </button>
           );
         })}
@@ -432,8 +411,8 @@ export default function InteractiveMap({
         {viewMode === "3d" ? (
           <Suspense
             fallback={
-              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "0.82rem" }}>
-                Loading 3D globe…
+              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "13px" }}>
+                Loading 3D globe...
               </div>
             }
           >
@@ -468,14 +447,14 @@ export default function InteractiveMap({
               <Marker position={[currentLocation.lat, currentLocation.lon]} icon={createCustomMarkerIcon("#06b6d4")}>
                 <Popup>
                   <div style={{ padding: "0.25rem" }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)", marginBottom: "0.2rem" }}>
-                      📍 {currentLocation.name}
+                    <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--text-main)", marginBottom: "0.2rem" }}>
+                      {currentLocation.name}
                     </div>
-                    <div style={{ fontSize: "0.78rem", color: "var(--accent-cyan)" }}>
+                    <div style={{ fontSize: "12px", color: "var(--accent-cyan)" }}>
                       Lat: {currentLocation.lat.toFixed(2)}°, Lon: {currentLocation.lon.toFixed(2)}°
                     </div>
                     {weatherData && (
-                      <div style={{ marginTop: "0.4rem", fontSize: "0.82rem", borderTop: "1px solid var(--border-light)", paddingTop: "0.4rem" }}>
+                      <div style={{ marginTop: "0.4rem", fontSize: "13px", borderTop: "1px solid var(--border-light)", paddingTop: "0.4rem" }}>
                         <div>Current Temp: <strong>{weatherData.current?.temp}°C</strong></div>
                         <div>Humidity: {weatherData.current?.humidity}%</div>
                         <div>Wind: {weatherData.current?.windSpeed} km/h</div>
@@ -488,14 +467,14 @@ export default function InteractiveMap({
 
             {/* Hotspots Markers */}
             {CLIMATE_HOTSPOTS.map((h) => (
-              <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b", "🔥")}>
+              <Marker key={h.id} position={[h.lat, h.lon]} icon={createCustomMarkerIcon("#f59e0b")}>
                 <Popup>
                   <div style={{ padding: "0.25rem", maxWidth: "220px" }}>
                     <div className="badge badge-amber" style={{ marginBottom: "0.4rem" }}>
                       {h.badge}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>{h.name}</div>
-                    <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
+                    <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--text-main)" }}>{h.name}</div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", margin: "0.3rem 0" }}>
                       {h.description}
                     </div>
                     <button
@@ -510,7 +489,7 @@ export default function InteractiveMap({
                         borderRadius: "6px",
                         fontWeight: 600,
                         cursor: "pointer",
-                        fontSize: "0.8rem"
+                        fontSize: "13px"
                       }}
                     >
                       Inspect Weather & Climate
@@ -523,19 +502,19 @@ export default function InteractiveMap({
             {/* NASA Active Wildfire Thermal Anomaly Markers */}
             {(activeLayer === "wildfires" || activeLayer === "temp") &&
               wildfireHotspots.map((fire) => (
-                <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444", "🔥")}>
+                <Marker key={fire.id} position={[fire.lat, fire.lon]} icon={createCustomMarkerIcon("#ef4444")}>
                   <Popup>
                     <div style={{ padding: "0.25rem", maxWidth: "230px" }}>
                       <div className="badge badge-red" style={{ marginBottom: "0.4rem" }}>
                         NASA Wildfire Event ({fire.sensor})
                       </div>
-                      <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--text-main)" }}>
+                      <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--text-main)" }}>
                         {fire.name}
                       </div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0" }}>
+                      <div style={{ fontSize: "12px", color: "var(--text-muted)", margin: "0.3rem 0" }}>
                         {fire.biome}
                       </div>
-                      <div style={{ fontSize: "0.78rem", display: "flex", flexDirection: "column", gap: "0.2rem", margin: "0.4rem 0" }}>
+                      <div style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "0.2rem", margin: "0.4rem 0" }}>
                         {Number.isFinite(fire.frp) && (
                           <div>Fire Radiative Power: <strong style={{ color: "var(--accent-amber)" }}>{fire.frp} MW</strong></div>
                         )}
@@ -569,7 +548,7 @@ export default function InteractiveMap({
                           borderRadius: "6px",
                           fontWeight: 700,
                           cursor: "pointer",
-                          fontSize: "0.78rem"
+                          fontSize: "12px"
                         }}
                       >
                         Target Wildfire Zone
@@ -581,25 +560,6 @@ export default function InteractiveMap({
           </MapContainer>
         )}
 
-        {viewMode === "2d" && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: "0.85rem",
-              left: "0.85rem",
-              zIndex: 400,
-              background: "var(--bg-card-hover)",
-              backdropFilter: "blur(10px)",
-              padding: "0.4rem 0.8rem",
-              borderRadius: "12px",
-              border: "1px solid var(--border-light)",
-              fontSize: "0.75rem",
-              color: "var(--text-muted)"
-            }}
-          >
-            💡 Click anywhere on the map to inspect live weather & climate stats
-          </div>
-        )}
       </div>
     </div>
   );

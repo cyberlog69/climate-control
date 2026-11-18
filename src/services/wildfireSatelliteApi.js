@@ -283,9 +283,15 @@ export function evaluateLocalWildfireRisk(
   hotspots = SAMPLE_WILDFIRE_HOTSPOTS
 ) {
   const current = weatherData?.current || {};
-  const temp = current.temp ?? 24;
-  const humidity = current.humidity ?? 50;
-  const windSpeed = current.windSpeed ?? 15;
+  const temp = current.temp;
+  const humidity = current.humidity;
+  const windSpeed = current.windSpeed;
+
+  // The index is only meaningful when all three drivers are measured. Without
+  // them we say so instead of scoring invented defaults.
+  if (![temp, humidity, windSpeed].every(Number.isFinite)) {
+    return { available: false, reason: "missing-weather" };
+  }
   const hasLocation = Number.isFinite(Number(lat)) && Number.isFinite(Number(lon));
   const list = Array.isArray(hotspots) ? hotspots : [];
 
@@ -339,6 +345,7 @@ export function evaluateLocalWildfireRisk(
   const peakFrp = list.reduce((max, fire) => (Number.isFinite(fire?.frp) ? Math.max(max, fire.frp) : max), 0);
 
   return {
+    available: true,
     score,
     level,
     badge,

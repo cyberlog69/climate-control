@@ -28,7 +28,7 @@ export default function MaterialNavRail({
     { id: "vitals", label: "Vitals & Fires", icon: Activity },
     { id: "energy", label: "Clean Energy", icon: Zap },
     { id: "footprint", label: "Carbon", icon: Leaf },
-    { id: "sim", label: "AI Simulator", icon: Sliders }
+    { id: "sim", label: "Simulator", icon: Sliders }
   ];
 
   return (

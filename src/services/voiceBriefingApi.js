@@ -20,8 +20,8 @@ export function generateClimateBriefingScript({
   const humidity = current.humidity != null ? `${current.humidity} percent` : "normal levels";
   const windSpeed = current.windSpeed != null ? `${current.windSpeed} kilometers per hour` : "gentle breezes";
 
-  const aqiVal = airQualityData?.current?.aqi ?? 45;
-  const aqiLevel = airQualityData?.current?.level ?? "Good";
+  const aqiVal = airQualityData?.current?.aqi ?? airQualityData?.us_aqi ?? null;
+  const aqiLevel = airQualityData?.current?.level ?? null;
 
   // Time of day greeting
   const hour = new Date().getHours();
@@ -30,16 +30,21 @@ export function generateClimateBriefingScript({
   else if (hour < 17) greeting = "Good afternoon";
   else greeting = "Good evening";
 
+  const airQualitySentence =
+    aqiVal == null
+      ? "Air quality was not reported for this location."
+      : `Air quality is currently indexed at ${aqiVal}, categorized as ${aqiLevel || "unclassified"}. ${
+          aqiVal > 100
+            ? "Sensitive groups are advised to limit prolonged outdoor exertion."
+            : "Particulate levels are within common safety baselines."
+        }`;
+
   const paragraphs = [
-    `${greeting}. Here is your ClimateSphere Planetary Intelligence Briefing for ${cityName}.`,
-    `Current atmospheric conditions report ${condition}, with ambient temperature at ${temp}, relative humidity at ${humidity}, and wind speeds measuring ${windSpeed}.`,
-    `Air quality is currently indexed at ${aqiVal}, categorized as ${aqiLevel}. ${
-      aqiVal > 100
-        ? "Sensitive demographic groups are advised to limit prolonged outdoor exertion."
-        : "Atmospheric particulate levels remain well within international safety baselines."
-    }`,
-    `On the global sentinel radar: atmospheric carbon dioxide holds at 428.4 parts per million, with planetary warming anomalies trending at plus 1.29 degrees above pre-industrial baselines.`,
-    `Thank you for monitoring Earth's vital signs with ClimateSphere. Have a productive and climate-conscious day.`
+    `${greeting}. Here is your ClimateSphere briefing for ${cityName}.`,
+    `Current conditions are ${condition}, with a temperature of ${temp}, humidity at ${humidity}, and wind at ${windSpeed}.`,
+    airQualitySentence,
+    `Global context: atmospheric carbon dioxide is around 428 parts per million, and the land-ocean temperature index is about 1.3 degrees above the 1951 to 1980 baseline.`,
+    `That is the end of the briefing.`
   ];
 
   return {

@@ -12,7 +12,18 @@ import {
   TreePine,
   CheckCircle2,
   Circle,
-  Target
+  Target,
+  Fuel,
+  BatteryCharging,
+  TrainFront,
+  Bike,
+  Beef,
+  Drumstick,
+  Fish,
+  Salad,
+  Sprout,
+  Minus,
+  Plus
 } from "lucide-react";
 
 export default function CarbonFootprintCalculator({ locationName }) {
@@ -59,19 +70,19 @@ export default function CarbonFootprintCalculator({ locationName }) {
   };
 
   const vehicles = [
-    { id: "petrol", label: "Petrol", icon: "⛽" },
-    { id: "hybrid", label: "Hybrid", icon: "🔋" },
-    { id: "ev", label: "EV", icon: "⚡" },
-    { id: "transit", label: "Transit", icon: "🚆" },
-    { id: "bicycle", label: "Bike", icon: "🚲" }
+    { id: "petrol", label: "Petrol", icon: Fuel },
+    { id: "hybrid", label: "Hybrid", icon: BatteryCharging },
+    { id: "ev", label: "EV", icon: Zap },
+    { id: "transit", label: "Transit", icon: TrainFront },
+    { id: "bicycle", label: "Bike", icon: Bike }
   ];
 
   const diets = [
-    { id: "highMeat", label: "Meat-Rich", icon: "🥩" },
-    { id: "average", label: "Average", icon: "🍗" },
-    { id: "pescatarian", label: "Pescatarian", icon: "🐟" },
-    { id: "vegetarian", label: "Vegetarian", icon: "🥗" },
-    { id: "vegan", label: "Vegan", icon: "🌱" }
+    { id: "highMeat", label: "Meat-Rich", icon: Beef },
+    { id: "average", label: "Average", icon: Drumstick },
+    { id: "pescatarian", label: "Pescatarian", icon: Fish },
+    { id: "vegetarian", label: "Vegetarian", icon: Salad },
+    { id: "vegan", label: "Vegan", icon: Sprout }
   ];
 
   return (
@@ -82,12 +93,12 @@ export default function CarbonFootprintCalculator({ locationName }) {
           <Leaf size={20} style={{ color: "var(--accent-green)" }} />
           <span>Personal Carbon Footprint & Offset Engine</span>
         </div>
-        <span className={`badge badge-${footprint.badge}`} style={{ fontSize: "0.78rem" }}>
+        <span className={`badge badge-${footprint.badge}`} style={{ fontSize: "12px" }}>
           {footprint.rating}
         </span>
       </div>
 
-      <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
+      <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: 0 }}>
         Analyze greenhouse gas emissions for {cityName} (tCO₂e), benchmark against Paris Climate Accord limits, and build a personalized net-zero roadmap.
       </p>
 
@@ -104,23 +115,23 @@ export default function CarbonFootprintCalculator({ locationName }) {
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
               Total Annual Carbon Footprint
             </div>
-            <div style={{ fontSize: "2.2rem", fontWeight: 800, color: footprint.color, fontFamily: "var(--font-heading)" }}>
-              {footprint.totalTons} <span style={{ fontSize: "1rem", color: "var(--text-muted)", fontWeight: 500 }}>tons CO₂e/yr</span>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: footprint.color, fontFamily: "var(--font-heading)" }}>
+              {footprint.totalTons} <span style={{ fontSize: "16px", color: "var(--text-muted)", fontWeight: 500 }}>tons CO₂e/yr</span>
             </div>
           </div>
 
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Tree Planting Offset Needed</div>
-            <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--accent-green)", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.3rem", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Tree Planting Offset Needed</div>
+            <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-green)", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.3rem", fontFamily: "var(--font-heading)" }}>
               <TreePine size={18} />
               <span>{footprint.treesNeededToOffset} Trees/yr</span>
             </div>
             {footprint.totalSavingsTons > 0 && (
-              <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", marginTop: "0.15rem", fontWeight: 600 }}>
-                ✨ {footprint.totalSavingsTons} tons saved via actions
+              <div style={{ fontSize: "11px", color: "var(--accent-cyan)", marginTop: "0.15rem", fontWeight: 600 }}>
+                {footprint.totalSavingsTons} tons saved via actions
               </div>
             )}
           </div>
@@ -128,10 +139,10 @@ export default function CarbonFootprintCalculator({ locationName }) {
 
         {/* Benchmark Visual Comparison Bar */}
         <div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "var(--text-dim)", marginBottom: "0.35rem" }}>
-            <span style={{ color: "var(--accent-green)", fontWeight: 700 }}>🎯 Paris 2030 Limit: 2.0 t</span>
-            <span>🌍 Global Avg: 4.5 t</span>
-            <span>🇺🇸 US Avg: 14.5 t</span>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--text-dim)", marginBottom: "0.35rem" }}>
+            <span style={{ color: "var(--accent-green)", fontWeight: 700 }}>Paris 2030 limit: 2.0 t</span>
+            <span>Global avg: 4.5 t</span>
+            <span>US avg: 14.5 t</span>
           </div>
           <div className="sk-meter-track" style={{ height: "10px", position: "relative" }}>
             {/* Target 2.0t Marker */}
@@ -145,28 +156,28 @@ export default function CarbonFootprintCalculator({ locationName }) {
               }}
             />
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.35rem" }}>
+          <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "0.35rem" }}>
             {footprint.parisDelta <= 0
-              ? `🎉 Outstanding! You are ${Math.abs(footprint.parisDelta)} tons below the Paris 2030 threshold.`
-              : `⚠️ You are +${footprint.parisDelta} tons above the Paris 2030 climate safety target (2.0 t).`}
+              ? `Outstanding. You are ${Math.abs(footprint.parisDelta)} tons below the Paris 2030 threshold.`
+              : `You are +${footprint.parisDelta} tons above the Paris 2030 climate safety target (2.0 t).`}
           </div>
         </div>
       </div>
 
       {/* Donut Chart & Category Breakdown Row */}
       <div className="sk-recessed-tile" style={{ padding: "1.1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>
+        <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>
           Emissions Category Breakdown
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "0.55rem", width: "100%" }}>
           {footprint.breakdown.map((item, idx) => (
             <div key={idx} style={{ background: "var(--sk-surface-btn)", padding: "0.65rem 0.75rem", borderRadius: "12px", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)" }}>
-              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 500 }}>{item.name}</div>
-              <div style={{ fontSize: "1.2rem", fontWeight: 800, color: item.color, margin: "0.15rem 0", fontFamily: "var(--font-heading)" }}>
-                {item.value} <span style={{ fontSize: "0.72rem", fontWeight: 500 }}>t</span>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500 }}>{item.name}</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, color: item.color, margin: "0.15rem 0", fontFamily: "var(--font-heading)" }}>
+                {item.value} <span style={{ fontSize: "11px", fontWeight: 500 }}>t</span>
               </div>
-              <div style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
+              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
                 {Math.round((item.value / footprint.totalTons) * 100) || 0}% share
               </div>
             </div>
@@ -180,7 +191,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
         <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Car size={16} style={{ color: "var(--accent-cyan)" }} />
-            <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Daily Commute & Vehicle</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>Daily Commute & Vehicle</span>
           </div>
 
           <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
@@ -191,25 +202,29 @@ export default function CarbonFootprintCalculator({ locationName }) {
                   key={v.id}
                   onClick={() => setVehicleType(v.id)}
                   style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
                     background: isSelected ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
                     color: isSelected ? "#ffffff" : "var(--text-muted)",
                     border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
                     boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                     borderRadius: "8px",
-                    padding: "0.3rem 0.5rem",
-                    fontSize: "0.72rem",
+                    padding: "0 0.55rem",
+                    minHeight: "44px",
+                    fontSize: "11px",
                     fontWeight: isSelected ? 800 : 500,
                     cursor: "pointer",
                     transition: "all 0.16s ease"
                   }}
                 >
-                  {v.icon} {v.label}
+                  <v.icon size={13} /> {v.label}
                 </button>
               );
             })}
           </div>
 
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
             <span>Distance:</span>
             <strong style={{ color: "var(--text-main)" }}>{commuteKmWeek} km/wk</strong>
           </div>
@@ -227,43 +242,43 @@ export default function CarbonFootprintCalculator({ locationName }) {
         <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Plane size={16} style={{ color: "#38bdf8" }} />
-            <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Annual Flights</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>Annual Flights</span>
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Short (&lt;3h):</span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Short (&lt;3h):</span>
             <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
               <button
                 onClick={() => setShortFlights(Math.max(0, shortFlights - 1))}
-                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
+                className="stepper-btn"
               >
-                -
+                <Minus size={14} />
               </button>
-              <span style={{ fontWeight: 800, fontSize: "0.85rem", width: "22px", textAlign: "center", fontFamily: "var(--font-heading)" }}>{shortFlights}</span>
+              <span style={{ fontWeight: 800, fontSize: "14px", width: "22px", textAlign: "center", fontFamily: "var(--font-heading)" }}>{shortFlights}</span>
               <button
                 onClick={() => setShortFlights(shortFlights + 1)}
-                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
+                className="stepper-btn"
               >
-                +
+                <Plus size={14} />
               </button>
             </div>
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Long (&gt;3h):</span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Long (&gt;3h):</span>
             <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
               <button
                 onClick={() => setLongFlights(Math.max(0, longFlights - 1))}
-                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
+                className="stepper-btn"
               >
-                -
+                <Minus size={14} />
               </button>
-              <span style={{ fontWeight: 800, fontSize: "0.85rem", width: "22px", textAlign: "center", fontFamily: "var(--font-heading)" }}>{longFlights}</span>
+              <span style={{ fontWeight: 800, fontSize: "14px", width: "22px", textAlign: "center", fontFamily: "var(--font-heading)" }}>{longFlights}</span>
               <button
                 onClick={() => setLongFlights(longFlights + 1)}
-                style={{ width: "26px", height: "26px", borderRadius: "8px", background: "var(--sk-surface-btn)", border: "var(--sk-bezel-border)", boxShadow: "var(--sk-shadow-btn)", color: "var(--text-main)", cursor: "pointer", fontWeight: 700 }}
+                className="stepper-btn"
               >
-                +
+                <Plus size={14} />
               </button>
             </div>
           </div>
@@ -273,10 +288,10 @@ export default function CarbonFootprintCalculator({ locationName }) {
         <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Zap size={16} style={{ color: "var(--accent-amber)" }} />
-            <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Home Electricity</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>Home Electricity</span>
           </div>
 
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
             <span>Monthly:</span>
             <strong style={{ color: "var(--text-main)" }}>{electricityKwh} kWh/mo</strong>
           </div>
@@ -289,7 +304,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
             onChange={(e) => setElectricityKwh(parseInt(e.target.value, 10))}
           />
 
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
             <span>Green Mix:</span>
             <strong style={{ color: "var(--accent-green)" }}>{greenPercent}%</strong>
           </div>
@@ -307,7 +322,7 @@ export default function CarbonFootprintCalculator({ locationName }) {
         <div className="sk-recessed-tile" style={{ padding: "0.95rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Utensils size={16} style={{ color: "#34d399" }} />
-            <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>Diet & Nutrition Profile</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>Diet & Nutrition Profile</span>
           </div>
 
           <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
@@ -318,19 +333,23 @@ export default function CarbonFootprintCalculator({ locationName }) {
                   key={d.id}
                   onClick={() => setDietType(d.id)}
                   style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
                     background: isSelected ? "var(--sk-surface-primary-btn)" : "var(--sk-surface-btn)",
                     color: isSelected ? "#ffffff" : "var(--text-muted)",
                     border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
                     boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                     borderRadius: "8px",
-                    padding: "0.3rem 0.5rem",
-                    fontSize: "0.72rem",
+                    padding: "0 0.55rem",
+                    minHeight: "44px",
+                    fontSize: "11px",
                     fontWeight: isSelected ? 800 : 500,
                     cursor: "pointer",
                     transition: "all 0.16s ease"
                   }}
                 >
-                  {d.icon} {d.label}
+                  <d.icon size={13} /> {d.label}
                 </button>
               );
             })}
@@ -343,11 +362,11 @@ export default function CarbonFootprintCalculator({ locationName }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem", width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Target size={16} style={{ color: "var(--accent-cyan)" }} />
-            <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>
               Actionable Net-Zero Reduction Milestones
             </span>
           </div>
-          <span style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontWeight: 600 }}>Click to toggle impact</span>
+          <span style={{ fontSize: "11px", color: "var(--accent-cyan)", fontWeight: 600 }}>Click to toggle impact</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem", width: "100%" }}>
@@ -377,12 +396,12 @@ export default function CarbonFootprintCalculator({ locationName }) {
                     <Circle size={16} style={{ color: "var(--text-dim)", flexShrink: 0 }} />
                   )}
                   <div>
-                    <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-main)" }}>{action.title}</div>
-                    <div style={{ fontSize: "0.7rem", color: "var(--text-dim)" }}>{action.description}</div>
+                    <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>{action.title}</div>
+                    <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>{action.description}</div>
                   </div>
                 </div>
 
-                <span className="badge badge-green" style={{ fontSize: "0.72rem", padding: "0.15rem 0.5rem", flexShrink: 0 }}>
+                <span className="badge badge-green" style={{ fontSize: "11px", padding: "0.15rem 0.5rem", flexShrink: 0 }}>
                   -{action.savingsTons} t/yr
                 </span>
               </div>

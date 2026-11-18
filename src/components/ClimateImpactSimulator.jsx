@@ -45,19 +45,17 @@ export default function ClimateImpactSimulator({
   const cityName = locationName ? locationName.split(",")[0] : "your region";
 
   return (
-    <div className="m3-card" style={{ padding: "1.35rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div className="m3-card" style={{ padding: "1.2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <div className="section-title" style={{ margin: 0 }}>
-          <Sliders size={20} style={{ color: "var(--accent-purple)" }} />
-          <span>AI Climate Impact Scenario Simulator</span>
+          <Sliders size={18} style={{ color: "var(--accent-cyan)" }} />
+          <span>Warming scenario simulator</span>
         </div>
-        <span className={`badge badge-${activeScenario.badge}`} style={{ fontSize: "0.78rem" }}>
-          {activeScenario.name}
-        </span>
+        <span className={`badge badge-${activeScenario.badge}`}>{activeScenario.name}</span>
       </div>
 
-      <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
+      <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: 0 }}>
         Simulate future global warming scenarios and model coordinate-specific environmental stress factors for{" "}
         <strong style={{ color: "var(--text-main)" }}>{locationName}</strong>.
       </p>
@@ -75,10 +73,10 @@ export default function ClimateImpactSimulator({
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
               Global Warming Trajectory
             </div>
-            <div style={{ fontSize: "2.2rem", fontWeight: 800, color: activeScenario.color, fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: activeScenario.color, fontFamily: "var(--font-heading)" }}>
               +{warmingDegree.toFixed(1)}°C
             </div>
           </div>
@@ -96,9 +94,10 @@ export default function ClimateImpactSimulator({
                     color: isSelected ? "#ffffff" : "var(--text-muted)",
                     border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "var(--sk-bezel-border)",
                     boxShadow: isSelected ? "0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
-                    borderRadius: "10px",
-                    padding: "0.38rem 0.75rem",
-                    fontSize: "0.75rem",
+                    borderRadius: "var(--radius-sm)",
+                    padding: "0 0.75rem",
+                    minHeight: "44px",
+                    fontSize: "11px",
                     fontWeight: isSelected ? 800 : 600,
                     cursor: "pointer",
                     transition: "all 0.16s ease"
@@ -121,7 +120,7 @@ export default function ClimateImpactSimulator({
             value={warmingDegree}
             onChange={(e) => setWarmingDegree(parseFloat(e.target.value))}
           />
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "0.35rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--text-dim)", marginTop: "0.35rem" }}>
             <span>+1.0°C (Pre-industrial)</span>
             <span style={{ color: "var(--accent-green)", fontWeight: 600 }}>+1.5°C (Paris)</span>
             <span style={{ color: "var(--accent-amber)", fontWeight: 600 }}>+2.0°C (Limit)</span>
@@ -137,14 +136,14 @@ export default function ClimateImpactSimulator({
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Waves size={16} style={{ color: "#38bdf8" }} />
-              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Sea Level Inundation</span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 700 }}>Sea Level Inundation</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#38bdf8", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "#38bdf8", fontFamily: "var(--font-heading)" }}>
               +{seaLevelRiseMeters} m
             </div>
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", lineHeight: 1.4 }}>
-            {isCoastal ? "⚠️ High vulnerability: Increased risk of tidal flooding & coastal storm surge." : "River basin & estuary drainage pressure."}
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", lineHeight: 1.4 }}>
+            {isCoastal ? "High vulnerability: increased risk of tidal flooding and coastal storm surge." : "River basin and estuary drainage pressure."}
           </div>
         </div>
 
@@ -153,13 +152,13 @@ export default function ClimateImpactSimulator({
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Flame size={16} style={{ color: "var(--accent-amber)" }} />
-              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Extra Heatwave Days</span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 700 }}>Extra Heatwave Days</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-amber)", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--accent-amber)", fontFamily: "var(--font-heading)" }}>
               +{extraHeatwaveDays} days/yr
             </div>
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", lineHeight: 1.4 }}>
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", lineHeight: 1.4 }}>
             Projected additional days per year exceeding the dangerous 35°C (95°F) thermal threshold.
           </div>
         </div>
@@ -169,13 +168,13 @@ export default function ClimateImpactSimulator({
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Droplets size={16} style={{ color: "var(--accent-cyan)" }} />
-              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Water & Drought Deficit</span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 700 }}>Water & Drought Deficit</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-cyan)", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--accent-cyan)", fontFamily: "var(--font-heading)" }}>
               +{droughtRiskPercent}%
             </div>
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", lineHeight: 1.4 }}>
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", lineHeight: 1.4 }}>
             Surge in soil moisture evapotranspiration and freshwater aquifer replenishment stress.
           </div>
         </div>
@@ -185,19 +184,19 @@ export default function ClimateImpactSimulator({
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
               <Leaf size={16} style={{ color: "var(--accent-red)" }} />
-              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 700 }}>Agricultural Yield Drop</span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 700 }}>Agricultural Yield Drop</span>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-red)", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--accent-red)", fontFamily: "var(--font-heading)" }}>
               -{cropLossPercent}%
             </div>
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", lineHeight: 1.4 }}>
+          <div style={{ fontSize: "11px", color: "var(--text-dim)", lineHeight: 1.4 }}>
             Estimated production decrease for regional staple grain, cereal, and orchard crops.
           </div>
         </div>
       </div>
 
-      {/* AI Scenario Narrative Diagnostic */}
+      {/* Scenario narrative */}
       <div
         className="sk-recessed-tile"
         style={{
@@ -210,11 +209,11 @@ export default function ClimateImpactSimulator({
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
           <Sparkles size={16} style={{ color: activeScenario.color }} />
-          <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>
-            AI Scenario Assessment for {cityName}
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)" }}>
+            Estimated impact for {cityName}
           </span>
         </div>
-        <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", lineHeight: 1.5, margin: 0 }}>
+        <p style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.55, margin: 0 }}>
           {warmingDegree <= 1.5 && (
             <span>
               Under a <strong>+1.5°C Paris trajectory</strong>, {cityName} avoids the most severe tipping points. Coral reefs experience manageable bleaching cycles, heatwaves remain episodic, and seasonal snowpack/aquifer recharge stabilizes within historical margins.
@@ -237,6 +236,10 @@ export default function ClimateImpactSimulator({
           )}
         </p>
       </div>
+
+      <p style={{ fontSize: "11px", color: "var(--text-dim)", margin: 0, lineHeight: 1.5 }}>
+        Figures are illustrative estimates scaled from IPCC AR6 warming levels, not a local climate projection.
+      </p>
     </div>
   );
 }

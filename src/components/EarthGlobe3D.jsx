@@ -218,13 +218,13 @@ export default function EarthGlobe3D({
     camera.position.z = 6.8;
     cameraRef.current = camera;
 
-    // 2. WebGL Renderer — wrapped in try/catch for Android WebView compatibility
+    // WebGL renderer, wrapped in try/catch for Android WebView compatibility
     let renderer;
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     } catch (e) {
       console.error("WebGL renderer creation failed:", e);
-      return; // Bail out — InteractiveMap WebGL check should have prevented this
+      return; // InteractiveMap's WebGL check should have prevented this
     }
     renderer.setSize(width, height, false);
     renderer.domElement.style.width = "100%";
@@ -237,11 +237,11 @@ export default function EarthGlobe3D({
     renderer.toneMappingExposure = 1.2;
     rendererRef.current = renderer;
 
-    // Handle WebGL context loss/restore (critical for Android WebView — context can be lost when app is backgrounded)
+    // Android WebView drops the WebGL context when the app is backgrounded.
     renderer.domElement.addEventListener("webglcontextlost", (e) => {
       e.preventDefault();
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
-      console.warn("WebGL context lost — pausing render loop");
+      console.warn("WebGL context lost, pausing render loop");
     }, false);
     renderer.domElement.addEventListener("webglcontextrestored", () => {
       console.warn("WebGL context restored");
@@ -256,7 +256,7 @@ export default function EarthGlobe3D({
     globeGroupRef.current = globeGroup;
 
     // 4. Earth Sphere Mesh
-    // Reduced from 64 to 48 segments — still high quality, ~44% fewer triangles for Android GPU
+    // 48 segments instead of 64: still crisp, 44% fewer triangles for Android GPUs
     const earthGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 48, 48);
     const earthTexture = createEarthCanvasTexture(theme);
     const earthMat = new THREE.MeshPhongMaterial({
@@ -687,18 +687,7 @@ export default function EarthGlobe3D({
       <div ref={mountRef} style={{ width: "100%", height: "100%" }} />
 
       {/* Floating 3D Globe Control Toolbar */}
-      <div
-        style={{
-          position: "absolute",
-          top: "0.85rem",
-          right: "0.85rem",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.4rem",
-          zIndex: 10
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="globe-ctrl-group" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={() => setAutoRotate(!autoRotate)}
           className="globe-ctrl-btn"
@@ -754,11 +743,11 @@ export default function EarthGlobe3D({
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
             <span className="pulse-dot" style={{ background: "var(--accent-cyan)" }} />
-            <span style={{ fontWeight: 800, fontSize: "0.88rem", color: "var(--text-main)" }}>
+            <span style={{ fontWeight: 800, fontSize: "14px", color: "var(--text-main)" }}>
               {currentLocation.name}
             </span>
           </div>
-          <div style={{ fontSize: "0.72rem", color: "var(--accent-cyan)", fontFamily: "monospace", marginTop: "0.15rem", fontWeight: 600 }}>
+          <div style={{ fontSize: "11px", color: "var(--accent-cyan)", fontFamily: "monospace", marginTop: "0.15rem", fontWeight: 600 }}>
             {currentLocation.lat != null && currentLocation.lon != null
               ? `${currentLocation.lat.toFixed(2)}°, ${currentLocation.lon.toFixed(2)}°`
               : "Acquiring coordinates..."}
@@ -783,7 +772,7 @@ export default function EarthGlobe3D({
             borderRadius: "8px",
             border: "1px solid rgba(6, 182, 212, 0.4)",
             color: "var(--accent-cyan)",
-            fontSize: "0.72rem",
+            fontSize: "11px",
             fontFamily: "monospace",
             pointerEvents: "none",
             zIndex: 20
@@ -794,20 +783,8 @@ export default function EarthGlobe3D({
       )}
 
       {/* Bottom Hint Banner */}
-      <div
-        className="glass-pill"
-        style={{
-          position: "absolute",
-          bottom: "0.85rem",
-          left: "0.85rem",
-          zIndex: 10,
-          padding: "0.4rem 0.85rem",
-          fontSize: "0.75rem",
-          color: "var(--text-muted)",
-          pointerEvents: "none"
-        }}
-      >
-        🌐 Drag to rotate • Scroll to zoom • Click anywhere on Earth to inspect
+      <div className="globe-hint">
+        <span>Drag to rotate, scroll to zoom, click the globe to inspect</span>
       </div>
     </div>
   );

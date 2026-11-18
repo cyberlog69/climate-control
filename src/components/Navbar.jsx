@@ -16,12 +16,12 @@ import {
   Download,
   MoreVertical,
   X,
-  Sparkles,
   Sliders,
   Info
 } from "lucide-react";
 import { searchLocations } from "../services/weatherApi";
 import { audioSynth } from "../services/audioSynth";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import ClimateAlertSystem from "./ClimateAlertSystem";
 
 export default function Navbar({
@@ -57,6 +57,9 @@ export default function Navbar({
   const searchTimeoutRef = useRef(null);
   const dropdownRef = useRef(null);
   const mobileSearchInputRef = useRef(null);
+
+  useEscapeKey(() => setIsMobileSearchOpen(false), isMobileSearchOpen);
+  useEscapeKey(() => setIsMobileMenuOpen(false), isMobileMenuOpen);
 
   const handleInputChange = (e) => {
     const val = e.target.value;
@@ -142,7 +145,7 @@ export default function Navbar({
           {query && (
             <button
               onClick={() => { setQuery(""); setSearchResults([]); setShowDropdown(false); }}
-              style={{ background: "transparent", border: "none", color: "var(--md-sys-color-on-surface-variant)", cursor: "pointer", display: "flex", padding: 0 }}
+              className="m3-search-util-btn"
               aria-label="Clear search"
             >
               <X size={16} />
@@ -150,9 +153,9 @@ export default function Navbar({
           )}
           <button
             onClick={onAutoLocate}
-            title="My Current Location"
-            style={{ background: "transparent", border: "none", color: "var(--md-sys-color-primary)", cursor: "pointer", display: "flex", padding: 0 }}
-            aria-label="Current Location"
+            title="My current location"
+            className="m3-search-util-btn"
+            aria-label="Use my current location"
           >
             <Navigation size={16} />
           </button>
@@ -163,11 +166,11 @@ export default function Navbar({
                 <div key={item.id} className="m3-search-item" onClick={() => handleSelect(item)}>
                   <div>
                     <div style={{ fontWeight: 600, color: "var(--md-sys-color-on-background)" }}>{item.cityName}</div>
-                    <div style={{ fontSize: "0.78rem", color: "var(--md-sys-color-on-surface-variant)" }}>
+                    <div style={{ fontSize: "12px", color: "var(--md-sys-color-on-surface-variant)" }}>
                       {item.admin ? `${item.admin}, ` : ""}{item.country}
                     </div>
                   </div>
-                  <div style={{ fontSize: "0.74rem", color: "var(--md-sys-color-primary)", fontFamily: "monospace" }}>
+                  <div style={{ fontSize: "12px", color: "var(--md-sys-color-primary)", fontFamily: "monospace" }}>
                     {item.lat != null && item.lon != null ? `${item.lat.toFixed(2)}°, ${item.lon.toFixed(2)}°` : ""}
                   </div>
                 </div>
@@ -185,14 +188,14 @@ export default function Navbar({
             locationName={currentLocation.name}
           />
 
-          {/* AI Voice Briefing Button */}
+          {/* Voice Briefing Button */}
           <button
             className="m3-icon-btn hide-on-tablet"
             onClick={onOpenVoiceBriefing}
-            title="Play AI Voice Climate Briefing"
-            aria-label="Voice Briefing"
+            title="Play the voice briefing"
+            aria-label="Voice briefing"
           >
-            <Mic size={18} style={{ color: "var(--md-sys-color-primary)" }} />
+            <Mic size={18} />
           </button>
 
           {/* Ambient Sound Player */}
@@ -202,7 +205,7 @@ export default function Navbar({
             title={isAudioPlaying ? "Mute Ambient Weather Audio" : "Play Ambient Weather Audio"}
             aria-label="Ambient Audio"
           >
-            {isAudioPlaying ? <Volume2 size={18} style={{ color: "var(--md-sys-color-primary)" }} /> : <VolumeX size={18} />}
+            {isAudioPlaying ? <Volume2 size={18} /> : <VolumeX size={18} />}
           </button>
 
           {/* Multi-City Watchlist Button */}
@@ -218,7 +221,7 @@ export default function Navbar({
                 style={{
                   background: "var(--md-sys-color-primary)",
                   color: "var(--md-sys-color-on-primary)",
-                  fontSize: "0.65rem",
+                  fontSize: "11px",
                   fontWeight: 800,
                   padding: "1px 5px",
                   borderRadius: "10px"
@@ -303,22 +306,24 @@ export default function Navbar({
               color: isMobileMenuOpen ? "#000" : "var(--text-main)",
               position: "relative"
             }}
-            aria-label="Menu"
+            aria-label={`Menu${watchlist.length > 0 ? `, ${watchlist.length} pinned cities` : ""}`}
           >
             <MoreVertical size={18} />
             {watchlist.length > 0 && (
               <span
+                aria-hidden="true"
                 style={{
                   position: "absolute",
-                  top: "-4px",
-                  right: "-4px",
+                  top: "2px",
+                  right: "2px",
                   background: "var(--accent-cyan)",
                   color: "#000",
-                  fontSize: "0.6rem",
+                  fontSize: "11px",
                   fontWeight: 900,
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "50%",
+                  minWidth: "18px",
+                  height: "18px",
+                  padding: "0 3px",
+                  borderRadius: "9px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -342,8 +347,6 @@ export default function Navbar({
             right: 0,
             bottom: 0,
             background: "var(--bg-card)",
-            backdropFilter: "var(--blur-glass)",
-            WebkitBackdropFilter: "var(--blur-glass)",
             zIndex: 1300,
             display: "flex",
             flexDirection: "column",
@@ -394,13 +397,13 @@ export default function Navbar({
                 onClick={() => handleSelect(item)}
               >
                 <div>
-                  <div style={{ fontWeight: 700, color: "var(--text-main)", fontSize: "0.95rem" }}>{item.cityName}</div>
-                  <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+                  <div style={{ fontWeight: 700, color: "var(--text-main)", fontSize: "15px" }}>{item.cityName}</div>
+                  <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                     {item.admin ? `${item.admin}, ` : ""}
                     {item.country}
                   </div>
                 </div>
-                <div style={{ fontSize: "0.75rem", color: "var(--accent-cyan)", fontFamily: "monospace" }}>
+                <div style={{ fontSize: "12px", color: "var(--accent-cyan)", fontFamily: "monospace" }}>
                   {item.lat != null && item.lon != null ? `${item.lat.toFixed(2)}°, ${item.lon.toFixed(2)}°` : ""}
                 </div>
               </div>
@@ -419,7 +422,6 @@ export default function Navbar({
             right: 0,
             bottom: 0,
             background: "rgba(3, 7, 18, 0.7)",
-            backdropFilter: "blur(12px)",
             zIndex: 1200
           }}
           onClick={() => setIsMobileMenuOpen(false)}
@@ -429,14 +431,16 @@ export default function Navbar({
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <Sparkles size={18} style={{ color: "var(--accent-cyan)" }} />
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0 }}>ClimateSphere Actions</h3>
+                <h3 style={{ fontSize: "var(--text-base)", fontWeight: 700, margin: 0, color: "var(--text-main)" }}>
+                  More actions
+                </h3>
               </div>
               <button
+                className="m3-icon-btn"
                 onClick={() => setIsMobileMenuOpen(false)}
-                style={{ background: "transparent", border: "none", color: "var(--text-muted)", cursor: "pointer" }}
+                aria-label="Close actions"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
@@ -450,7 +454,7 @@ export default function Navbar({
                 }}
               >
                 <Mic size={18} style={{ color: "var(--accent-cyan)" }} />
-                <span>AI Voice Briefing</span>
+                <span>Voice briefing</span>
               </button>
 
               {/* Watchlist */}

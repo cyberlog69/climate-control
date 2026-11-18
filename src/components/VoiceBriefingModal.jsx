@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 import {
   generateClimateBriefingScript,
   speechController
@@ -22,6 +23,11 @@ export default function VoiceBriefingModal({
   unit = "C",
   onClose
 }) {
+  useEscapeKey(() => {
+    speechController.stop?.();
+    onClose();
+  });
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [rate, setRate] = useState(1.0);
@@ -128,8 +134,8 @@ export default function VoiceBriefingModal({
   const handleCopy = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(briefing.fullScript).catch(() => {
-        // Fallback: silently fail — user can manually select text
-        console.warn("Clipboard write failed — may not be supported in this WebView context");
+        // Silently fail here; the user can still select the text manually
+        console.warn("Clipboard write failed, may not be supported in this WebView context");
       });
     }
     setCopied(true);
@@ -151,10 +157,10 @@ export default function VoiceBriefingModal({
         <div className="glass-card" style={{ padding: "2rem", maxWidth: "380px", textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
           <Radio size={40} style={{ color: "var(--accent-cyan)", margin: "0 auto 1rem" }} />
           <h3 style={{ fontWeight: 700, marginBottom: "0.75rem" }}>Voice Briefing</h3>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: "1.25rem" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "14px", lineHeight: 1.6, marginBottom: "1.25rem" }}>
             Voice synthesis is not available in this environment. Below is your complete climate briefing you can read:
           </p>
-          <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "12px", textAlign: "left", fontSize: "0.85rem", color: "var(--text-main)", lineHeight: 1.7 }}>
+          <div style={{ background: "var(--bg-inner)", padding: "1rem", borderRadius: "12px", textAlign: "left", fontSize: "14px", color: "var(--text-main)", lineHeight: 1.7 }}>
             {briefing.fullScript}
           </div>
           <button
@@ -179,7 +185,6 @@ export default function VoiceBriefingModal({
         right: 0,
         bottom: 0,
         background: "rgba(3, 7, 18, 0.78)",
-        backdropFilter: "blur(12px)",
         zIndex: 1100,
         display: "flex",
         alignItems: "center",
@@ -237,10 +242,10 @@ export default function VoiceBriefingModal({
               <Mic size={20} />
             </div>
             <div>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
-                AI Climate Voice Briefing
+              <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
+                Voice briefing
               </h3>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "0.15rem" }}>
                 Planetary weather & vital signs synthesis for {cityName}
               </div>
             </div>
@@ -268,7 +273,7 @@ export default function VoiceBriefingModal({
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
-              fontSize: "0.78rem",
+              fontSize: "12px",
               color: "#fca5a5"
             }}
           >
@@ -301,24 +306,24 @@ export default function VoiceBriefingModal({
                     height: isPlaying ? `${h}px` : "6px",
                     borderRadius: "3px",
                     background: isPlaying
-                      ? `linear-gradient(180deg, var(--accent-cyan), var(--accent-purple))`
+                      ? "var(--accent-cyan)"
                       : "rgba(148, 163, 184, 0.3)",
-                    boxShadow: isPlaying ? "0 0 8px var(--accent-cyan)" : "none",
-                    transition: isPlaying ? "height 0.15s ease" : "height 0.3s ease"
+                    boxShadow: "none",
+                    transition: "height 0.15s ease"
                   }}
                 />
               );
             })}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", color: isPlaying ? "var(--accent-cyan)" : "var(--text-dim)", fontWeight: 600 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "12px", color: isPlaying ? "var(--accent-cyan)" : "var(--text-dim)", fontWeight: 600 }}>
             <Radio size={14} className={isPlaying ? "animate-pulse" : ""} />
             <span>
               {isPlaying
-                ? "🎙️ Broadcasting Planetary Intelligence Audio..."
+                ? "Playing briefing"
                 : isPaused
-                ? "⏸️ Playback Paused"
-                : "✨ Speech Synthesizer Ready — Click Play to Listen"}
+                ? "Paused"
+                : "Ready. Press play to listen."}
             </span>
           </div>
         </div>
@@ -332,7 +337,7 @@ export default function VoiceBriefingModal({
             display: "flex",
             flexDirection: "column",
             gap: "0.85rem",
-            fontSize: "0.88rem",
+            fontSize: "14px",
             lineHeight: 1.6,
             color: "var(--text-main)"
           }}
@@ -408,7 +413,7 @@ export default function VoiceBriefingModal({
 
             {/* Speed Presets */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              <span style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginRight: "0.2rem", fontWeight: 600 }}>Speed:</span>
+              <span style={{ fontSize: "11px", color: "var(--text-dim)", marginRight: "0.2rem", fontWeight: 600 }}>Speed:</span>
               {speeds.map((s) => (
                 <button
                   key={s}
@@ -427,7 +432,7 @@ export default function VoiceBriefingModal({
                     boxShadow: rate === s ? "0 2px 6px rgba(2, 132, 199, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4)" : "var(--sk-shadow-btn)",
                     borderRadius: "8px",
                     padding: "0.25rem 0.55rem",
-                    fontSize: "0.72rem",
+                    fontSize: "11px",
                     fontWeight: rate === s ? 800 : 500,
                     cursor: "pointer",
                     transition: "all 0.15s ease"
@@ -442,7 +447,7 @@ export default function VoiceBriefingModal({
             <button
               onClick={handleCopy}
               className="m3-chip"
-              style={{ padding: "0.42rem 0.75rem", fontSize: "0.75rem", gap: "0.35rem" }}
+              style={{ padding: "0.42rem 0.75rem", fontSize: "12px", gap: "0.35rem" }}
             >
               {copied ? <Check size={14} style={{ color: "var(--accent-green)" }} /> : <Copy size={14} />}
               <span>{copied ? "Copied" : "Copy Script"}</span>
@@ -452,7 +457,7 @@ export default function VoiceBriefingModal({
           {/* Voice Selector Row */}
           {voices.length > 0 && (
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.72rem", color: "var(--text-dim)", fontWeight: 600 }}>Voice:</span>
+              <span style={{ fontSize: "11px", color: "var(--text-dim)", fontWeight: 600 }}>Voice:</span>
               <select
                 value={selectedVoiceIndex}
                 onChange={(e) => {
@@ -470,7 +475,7 @@ export default function VoiceBriefingModal({
                   color: "var(--text-main)",
                   borderRadius: "10px",
                   padding: "0.4rem 0.65rem",
-                  fontSize: "0.75rem",
+                  fontSize: "12px",
                   outline: "none",
                   flex: 1,
                   cursor: "pointer"
