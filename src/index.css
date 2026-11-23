@@ -73,6 +73,13 @@
   --text-2xl: 36px;
   --text-display: 44px;
 
+  /* Layout: one centered content column with fluid gutters, so a maximized
+     window and a half-screen window keep the same line length and rhythm. */
+  --content-max: 1680px;
+  --page-pad-y: clamp(0.85rem, 0.5vw + 0.6rem, 1.5rem);
+  --page-pad-x: clamp(0.85rem, 1vw + 0.5rem, 2rem);
+  --grid-gap: clamp(0.75rem, 0.6vw + 0.4rem, 1.25rem);
+
   /* M3 Elevation Shadows: one soft ground shadow per level, no stacking. */
   --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.35);
   --md-elevation-2: 0 3px 10px rgba(0, 0, 0, 0.4);
@@ -773,8 +780,20 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+/* The rail lives inside a wrapper so mobile can hide it. Stretch that wrapper
+   and the rail with it: a tall window fills the column, a short one scrolls
+   inside the rail instead of clipping the footer actions. */
+.m3-shell-body > .hide-on-mobile {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-height: 0;
+}
+
 .m3-nav-rail {
   width: 92px;
+  height: 100%;
+  min-height: 0;
   background: var(--sk-surface-bar);
   border-right: var(--sk-bezel-border);
   box-shadow: 3px 0 16px rgba(0, 0, 0, 0.35), inset -1px 0 0 rgba(255, 255, 255, 0.05);
@@ -896,24 +915,71 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--sk-surface-btn-active);
 }
 
+/* Short desktop windows: compact the rail so all eight destinations and the
+   footer actions stay above the fold on a 720px tall laptop. */
+@media (min-width: 881px) and (max-height: 860px) {
+  .m3-nav-rail {
+    padding: 0.4rem 0.3rem;
+  }
+
+  .m3-nav-rail-destinations {
+    gap: 0.15rem;
+  }
+
+  .m3-rail-item {
+    min-height: 46px;
+    padding: 1px 0;
+  }
+
+  .m3-rail-icon-wrapper {
+    width: 48px;
+    height: 30px;
+  }
+
+  .m3-rail-label {
+    margin-top: 2px;
+  }
+
+  .m3-nav-rail-footer {
+    gap: 0.15rem;
+    padding-top: 0.35rem;
+  }
+}
+
+/* Very short windows (a half-height split): drop the rail labels and keep
+   icon targets at 44px. Each button keeps its aria-label. */
+@media (min-width: 881px) and (max-height: 600px) {
+  .m3-rail-label {
+    display: none;
+  }
+
+  .m3-rail-item,
+  .m3-rail-action-btn {
+    min-height: 44px;
+    padding: 0;
+  }
+}
+
 /* Material 3 Main Viewport & Dashboard Grid */
 .m3-main-viewport {
   flex: 1;
   overflow-y: auto;
-  padding: 1.25rem 1.5rem;
+  padding: var(--page-pad-y) var(--page-pad-x);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--grid-gap);
   min-width: 0;
   -webkit-overflow-scrolling: touch;
 }
 
 .m3-dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  gap: var(--grid-gap);
   align-items: start;
   width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
   min-width: 0;
 }
 
@@ -924,7 +990,7 @@ h1, h2, h3, h4, h5, h6 {
 .m3-dashboard-side-col {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--grid-gap);
   min-width: 0;
 }
 
@@ -1077,10 +1143,11 @@ h1, h2, h3, h4, h5, h6 {
 .m3-tab-content-container {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--grid-gap);
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--content-max);
   margin: 0 auto;
+  min-width: 0;
 }
 
 .m3-full-map-view {
